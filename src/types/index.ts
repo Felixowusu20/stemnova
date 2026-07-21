@@ -1,4 +1,4 @@
-/** Shared TypeScript types for Dr. Wynnie's Foundation website content. */
+/** Shared TypeScript types for STEMNova Foundation website content. */
 
 export type SocialPlatform =
   | "facebook"
@@ -60,7 +60,6 @@ export interface StatItem {
   suffix?: string;
   prefix?: string;
   note?: string;
-  /** Marks illustrative/placeholder data — not verified facts. */
   isIllustrative: true;
 }
 
@@ -72,7 +71,6 @@ export interface Testimonial {
   organization?: string;
   programSlug?: ProgramSlug;
   imageUrl?: string;
-  /** Marks illustrative/placeholder content. */
   isIllustrative: true;
 }
 
@@ -90,28 +88,83 @@ export interface ProgramStat {
 }
 
 export type ProgramSlug =
-  | "menstrual-health"
-  | "mental-health"
-  | "career-development";
+  | "young-scholars-stem-discovery"
+  | "stemnova-mentorship-network"
+  | "african-stem-fellows"
+  | "quantum-education-leaders"
+  | "materials-science-solid-state"
+  | "girls-discover-science"
+  | "stem-teachers-academy"
+  | "young-african-researchers-fellowship"
+  | "innovation-sustainable-development";
+
+export type ProgramIcon =
+  | "sparkles"
+  | "users"
+  | "award"
+  | "atom"
+  | "flask"
+  | "venus"
+  | "graduation"
+  | "microscope"
+  | "leaf";
 
 export interface Program {
   slug: ProgramSlug;
   title: string;
   shortDescription: string;
   intro: string;
-  problem: string;
+  objectives: string[];
+  impactStatement: string;
   activities: string[];
   beneficiaries: string;
   approach: string;
   stats: ProgramStat[];
-  relatedProjectSlugs: string[];
   galleryImageUrls: string[];
   resources: ProgramResource[];
   testimonials: Testimonial[];
   heroImageUrl: string;
-  icon: "heart" | "brain" | "briefcase";
-  /** Marks illustrative/placeholder content. */
+  icon: ProgramIcon;
   isIllustrative: true;
+}
+
+export interface Challenge {
+  id: string;
+  title: string;
+  description: string;
+  icon: "search" | "venus" | "book" | "atom" | "network";
+}
+
+export interface StrategicPillar {
+  id: string;
+  title: string;
+  description: string;
+  icon: ProgramIcon | "globe" | "policy";
+}
+
+export interface ResearchArea {
+  id: string;
+  title: string;
+  description: string;
+  icon: "atom" | "brain" | "cpu" | "flask" | "bot" | "leaf" | "file" | "network";
+}
+
+export interface RoadmapPhase {
+  id: string;
+  phase: number;
+  title: string;
+  timeframe: string;
+  description: string;
+  milestones: string[];
+}
+
+export interface GetInvolvedOption {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  icon: "mentor" | "volunteer" | "partner" | "sponsor" | "donate" | "fellowship" | "research";
+  cta: string;
 }
 
 export type ProjectStatus = "active" | "upcoming" | "completed";
@@ -125,7 +178,6 @@ export interface ProjectUpdate {
 export interface ProjectSponsor {
   name: string;
   logoUrl: string;
-  /** Marks placeholder partner/sponsor data. */
   isPlaceholder: true;
 }
 
@@ -151,7 +203,6 @@ export interface Project {
   updates: ProjectUpdate[];
   galleryImageUrls: string[];
   heroImageUrl: string;
-  /** Marks illustrative/placeholder content. */
   isIllustrative: true;
 }
 
@@ -223,9 +274,16 @@ export interface TeamMember {
   email?: string;
   linkedin?: string;
   isFounder?: boolean;
-  /** Marks illustrative/placeholder bio details. */
   isIllustrative: true;
 }
+
+export type PartnerCategory =
+  | "university"
+  | "government"
+  | "international"
+  | "technology"
+  | "ngo"
+  | "research";
 
 export interface Partner {
   id: string;
@@ -233,16 +291,18 @@ export interface Partner {
   logoUrl: string;
   website?: string;
   description: string;
-  /** Marks placeholder partner — not an actual affiliation. */
+  category: PartnerCategory;
   isPlaceholder: true;
 }
 
 export type EventCategory =
+  | "conference"
+  | "camp"
+  | "hackathon"
   | "workshop"
-  | "outreach"
-  | "fundraiser"
-  | "training"
-  | "community";
+  | "symposium"
+  | "challenge"
+  | "mentorship";
 
 export interface Event {
   id: string;
@@ -258,7 +318,6 @@ export interface Event {
   imageUrl: string;
   galleryImageUrls?: string[];
   isPast: boolean;
-  /** Marks illustrative/placeholder event data. */
   isIllustrative: true;
 }
 
@@ -270,9 +329,11 @@ export type ResourceType =
   | "faq";
 
 export type ResourceTopic =
-  | "menstrual-health"
-  | "mental-health"
-  | "career-development"
+  | "talent-discovery"
+  | "research-leadership"
+  | "women-in-stem"
+  | "quantum"
+  | "teachers"
   | "general";
 
 export interface Resource {
@@ -285,7 +346,6 @@ export interface Resource {
   href: string;
   imageUrl?: string;
   publishedAt: string;
-  /** Marks illustrative/placeholder resource. */
   isIllustrative: true;
 }
 
@@ -305,10 +365,11 @@ export interface GalleryAlbum {
 
 export type BlogCategory =
   | "news"
-  | "programs"
+  | "research"
   | "impact"
   | "events"
-  | "resources";
+  | "thought-leadership"
+  | "publications";
 
 export interface BlogPost {
   slug: string;
@@ -320,14 +381,13 @@ export interface BlogPost {
   author: string;
   imageUrl: string;
   featured: boolean;
-  /** Marks illustrative/placeholder blog content. */
   isIllustrative: true;
 }
 
 export interface CoreValue {
   title: string;
   description: string;
-  icon: "compassion" | "empowerment" | "integrity" | "community" | "education";
+  icon: "excellence" | "equity" | "integrity" | "collaboration" | "innovation" | "leadership";
 }
 
 export interface TimelineMilestone {
@@ -337,13 +397,21 @@ export interface TimelineMilestone {
   isIllustrative: true;
 }
 
+export interface GovernanceBody {
+  id: string;
+  title: string;
+  description: string;
+  members: string[];
+}
+
 export interface ValuesData {
   vision: string;
   mission: string;
+  leadershipPhilosophy: string;
   coreValues: CoreValue[];
   aboutStory: string[];
   timeline: TimelineMilestone[];
-  /** Marks illustrative/placeholder organizational narrative. */
+  governance: GovernanceBody[];
   isIllustrative: true;
 }
 

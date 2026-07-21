@@ -30,12 +30,12 @@ export function LoadingState({
     >
       <Loader2
         className={cn(
-          "animate-spin text-[#5B2C83] motion-reduce:animate-none",
+          "animate-spin text-[#0A2540] motion-reduce:animate-none",
           sizeMap[size]
         )}
         aria-hidden="true"
       />
-      <p className="text-sm text-[#252525]/70">{message}</p>
+      <p className="text-sm text-[#0A2540]/70">{message}</p>
     </div>
   );
 }

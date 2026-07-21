@@ -21,7 +21,7 @@ export function PageHero({
   return (
     <section
       className={cn(
-        "relative overflow-hidden bg-[#5B2C83] text-white",
+        "relative overflow-hidden bg-navy text-white",
         className
       )}
     >
@@ -35,10 +35,7 @@ export function PageHero({
             className="object-cover"
             sizes="100vw"
           />
-          <div
-            className="absolute inset-0 bg-gradient-to-r from-[#5B2C83]/95 via-[#5B2C83]/85 to-[#5B2C83]/70"
-            aria-hidden="true"
-          />
+          <div className="absolute inset-0 gradient-hero" aria-hidden="true" />
         </>
       )}
 
@@ -49,7 +46,7 @@ export function PageHero({
             className="mb-6 [&_a]:text-white/80 [&_a:hover]:text-white [&_span]:text-white [&_svg]:text-white/60"
           />
         )}
-        <h1 className="font-serif text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
           {title}
         </h1>
         {description && (

@@ -3,67 +3,68 @@ import type { NavItem } from "@/types";
 /** Primary site navigation matching application routes. */
 export const navigation: NavItem[] = [
   {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "About Us",
+    label: "About",
     href: "/about",
-  },
-  {
-    label: "Our Programs",
-    href: "/programs",
     children: [
-      {
-        label: "Menstrual Health",
-        href: "/programs/menstrual-health",
-      },
-      {
-        label: "Mental Health & Wellness",
-        href: "/programs/mental-health",
-      },
-      {
-        label: "Career Development",
-        href: "/programs/career-development",
-      },
+      { label: "Our Story", href: "/about#story" },
+      { label: "Vision & Mission", href: "/about#vision" },
+      { label: "Leadership", href: "/about#leadership" },
+      { label: "Governance", href: "/about#governance" },
+      { label: "Roadmap", href: "/about#roadmap" },
     ],
   },
   {
-    label: "Projects & Campaigns",
-    href: "/projects",
+    label: "Programmes",
+    href: "/programs",
+    children: [
+      {
+        label: "Young Scholars STEM Discovery",
+        href: "/programs/young-scholars-stem-discovery",
+      },
+      {
+        label: "African STEM Fellows",
+        href: "/programs/african-stem-fellows",
+      },
+      {
+        label: "Quantum Education & Leaders",
+        href: "/programs/quantum-education-leaders",
+      },
+      {
+        label: "Girls Discover Science",
+        href: "/programs/girls-discover-science",
+      },
+      { label: "View All Programmes", href: "/programs" },
+    ],
+  },
+  {
+    label: "Research",
+    href: "/research",
   },
   {
     label: "Impact",
     href: "/impact",
   },
   {
-    label: "Resources",
-    href: "/resources",
+    label: "Events",
+    href: "/events",
+  },
+  {
+    label: "News",
+    href: "/blog",
   },
   {
     label: "Get Involved",
     href: "/get-involved",
     children: [
-      {
-        label: "Volunteer",
-        href: "/volunteer",
-      },
-      {
-        label: "Partner With Us",
-        href: "/partner",
-      },
-      {
-        label: "Donate",
-        href: "/donate",
-      },
+      { label: "Become a Mentor", href: "/get-involved#mentor" },
+      { label: "Volunteer", href: "/volunteer" },
+      { label: "Partner With Us", href: "/partner" },
+      { label: "Donate", href: "/donate" },
+      { label: "Apply for Fellowships", href: "/programs" },
     ],
   },
   {
-    label: "Blog / News",
-    href: "/blog",
-  },
-  {
-    label: "Contact Us",
+    label: "Contact",
     href: "/contact",
   },
 ];

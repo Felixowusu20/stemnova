@@ -6,7 +6,7 @@ import { ProjectsFilter } from "./ProjectsFilter";
 export const metadata: Metadata = {
   title: "Projects & Campaigns",
   description:
-    "Explore active, upcoming, and completed projects from Dr. Wynnie's Foundation — including the flagship 1000 Girl Project.",
+    "Explore STEMNova Foundation projects and campaigns supporting talent discovery, research fellowships, and STEM education across Africa.",
 };
 
 export default function ProjectsPage() {
@@ -14,8 +14,8 @@ export default function ProjectsPage() {
     <>
       <PageHero
         title="Projects & Campaigns"
-        description="From our flagship 1000 Girl Project to community pad drives and mentorship circles — see how we're making an impact."
-        backgroundImage={images.projects.thousandGirl}
+        description="Funded initiatives advancing talent discovery, research leadership, women in STEM, and frontier science education."
+        backgroundImage={images.hero.programs}
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Projects" },

@@ -3,7 +3,6 @@ import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { PageHero } from "@/components/ui/PageHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { galleryAlbums } from "@/content";
 import { images } from "@/content/images";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -12,13 +11,13 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   title: "Photo Gallery",
   description:
-    "Browse photos from Dr. Wynnie's Foundation community outreach, school visits, workshops, events, and volunteer activities across Ghana.",
+    "Browse photos from STEMNova Foundation STEM camps, laboratories, workshops, research events, and volunteer activities across Africa.",
   openGraph: {
-    title: "Photo Gallery | Dr. Wynnie's Foundation",
+    title: "Photo Gallery | STEMNova Foundation",
     description:
-      "Explore moments from our programs — community outreach, school visits, workshops, and volunteer activities.",
+      "Explore moments from talent discovery camps, research fellowships, workshops, and STEM outreach.",
     url: `${siteUrl}/gallery`,
-    images: [{ url: images.gallery.communityOutreach, width: 1200, height: 630 }],
+    images: [{ url: images.gallery[0], width: 1200, height: 630 }],
   },
   alternates: {
     canonical: `${siteUrl}/gallery`,
@@ -30,15 +29,15 @@ export default function GalleryPage() {
     <>
       <PageHero
         title="Photo Gallery"
-        description="Moments from the field — outreach days, school visits, workshops, and celebrations with the girls and communities we serve."
+        description="Moments from STEM camps, laboratories, workshops, research events, and community programmes across Africa."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Gallery" }]}
-        backgroundImage={images.gallery.communityOutreach}
+        backgroundImage={images.gallery[0]}
       />
-      <section className="py-12 sm:py-16">
+      <section className="py-16 sm:py-20">
         <Container>
           <SectionHeading
-            title="Program Moments"
-            description={`Filter by album to explore ${galleryAlbums.length} collections of illustrative photography. Replace with foundation-owned images before launch.`}
+            title="Albums"
+            description="Illustrative photo collections from STEMNova programmes and events."
             className="mb-10"
           />
           <GalleryGrid />

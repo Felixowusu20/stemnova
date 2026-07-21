@@ -34,7 +34,7 @@ function getTimeLeft(targetDate: string): TimeLeft | null {
 function CountdownUnit({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center rounded-xl bg-white/10 px-4 py-3 sm:px-6 sm:py-4">
-      <span className="font-serif text-3xl font-bold tabular-nums sm:text-4xl">
+      <span className="font-display text-3xl font-bold tabular-nums sm:text-4xl">
         {String(value).padStart(2, "0")}
       </span>
       <span className="mt-1 text-xs uppercase tracking-wider text-white/80">

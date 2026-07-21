@@ -17,6 +17,7 @@ export { impactData, IMPACT_DATA_DISCLAIMER } from "@/content/impact";
 export {
   teamMembers,
   getFounder,
+  getFounders,
   getTeamMembers,
 } from "@/content/team";
 export {
@@ -24,7 +25,11 @@ export {
   getTestimonialsByProgram,
   getFeaturedTestimonials,
 } from "@/content/testimonials";
-export { partners, PARTNERS_DISCLAIMER } from "@/content/partners";
+export {
+  partners,
+  PARTNERS_DISCLAIMER,
+  getPartnersByCategory,
+} from "@/content/partners";
 export {
   events,
   getUpcomingEvents,
@@ -52,4 +57,11 @@ export {
   getPostsByCategory,
 } from "@/content/blog";
 export { valuesData } from "@/content/values";
+export {
+  challenges,
+  strategicPillars,
+  researchAreas,
+  roadmapPhases,
+  getInvolvedOptions,
+} from "@/content/pillars";
 export { images } from "@/content/images";

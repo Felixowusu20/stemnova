@@ -6,15 +6,15 @@ import { ResourcesExplorer } from "./ResourcesExplorer";
 export const metadata: Metadata = {
   title: "Resources",
   description:
-    "Browse educational resources from Dr. Wynnie's Foundation — guides, articles, videos, and FAQs on menstrual health, mental wellness, and career development.",
+    "Browse STEMNova Foundation resources — guides, articles, videos, and FAQs on talent discovery, research leadership, women in STEM, quantum education, and teacher development.",
 };
 
 export default function ResourcesPage() {
   return (
     <>
       <PageHero
-        title="Educational Resources"
-        description="Free guides, articles, videos, and FAQs to support girls, parents, educators, and community leaders."
+        title="Resources"
+        description="Guides, articles, videos, and FAQs for students, educators, researchers, and institutional partners."
         backgroundImage={images.hero.programs}
         breadcrumbs={[
           { label: "Home", href: "/" },
@@ -26,14 +26,10 @@ export default function ResourcesPage() {
         <Container>
           <SectionHeading
             title="Browse Our Library"
-            description="Search and filter resources by topic or type. All materials are designed for practical use in schools and communities."
+            description="Search and filter resources by topic or type. Materials support programme delivery and STEM capacity building."
             className="mb-10"
           />
           <ResourcesExplorer resources={resources} />
-          <p className="mt-10 text-center text-xs text-[#252525]/50">
-            Resources are illustrative placeholders for website development.
-            Verified materials will be published before launch.
-          </p>
         </Container>
       </section>
     </>

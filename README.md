@@ -1,6 +1,8 @@
-# Dr. Wynnie's Foundation Website
+# STEMNova Foundation Website
 
-Production-ready marketing site for **Dr. Wynnie's Foundation** — menstrual health education, mental health awareness, career development, and community outreach in Ghana.
+Premium marketing site for **STEMNova Foundation** — discovering scientific talent, developing research leaders, and advancing STEM education, innovation, and excellence across Africa.
+
+**Tagline:** Discovering Talent. Building Leadership. Advancing Africa in STEM.
 
 ## Stack
 
@@ -34,7 +36,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 All copy, stats, team, events, blog posts, and contact details live under `src/content/`. Impact figures and partner names are **illustrative placeholders** (`isIllustrative` / `isPlaceholder`) — replace before public launch.
 
-Images are centralized in `src/content/images.ts` (Unsplash placeholders marked `REPLACE_ME`).
+Images are centralized in `src/content/images.ts` (Unsplash placeholders).
 
 ## Donations
 
@@ -49,5 +51,4 @@ See `.env.example`:
 
 ## Routes
 
-Home, About, Programs (+ 3 detail pages), Projects (+ campaign pages), Impact, Resources, Get Involved, Volunteer, Partner, Donate, Events, Gallery, Blog (+ posts), Contact, Privacy, Terms.
-# DWF
+Home, About, Programmes (+ detail pages), Research, Projects, Impact, Resources, Get Involved, Volunteer, Partners, Donate, Events, Gallery, News/Blog, Contact, Privacy, Terms.

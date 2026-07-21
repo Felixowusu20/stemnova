@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Lora, Manrope } from "next/font/google";
+import { Manrope, Plus_Jakarta_Sans } from "next/font/google";
 import {
   AnnouncementBar,
   Footer,
@@ -18,9 +18,9 @@ const manrope = Manrope({
   display: "swap",
 });
 
-const lora = Lora({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-lora",
+  variable: "--font-jakarta",
   display: "swap",
 });
 
@@ -33,6 +33,16 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  keywords: [
+    "STEMNova Foundation",
+    "Africa STEM",
+    "scientific talent",
+    "research leadership",
+    "women in STEM",
+    "quantum education",
+    "African researchers",
+    "STEM education Africa",
+  ],
   openGraph: {
     type: "website",
     locale: "en_GH",
@@ -53,7 +63,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#5B2C83",
+  themeColor: "#0A2540",
   width: "device-width",
   initialScale: 1,
 };
@@ -64,8 +74,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${lora.variable}`}>
-      <body className="min-h-screen flex flex-col">
+    <html lang="en" className={`${manrope.variable} ${jakarta.variable}`}>
+      <body className="flex min-h-screen flex-col">
         <JsonLd data={getOrganizationSchema()} />
         <a
           href="#main-content"

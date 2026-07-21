@@ -14,13 +14,13 @@ const past = getPastEvents();
 export const metadata: Metadata = {
   title: "Events",
   description:
-    "Discover upcoming workshops, fundraisers, outreach days, and community events hosted by Dr. Wynnie's Foundation across Greater Accra, Ghana.",
+    "Discover STEMNova conferences, STEM camps, hackathons, workshops, research symposiums, innovation challenges, and mentorship sessions across Africa.",
   openGraph: {
-    title: "Events | Dr. Wynnie's Foundation",
+    title: "Events | STEMNova Foundation",
     description:
-      "Join us at foundation events — register for workshops, galas, volunteer orientations, and community outreach days.",
+      "Register for STEMNova conferences, camps, hackathons, workshops, and research symposiums.",
     url: `${siteUrl}/events`,
-    images: [{ url: images.gallery.events, width: 1200, height: 630 }],
+    images: [{ url: images.hero.events, width: 1200, height: 630 }],
   },
   alternates: {
     canonical: `${siteUrl}/events`,
@@ -37,9 +37,9 @@ export default function EventsPage() {
       <JsonLd data={eventSchemas} />
       <PageHero
         title="Events"
-        description="Connect with our community at workshops, fundraisers, volunteer orientations, and outreach days. Event listings are illustrative until officially confirmed."
+        description="Conferences, STEM camps, hackathons, workshops, research symposiums, innovation challenges, and mentorship sessions. Event listings are illustrative until officially confirmed."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Events" }]}
-        backgroundImage={images.gallery.events}
+        backgroundImage={images.hero.events}
       />
       <EventsPageContent upcoming={upcoming} past={past} />
     </>

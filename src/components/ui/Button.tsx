@@ -4,21 +4,23 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 const variantStyles = {
   primary:
-    "bg-[#5B2C83] text-white hover:bg-[#4a2470] active:bg-[#3d1d5c]",
+    "bg-navy text-white hover:bg-[#0d3354] active:bg-dark",
   secondary:
-    "bg-[#218C83] text-white hover:bg-[#1a736c] active:bg-[#155e58]",
+    "bg-blue text-white hover:bg-[#1d4ed8] active:bg-[#1e40af]",
   outline:
-    "border-2 border-[#5B2C83] text-[#5B2C83] bg-transparent hover:bg-[#5B2C83]/5",
+    "border-2 border-navy text-navy bg-transparent hover:bg-navy/5",
+  teal:
+    "bg-teal text-white hover:bg-[#0d9488] active:bg-[#0f766e]",
   coral:
-    "bg-[#D94F70] text-white hover:bg-[#c44362] active:bg-[#b03a56]",
+    "bg-teal text-white hover:bg-[#0d9488] active:bg-[#0f766e]",
   ghost:
-    "bg-transparent text-[#5B2C83] hover:bg-[#5B2C83]/10",
+    "bg-transparent text-navy hover:bg-navy/5",
 } as const;
 
 const sizeStyles = {
   sm: "px-3 py-1.5 text-sm",
   md: "px-5 py-2.5 text-sm",
-  lg: "px-6 py-3 text-base",
+  lg: "px-7 py-3.5 text-base",
 } as const;
 
 type ButtonVariant = keyof typeof variantStyles;
@@ -43,7 +45,7 @@ export type ButtonProps = SharedButtonProps &
   );
 
 const baseStyles =
-  "inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors motion-safe:duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B2C83] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all motion-safe:duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
 
 export function Button(props: ButtonProps) {
   const {

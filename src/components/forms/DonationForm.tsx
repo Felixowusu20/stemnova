@@ -38,9 +38,9 @@ type PaymentMethod = "mobile-money" | "visa" | "mastercard" | "bank-transfer";
 type FormStep = "details" | "confirm" | "success";
 
 const inputClass =
-  "w-full rounded-xl border border-[#5B2C83]/20 bg-white px-4 py-2.5 text-sm text-[#252525] placeholder:text-[#252525]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B2C83] focus-visible:ring-offset-2";
+  "w-full rounded-xl border border-[#0A2540]/20 bg-white px-4 py-2.5 text-sm text-[#0A2540] placeholder:text-[#0A2540]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2";
 
-const labelClass = "mb-1.5 block text-sm font-medium text-[#252525]";
+const labelClass = "mb-1.5 block text-sm font-medium text-[#0A2540]";
 
 const suggestedAmounts = [50, 100, 250, 500, 1000];
 
@@ -70,7 +70,7 @@ const donationTypes: {
   },
   {
     value: "sponsor-girl",
-    label: "Sponsor a Girl",
+    label: "Sponsor a Scholar",
     description: "Support one girl's full program",
     icon: Users,
   },
@@ -184,31 +184,31 @@ export function DonationForm({
         <div className="flex items-start gap-3">
           <AlertTriangle className="h-6 w-6 shrink-0 text-[#F4B942]" aria-hidden="true" />
           <div>
-            <h3 className="font-serif text-xl font-semibold text-[#252525]">
+            <h3 className="font-display text-xl font-semibold text-[#0A2540]">
               Demo Confirmation — No Payment Processed
             </h3>
-            <p className="mt-2 text-sm text-[#252525]/80">
+            <p className="mt-2 text-sm text-[#0A2540]/80">
               {paymentIntent.message}
             </p>
             <dl className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">
-                <dt className="text-[#252525]/60">Reference ID</dt>
+                <dt className="text-[#0A2540]/60">Reference ID</dt>
                 <dd className="font-mono text-xs">{paymentIntent.id}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-[#252525]/60">Amount</dt>
+                <dt className="text-[#0A2540]/60">Amount</dt>
                 <dd className="font-semibold">{formatCurrency(finalAmount)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-[#252525]/60">Status</dt>
-                <dd className="font-semibold text-[#218C83]">Mock / Demo Only</dd>
+                <dt className="text-[#0A2540]/60">Status</dt>
+                <dd className="font-semibold text-[#14B8A6]">Mock / Demo Only</dd>
               </div>
             </dl>
-            <p className="mt-4 text-xs text-[#252525]/60">
+            <p className="mt-4 text-xs text-[#0A2540]/60">
               Online payment processing is not live. To donate directly, contact{" "}
               <a
                 href="mailto:info@drwynniesfoundation.org"
-                className="text-[#5B2C83] underline"
+                className="text-[#0A2540] underline"
               >
                 info@drwynniesfoundation.org
               </a>
@@ -226,29 +226,29 @@ export function DonationForm({
 
     return (
       <div className={cn("space-y-6", className)}>
-        <div className="rounded-2xl bg-[#5B2C83]/5 p-6">
-          <h3 className="font-serif text-lg font-semibold text-[#252525]">
+        <div className="rounded-2xl bg-[#0A2540]/5 p-6">
+          <h3 className="font-display text-lg font-semibold text-[#0A2540]">
             Donation Summary
           </h3>
           <dl className="mt-4 space-y-3 text-sm">
             <div className="flex justify-between">
-              <dt className="text-[#252525]/60">Type</dt>
+              <dt className="text-[#0A2540]/60">Type</dt>
               <dd className="font-medium">{selectedType?.label}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-[#252525]/60">Amount</dt>
-              <dd className="font-semibold text-[#5B2C83]">
+              <dt className="text-[#0A2540]/60">Amount</dt>
+              <dd className="font-semibold text-[#0A2540]">
                 {formatCurrency(finalAmount)}
                 {donationType === "monthly" && "/month"}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-[#252525]/60">Payment method</dt>
+              <dt className="text-[#0A2540]/60">Payment method</dt>
               <dd className="font-medium">{selectedPayment?.label}</dd>
             </div>
             {projectSlug && (
               <div className="flex justify-between">
-                <dt className="text-[#252525]/60">Project</dt>
+                <dt className="text-[#0A2540]/60">Project</dt>
                 <dd className="font-medium">
                   {projects.find((p) => p.slug === projectSlug)?.title ??
                     projectSlug}
@@ -257,13 +257,13 @@ export function DonationForm({
             )}
             {!form.anonymous && form.donorName && (
               <div className="flex justify-between">
-                <dt className="text-[#252525]/60">Donor</dt>
+                <dt className="text-[#0A2540]/60">Donor</dt>
                 <dd className="font-medium">{form.donorName}</dd>
               </div>
             )}
             {form.anonymous && (
               <div className="flex justify-between">
-                <dt className="text-[#252525]/60">Donor</dt>
+                <dt className="text-[#0A2540]/60">Donor</dt>
                 <dd className="font-medium italic">Anonymous</dd>
               </div>
             )}
@@ -275,11 +275,11 @@ export function DonationForm({
           role="alert"
         >
           <AlertTriangle className="h-5 w-5 shrink-0 text-[#8a6d1a]" aria-hidden="true" />
-          <p className="text-sm text-[#252525]/80">{PAYMENT_DISCLAIMER}</p>
+          <p className="text-sm text-[#0A2540]/80">{PAYMENT_DISCLAIMER}</p>
         </div>
 
         {errors.submit && (
-          <p className="text-sm text-[#D94F70]" role="alert">
+          <p className="text-sm text-[#14B8A6]" role="alert">
             {errors.submit}
           </p>
         )}
@@ -294,7 +294,7 @@ export function DonationForm({
             Back
           </Button>
           <Button
-            variant="coral"
+            variant="teal"
             onClick={handleConfirmPayment}
             disabled={loading}
             className="sm:flex-1"
@@ -326,10 +326,10 @@ export function DonationForm({
         >
           <AlertTriangle className="h-5 w-5 shrink-0 text-[#8a6d1a]" aria-hidden="true" />
           <div>
-            <p className="text-sm font-semibold text-[#252525]">
+            <p className="text-sm font-semibold text-[#0A2540]">
               Demo Mode — Payments Not Live
             </p>
-            <p className="mt-1 text-sm text-[#252525]/70">{PAYMENT_DISCLAIMER}</p>
+            <p className="mt-1 text-sm text-[#0A2540]/70">{PAYMENT_DISCLAIMER}</p>
           </div>
         </div>
       )}
@@ -345,8 +345,8 @@ export function DonationForm({
                 className={cn(
                   "flex cursor-pointer items-start gap-3 rounded-xl border-2 p-4 transition-colors",
                   donationType === type.value
-                    ? "border-[#5B2C83] bg-[#5B2C83]/5"
-                    : "border-[#5B2C83]/15 hover:border-[#5B2C83]/30"
+                    ? "border-[#0A2540] bg-[#0A2540]/5"
+                    : "border-[#0A2540]/15 hover:border-[#0A2540]/30"
                 )}
               >
                 <input
@@ -357,10 +357,10 @@ export function DonationForm({
                   onChange={() => setDonationType(type.value)}
                   className="sr-only"
                 />
-                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-[#5B2C83]" aria-hidden="true" />
+                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-[#0A2540]" aria-hidden="true" />
                 <div>
-                  <span className="font-medium text-[#252525]">{type.label}</span>
-                  <p className="text-xs text-[#252525]/60">{type.description}</p>
+                  <span className="font-medium text-[#0A2540]">{type.label}</span>
+                  <p className="text-xs text-[#0A2540]/60">{type.description}</p>
                 </div>
               </label>
             );
@@ -370,7 +370,7 @@ export function DonationForm({
 
       <fieldset>
         <legend className={labelClass}>
-          Select amount (GHS) <span className="text-[#D94F70]">*</span>
+          Select amount (GHS) <span className="text-[#14B8A6]">*</span>
         </legend>
         <div className="mt-2 flex flex-wrap gap-2">
           {suggestedAmounts.map((value) => (
@@ -382,10 +382,10 @@ export function DonationForm({
                 setCustomAmount("");
               }}
               className={cn(
-                "rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B2C83] focus-visible:ring-offset-2",
+                "rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2",
                 amount === value
-                  ? "bg-[#5B2C83] text-white"
-                  : "bg-[#5B2C83]/10 text-[#5B2C83] hover:bg-[#5B2C83]/20"
+                  ? "bg-[#0A2540] text-white"
+                  : "bg-[#0A2540]/10 text-[#0A2540] hover:bg-[#0A2540]/20"
               )}
             >
               {formatCurrency(value)}
@@ -412,7 +412,7 @@ export function DonationForm({
           />
         </div>
         {errors.amount && (
-          <p className="mt-1 text-xs text-[#D94F70]" role="alert">
+          <p className="mt-1 text-xs text-[#14B8A6]" role="alert">
             {errors.amount}
           </p>
         )}
@@ -448,8 +448,8 @@ export function DonationForm({
                 className={cn(
                   "flex cursor-pointer items-center gap-3 rounded-xl border-2 px-4 py-3 transition-colors",
                   paymentMethod === method.value
-                    ? "border-[#5B2C83] bg-[#5B2C83]/5"
-                    : "border-[#5B2C83]/15 hover:border-[#5B2C83]/30"
+                    ? "border-[#0A2540] bg-[#0A2540]/5"
+                    : "border-[#0A2540]/15 hover:border-[#0A2540]/30"
                 )}
               >
                 <input
@@ -460,7 +460,7 @@ export function DonationForm({
                   onChange={() => setPaymentMethod(method.value)}
                   className="sr-only"
                 />
-                <Icon className="h-5 w-5 text-[#5B2C83]" aria-hidden="true" />
+                <Icon className="h-5 w-5 text-[#0A2540]" aria-hidden="true" />
                 <span className="text-sm font-medium">{method.label}</span>
               </label>
             );
@@ -468,8 +468,8 @@ export function DonationForm({
         </div>
       </fieldset>
 
-      <div className="space-y-5 rounded-2xl bg-[#FFF9F7] p-6">
-        <h3 className="font-serif text-lg font-semibold text-[#252525]">
+      <div className="space-y-5 rounded-2xl bg-[#F8FAFC] p-6">
+        <h3 className="font-display text-lg font-semibold text-[#0A2540]">
           Donor details
         </h3>
 
@@ -481,9 +481,9 @@ export function DonationForm({
             onChange={(e) =>
               setForm((f) => ({ ...f, anonymous: e.target.checked }))
             }
-            className="h-4 w-4 rounded border-[#5B2C83]/30 text-[#5B2C83] focus-visible:ring-2 focus-visible:ring-[#5B2C83]"
+            className="h-4 w-4 rounded border-[#0A2540]/30 text-[#0A2540] focus-visible:ring-2 focus-visible:ring-[#0A2540]"
           />
-          <label htmlFor="anonymous" className="text-sm text-[#252525]/80">
+          <label htmlFor="anonymous" className="text-sm text-[#0A2540]/80">
             Donate anonymously
           </label>
         </div>
@@ -492,7 +492,7 @@ export function DonationForm({
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label htmlFor="donorName" className={labelClass}>
-                Full name <span className="text-[#D94F70]">*</span>
+                Full name <span className="text-[#14B8A6]">*</span>
               </label>
               <input
                 id="donorName"
@@ -505,14 +505,14 @@ export function DonationForm({
                 aria-invalid={errors.donorName ? "true" : undefined}
               />
               {errors.donorName && (
-                <p className="mt-1 text-xs text-[#D94F70]" role="alert">
+                <p className="mt-1 text-xs text-[#14B8A6]" role="alert">
                   {errors.donorName}
                 </p>
               )}
             </div>
             <div>
               <label htmlFor="donorEmail" className={labelClass}>
-                Email <span className="text-[#D94F70]">*</span>
+                Email <span className="text-[#14B8A6]">*</span>
               </label>
               <input
                 id="donorEmail"
@@ -525,7 +525,7 @@ export function DonationForm({
                 aria-invalid={errors.donorEmail ? "true" : undefined}
               />
               {errors.donorEmail && (
-                <p className="mt-1 text-xs text-[#D94F70]" role="alert">
+                <p className="mt-1 text-xs text-[#14B8A6]" role="alert">
                   {errors.donorEmail}
                 </p>
               )}
@@ -550,7 +550,7 @@ export function DonationForm({
         </div>
       </div>
 
-      <Button type="submit" variant="coral" fullWidth size="lg">
+      <Button type="submit" variant="teal" fullWidth size="lg">
         Review Donation
       </Button>
     </form>

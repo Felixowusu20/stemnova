@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils";
 import type { Event, EventCategory } from "@/types";
 
 const categoryLabels: Record<EventCategory, string> = {
+  conference: "Conference",
+  camp: "Camp",
+  hackathon: "Hackathon",
   workshop: "Workshop",
-  outreach: "Outreach",
-  fundraiser: "Fundraiser",
-  training: "Training",
-  community: "Community",
+  symposium: "Symposium",
+  challenge: "Challenge",
+  mentorship: "Mentorship",
 };
 
 function formatDate(dateStr: string): string {
@@ -46,8 +48,8 @@ export function EventCard({ event, className }: EventCardProps) {
           className={cn(
             "absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold",
             event.isPast
-              ? "bg-[#252525]/60 text-white"
-              : "bg-[#218C83] text-white"
+              ? "bg-[#0A2540]/60 text-white"
+              : "bg-[#14B8A6] text-white"
           )}
         >
           {event.isPast ? "Past" : categoryLabels[event.category]}
@@ -55,32 +57,32 @@ export function EventCard({ event, className }: EventCardProps) {
       </div>
 
       <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-serif text-xl font-semibold text-[#252525]">
+        <h3 className="font-display text-xl font-semibold text-[#0A2540]">
           {event.title}
         </h3>
 
-        <ul className="mt-3 space-y-2 text-sm text-[#252525]/70">
+        <ul className="mt-3 space-y-2 text-sm text-[#0A2540]/70">
           <li className="flex items-start gap-2">
-            <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-[#5B2C83]" aria-hidden="true" />
+            <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-[#0A2540]" aria-hidden="true" />
             <time dateTime={event.date}>{formatDate(event.date)}</time>
           </li>
           <li className="flex items-start gap-2">
-            <Clock className="mt-0.5 h-4 w-4 shrink-0 text-[#5B2C83]" aria-hidden="true" />
+            <Clock className="mt-0.5 h-4 w-4 shrink-0 text-[#0A2540]" aria-hidden="true" />
             {event.time}
           </li>
           <li className="flex items-start gap-2">
-            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#5B2C83]" aria-hidden="true" />
+            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#0A2540]" aria-hidden="true" />
             {event.location}
           </li>
         </ul>
 
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-[#252525]/70 line-clamp-2">
+        <p className="mt-3 flex-1 text-sm leading-relaxed text-[#0A2540]/70 line-clamp-2">
           {event.description}
         </p>
 
         <Link
           href={event.registrationUrl ?? `/events#${event.slug}`}
-          className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#5B2C83] transition-colors hover:text-[#4a2470] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B2C83] focus-visible:ring-offset-2 rounded"
+          className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#0A2540] transition-colors hover:text-[#0d3354] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2 rounded"
         >
           {event.registrationRequired && !event.isPast
             ? "Register"

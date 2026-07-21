@@ -66,15 +66,21 @@ export function ImpactCounter({
   const formatted = displayValue.toLocaleString();
 
   return (
-    <div ref={ref} className={cn("text-center", className)}>
-      <p className="font-serif text-4xl font-bold text-[#5B2C83] sm:text-5xl">
+    <div
+      ref={ref}
+      className={cn(
+        "rounded-2xl border border-navy/5 bg-white p-6 text-center shadow-sm",
+        className
+      )}
+    >
+      <p className="font-display text-4xl font-bold text-blue sm:text-5xl">
         {stat.prefix}
         {formatted}
         {stat.suffix}
       </p>
-      <p className="mt-2 text-sm font-medium text-[#252525]/80">{stat.label}</p>
+      <p className="mt-2 text-sm font-medium text-navy/80">{stat.label}</p>
       {stat.note && (
-        <p className="mt-1 text-xs text-[#252525]/50">{stat.note}</p>
+        <p className="mt-1 text-xs text-navy/50">{stat.note}</p>
       )}
     </div>
   );

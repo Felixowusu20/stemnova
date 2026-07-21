@@ -3,76 +3,83 @@ import type { TeamMember } from "@/types";
 
 /**
  * Team member profiles — illustrative public-facing bios.
- * Sensitive private details are not included. Replace with verified information before launch.
+ * Replace with verified information before launch.
  */
 export const teamMembers: TeamMember[] = [
   {
-    id: "founder",
-    name: "Dr. Wynette Mensah",
-    role: "Founder & Executive Director",
+    id: "co-founder-dorcas",
+    name: "Dr. Dorcas Attuabea Addo",
+    role: "Co-Founder & Executive Director",
     bio:
-      "Dr. Wynette Mensah founded Dr. Wynnie's Foundation with a vision rooted in her professional experience in health education and community service. Having witnessed firsthand how menstrual stigma and limited mentorship opportunities affect girls' education in Ghana, she established the foundation to create practical, dignity-centered programs that address health, wellness, and career pathways together. Dr. Mensah holds advanced qualifications in health sciences and has spent over a decade working with schools, community organizations, and youth groups across Greater Accra. She believes that investing in a girl's confidence and wellbeing today builds the leaders Ghana needs tomorrow. Under her leadership, the foundation has grown from a grassroots initiative into a multi-program organization partnering with schools and volunteers across the region. (Illustrative public-facing bio — details to be verified and updated by the foundation.)",
-    imageUrl: images.team.founder,
-    email: "wynette.mensah@drwynniesfoundation.org",
-    linkedin: "https://linkedin.com/in/wynette-mensah",
+      "Dr. Dorcas Attuabea Addo co-founded STEMNova Foundation with a vision rooted in her journey from a public secondary school in Ghana to an international research career in materials science. Having experienced firsthand the barriers that talented African students face—limited mentorship, inadequate laboratory access, and isolation from global research networks—she established STEMNova to build the institutional infrastructure she wished had existed. Dr. Addo holds a PhD in Materials Science and has published extensively on solid-state physics and sustainable energy materials. She has held research appointments at leading African and international institutions and serves on advisory boards for science education policy. Under her leadership, STEMNova has grown from a founding vision into a multi-programme institution reaching thousands of students and researchers across the continent. (Illustrative public-facing bio — details to be verified and updated by the foundation.)",
+    imageUrl: images.team.founder1,
+    email: "dorcas.addo@stemnovafoundation.org",
+    linkedin: "https://linkedin.com/in/dorcas-attuabea-addo",
     isFounder: true,
     isIllustrative: true,
   },
   {
-    id: "programs-director",
-    name: "Grace Adomako",
-    role: "Director of Programs",
+    id: "co-founder-bernice",
+    name: "Dr. Bernice Yram Danu",
+    role: "Co-Founder & Director of Research Programmes",
     bio:
-      "Grace oversees the design and delivery of all foundation programs, ensuring each initiative meets quality standards and community needs. With a background in social work and youth development, she coordinates school partnerships, volunteer training, and program evaluation. Grace is passionate about creating safe, inclusive spaces where girls feel seen and supported. (Illustrative bio.)",
+      "Dr. Bernice Yram Danu co-founded STEMNova Foundation alongside Dr. Addo, bringing deep expertise in quantum science education and research leadership development. Her career spans academic research, university teaching, and international science policy—giving her a unique perspective on the gaps between African STEM talent and the pathways required to develop it. Dr. Danu pioneered early quantum education initiatives in West Africa and has mentored dozens of graduate students who have progressed to faculty positions and industry research roles. At STEMNova, she directs fellowship programmes, research partnerships, and the Quantum Education Leaders initiative. She is passionate about ensuring that frontier disciplines like quantum science are accessible to African institutions—not reserved for elite universities abroad. (Illustrative public-facing bio — details to be verified and updated by the foundation.)",
+    imageUrl: images.team.founder2,
+    email: "bernice.danu@stemnovafoundation.org",
+    linkedin: "https://linkedin.com/in/bernice-yram-danu",
+    isFounder: true,
+    isIllustrative: true,
+  },
+  {
+    id: "board-trustee-kwame",
+    name: "Prof. Kwame Asante",
+    role: "Board Trustee — Higher Education Policy",
+    bio:
+      "Prof. Kwame Asante is a professor emeritus of education policy with four decades of experience shaping STEM curriculum frameworks across West Africa. He advises STEMNova on programme alignment with national education standards and policy engagement strategy. (Illustrative bio.)",
     imageUrl: images.team.members[0],
-    email: "grace.adomako@drwynniesfoundation.org",
+    email: "kwame.asante@stemnovafoundation.org",
     isIllustrative: true,
   },
   {
-    id: "operations-manager",
-    name: "Samuel Osei",
-    role: "Operations Manager",
+    id: "board-trustee-amara",
+    name: "Dr. Amara Okafor",
+    role: "Board Trustee — International Research Partnerships",
     bio:
-      "Samuel manages day-to-day foundation operations including logistics, supply chain for dignity kits, event coordination, and volunteer scheduling. His organizational skills keep outreach teams equipped and on schedule across multiple communities. (Illustrative bio.)",
+      "Dr. Okafor directs international research collaborations at a leading African university and serves on STEMNova's Board, guiding global partnership strategy and fellowship placement quality. Her expertise spans computational biology and research network development. (Illustrative bio.)",
     imageUrl: images.team.members[1],
-    email: "samuel.osei@drwynniesfoundation.org",
+    email: "amara.okafor@stemnovafoundation.org",
     isIllustrative: true,
   },
   {
-    id: "communications-lead",
-    name: "Akosua Frimpong",
-    role: "Communications & Outreach Lead",
+    id: "secretariat-operations",
+    name: "Mr. Kofi Adom",
+    role: "Director of Operations",
     bio:
-      "Akosua leads the foundation's storytelling, social media, and community engagement efforts. She works with program teams to share impact stories responsibly and coordinates media partnerships that amplify the foundation's mission. (Illustrative bio.)",
+      "Kofi Adom manages STEMNova's day-to-day operations including programme logistics, financial administration, and partner institution coordination. With a background in nonprofit management and project finance, he ensures programmes deliver on time and within budget across multiple countries. (Illustrative bio.)",
     imageUrl: images.team.members[2],
-    email: "akosua.frimpong@drwynniesfoundation.org",
+    email: "kofi.adom@stemnovafoundation.org",
     isIllustrative: true,
   },
   {
-    id: "mental-health-coordinator",
-    name: "Dr. Esi Hammond",
-    role: "Mental Health Program Coordinator",
+    id: "secretariat-communications",
+    name: "Ms. Ama Serwaa",
+    role: "Director of Communications & Partnerships",
     bio:
-      "Dr. Hammond is a licensed counselor who designs and supervises the foundation's wellness circles and counseling referral network. She trains volunteer facilitators in trauma-informed practices and ensures all mental health programming meets professional ethical standards. (Illustrative bio.)",
+      "Ama Serwaa leads STEMNova's external communications, donor relations, and institutional partnership development. She previously managed communications for an international development organization and brings expertise in storytelling, stakeholder engagement, and campaign strategy. (Illustrative bio.)",
     imageUrl: images.team.members[3],
-    email: "esi.hammond@drwynniesfoundation.org",
-    isIllustrative: true,
-  },
-  {
-    id: "volunteer-coordinator",
-    name: "Kwame Ansah",
-    role: "Volunteer Coordinator",
-    bio:
-      "Kwame recruits, trains, and supports the foundation's volunteer community — from workshop facilitators to mentor matches. He maintains the volunteer database and ensures every volunteer receives orientation and ongoing support. (Illustrative bio.)",
-    imageUrl: images.team.members[4],
-    email: "kwame.ansah@drwynniesfoundation.org",
+    email: "ama.serwaa@stemnovafoundation.org",
     isIllustrative: true,
   },
 ];
 
-/** Retrieve the founder team member. */
+/** Retrieve the first founder team member. */
 export function getFounder(): TeamMember | undefined {
   return teamMembers.find((member) => member.isFounder);
+}
+
+/** Retrieve all founder team members. */
+export function getFounders(): TeamMember[] {
+  return teamMembers.filter((member) => member.isFounder);
 }
 
 /** Retrieve non-founder team members. */

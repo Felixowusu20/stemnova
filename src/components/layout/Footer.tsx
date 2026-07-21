@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
+  Atom,
   Facebook,
-  Heart,
   Instagram,
   Linkedin,
   Mail,
@@ -10,7 +10,7 @@ import {
   Twitter,
   Youtube,
 } from "lucide-react";
-import { navigation, programs, siteConfig } from "@/content";
+import { programs, siteConfig } from "@/content";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -23,7 +23,7 @@ const socialIcons: Record<SocialPlatform, typeof Facebook> = {
   twitter: Twitter,
   linkedin: Linkedin,
   youtube: Youtube,
-  tiktok: Heart,
+  tiktok: Atom,
 };
 
 function FooterLinkGroup({
@@ -35,15 +35,15 @@ function FooterLinkGroup({
 }) {
   return (
     <div>
-      <h3 className="font-serif text-sm font-semibold uppercase tracking-wider text-white/90">
+      <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-white/90">
         {title}
       </h3>
       <ul className="mt-4 space-y-2.5">
         {links.map((link) => (
-          <li key={link.href}>
+          <li key={`${link.href}-${link.label}`}>
             <Link
               href={link.href}
-              className="text-sm text-white/70 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#252525] rounded"
+              className="rounded text-sm text-white/65 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-dark"
             >
               {link.label}
             </Link>
@@ -56,27 +56,28 @@ function FooterLinkGroup({
 
 export function Footer() {
   const { contact, social } = siteConfig;
-  const getInvolved = navigation.find((item) => item.label === "Get Involved");
-  const quickLinks = navigation.filter(
-    (item) => !["Get Involved", "Our Programs"].includes(item.label)
-  );
 
-  const programLinks = programs.map((p) => ({
+  const programmeLinks = programs.slice(0, 5).map((p) => ({
     label: p.title,
     href: `/programs/${p.slug}`,
   }));
 
-  const involvedLinks =
-    getInvolved?.children?.map((c) => ({ label: c.label, href: c.href })) ?? [
-      { label: "Volunteer", href: "/volunteer" },
-      { label: "Partner With Us", href: "/partner" },
-      { label: "Donate", href: "/donate" },
-    ];
-
-  const moreLinks = [
+  const exploreLinks = [
+    { label: "About", href: "/about" },
+    { label: "Research & Innovation", href: "/research" },
+    { label: "Impact", href: "/impact" },
     { label: "Events", href: "/events" },
-    { label: "Gallery", href: "/gallery" },
-    { label: "Get Involved", href: "/get-involved" },
+    { label: "News & Publications", href: "/blog" },
+    { label: "Partners", href: "/partner" },
+  ];
+
+  const involvedLinks = [
+    { label: "Become a Mentor", href: "/get-involved#mentor" },
+    { label: "Volunteer", href: "/volunteer" },
+    { label: "Partner With Us", href: "/partner" },
+    { label: "Donate", href: "/donate" },
+    { label: "Apply for Fellowships", href: "/programs" },
+    { label: "Contact", href: "/contact" },
   ];
 
   const address = [
@@ -89,50 +90,48 @@ export function Footer() {
     .join(", ");
 
   return (
-    <footer className="bg-[#252525] text-white" role="contentinfo">
+    <footer className="bg-dark text-white" role="contentinfo">
       <Container className="py-16">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <Link
               href="/"
-              className="inline-flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#252525]"
+              className="inline-flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-dark"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#5B2C83]">
-                <Heart className="h-5 w-5" aria-hidden="true" />
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue">
+                <Atom className="h-5 w-5" aria-hidden="true" />
               </span>
-              <span className="font-serif text-xl font-bold">
+              <span className="font-display text-xl font-bold">
                 {siteConfig.name}
               </span>
             </Link>
-            <p className="mt-4 text-sm leading-relaxed text-white/70">
-              {siteConfig.description}
+            <p className="mt-4 text-sm leading-relaxed text-white/65">
+              {siteConfig.tagline}
             </p>
-            <Button href="/donate" variant="coral" className="mt-6">
-              Donate Now
+            <p className="mt-3 text-sm leading-relaxed text-white/55">
+              Africa&apos;s institution for discovering scientific talent,
+              developing research leaders, and advancing STEM excellence.
+            </p>
+            <Button href="/donate" variant="teal" className="mt-6">
+              Support STEMNova
             </Button>
           </div>
 
           <div className="grid gap-8 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-3">
-            <FooterLinkGroup
-              title="Quick Links"
-              links={[
-                ...quickLinks.map((l) => ({ label: l.label, href: l.href })),
-                ...moreLinks,
-              ]}
-            />
-            <FooterLinkGroup title="Programs" links={programLinks} />
+            <FooterLinkGroup title="Explore" links={exploreLinks} />
+            <FooterLinkGroup title="Programmes" links={programmeLinks} />
             <FooterLinkGroup title="Get Involved" links={involvedLinks} />
           </div>
 
           <div className="lg:col-span-3">
-            <h3 className="font-serif text-sm font-semibold uppercase tracking-wider text-white/90">
+            <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-white/90">
               Contact
             </h3>
-            <ul className="mt-4 space-y-3 text-sm text-white/70">
+            <ul className="mt-4 space-y-3 text-sm text-white/65">
               <li>
                 <a
                   href={`mailto:${contact.email}`}
-                  className="flex items-start gap-2 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded"
+                  className="flex items-start gap-2 rounded transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
                 >
                   <Mail className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                   {contact.email}
@@ -141,7 +140,7 @@ export function Footer() {
               <li>
                 <a
                   href={`tel:${contact.phone.replace(/\s/g, "")}`}
-                  className="flex items-start gap-2 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded"
+                  className="flex items-start gap-2 rounded transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
                 >
                   <Phone className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                   {contact.phone}
@@ -165,7 +164,7 @@ export function Footer() {
                     aria-label={link.label}
                     className={cn(
                       "flex h-10 w-10 items-center justify-center rounded-full bg-white/10",
-                      "transition-colors hover:bg-[#5B2C83] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#252525]"
+                      "transition-colors hover:bg-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-dark"
                     )}
                   >
                     <Icon className="h-4 w-4" aria-hidden="true" />
@@ -178,9 +177,9 @@ export function Footer() {
 
         <div className="mt-12 border-t border-white/10 pt-12">
           <div className="max-w-md">
-            <h3 className="font-serif text-lg font-semibold">Stay Connected</h3>
-            <p className="mt-2 text-sm text-white/70">
-              Get updates on programs, events, and impact stories.
+            <h3 className="font-display text-lg font-semibold">Newsletter</h3>
+            <p className="mt-2 text-sm text-white/65">
+              Research insights, programme updates, and opportunities across Africa.
             </p>
             <NewsletterForm className="mt-4" variant="dark" />
           </div>
@@ -189,21 +188,27 @@ export function Footer() {
 
       <div className="border-t border-white/10">
         <Container className="flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-white/50">
             © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
             <Link
               href="/privacy"
-              className="text-white/60 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded"
+              className="rounded text-white/50 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
             >
               Privacy Policy
             </Link>
             <Link
               href="/terms"
-              className="text-white/60 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded"
+              className="rounded text-white/50 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
             >
-              Terms & Conditions
+              Terms of Service
+            </Link>
+            <Link
+              href="/events"
+              className="rounded text-white/50 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
+            >
+              Events
             </Link>
           </div>
         </Container>

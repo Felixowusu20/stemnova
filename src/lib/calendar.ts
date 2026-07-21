@@ -92,7 +92,7 @@ export function downloadIcsFile(event: Event): void {
   const ics = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Dr Wynnie's Foundation//Events//EN",
+    "PRODID:-//STEMNova Foundation//Events//EN",
     "BEGIN:VEVENT",
     `UID:${uid}`,
     `DTSTAMP:${formatIcsDate(new Date())}`,

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Building2, Handshake, School } from "lucide-react";
+import { Building2, FlaskConical, Globe, GraduationCap, Handshake, Landmark } from "lucide-react";
 import {
   Container,
   CtaSection,
@@ -11,29 +11,47 @@ import {
 import { images } from "@/content";
 
 export const metadata: Metadata = {
-  title: "Partner With Us",
+  title: "Partners",
   description:
-    "Partner with Dr. Wynnie's Foundation — corporate sponsorship, school partnerships, in-kind donations, and community collaborations in Ghana.",
+    "Partner with STEMNova Foundation — universities, government agencies, international organisations, technology companies, NGOs, and research institutions.",
 };
 
 const partnershipTypes = [
   {
-    icon: Building2,
-    title: "Corporate Sponsorship",
+    icon: GraduationCap,
+    title: "University Partnerships",
     description:
-      "Align your brand with meaningful community impact through campaign sponsorship, employee volunteering, and CSR initiatives.",
+      "Co-deliver fellowships, laboratory placements, curriculum pathways, and research collaborations with African and international universities.",
   },
   {
-    icon: School,
-    title: "School Partnerships",
+    icon: Landmark,
+    title: "Government & Policy",
     description:
-      "Bring menstrual health, wellness, and career programs to your students with co-designed curricula and trained facilitators.",
+      "Work with ministries and education agencies to strengthen STEM curricula, teacher standards, and talent development frameworks.",
+  },
+  {
+    icon: Building2,
+    title: "Corporate & Technology",
+    description:
+      "Sponsor programmes, fund innovation challenges, and open industry mentorship pathways for emerging African STEM talent.",
+  },
+  {
+    icon: Globe,
+    title: "International Organisations",
+    description:
+      "Collaborate on continental STEM capacity-building, research networks, and evidence-based education initiatives.",
   },
   {
     icon: Handshake,
-    title: "Community Collaborations",
+    title: "NGO Collaborations",
     description:
-      "NGOs, faith organizations, and community groups can co-host outreach events, pad drives, and parent dialogues.",
+      "Joint outreach for girls in STEM, teacher development, and community-based talent discovery programmes.",
+  },
+  {
+    icon: FlaskConical,
+    title: "Research Institutions",
+    description:
+      "Host fellows, share laboratory access, and co-author research advancing frontier science across Africa.",
   },
 ];
 
@@ -41,39 +59,39 @@ export default function PartnerPage() {
   return (
     <>
       <PageHero
-        title="Partner With Us"
-        description="Together, we can reach more girls with comprehensive health, wellness, and career support."
-        backgroundImage={images.gallery.communityOutreach}
+        title="Partner With STEMNova"
+        description="Universities, governments, companies, NGOs, and research institutions—join us in building Africa's premier STEM talent institution."
+        backgroundImage={images.hero.about}
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Get Involved", href: "/get-involved" },
-          { label: "Partner" },
+          { label: "Partners" },
         ]}
       />
 
-      <section className="py-16 sm:py-20">
+      <section className="py-20 sm:py-24">
         <Container>
           <SectionHeading
             title="Partnership Opportunities"
-            description="We welcome collaborations with businesses, schools, NGOs, and community leaders who share our commitment to empowering girls."
+            description="We welcome collaborations that expand talent discovery, research leadership, and STEM education excellence across Africa."
             align="center"
             className="mb-12"
           />
-          <ul className="grid gap-8 md:grid-cols-3">
+          <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {partnershipTypes.map((type) => {
               const Icon = type.icon;
               return (
                 <li
                   key={type.title}
-                  className="rounded-2xl border border-[#5B2C83]/10 bg-white p-6 text-center shadow-sm"
+                  className="rounded-2xl border border-navy/5 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
                 >
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#218C83]/10 text-[#218C83]">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-teal/10 text-teal">
                     <Icon className="h-7 w-7" aria-hidden="true" />
                   </div>
-                  <h3 className="mt-4 font-serif text-lg font-semibold text-[#252525]">
+                  <h3 className="mt-4 font-display text-lg font-semibold text-navy">
                     {type.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#252525]/70">
+                  <p className="mt-2 text-sm leading-relaxed text-navy/70">
                     {type.description}
                   </p>
                 </li>
@@ -83,25 +101,25 @@ export default function PartnerPage() {
         </Container>
       </section>
 
-      <section className="bg-[#FFF9F7] py-16 sm:py-20">
+      <PartnersSection
+        title="Partner Logo Cloud"
+        description="Illustrative institutional partners across universities, research centres, technology companies, and international organisations."
+      />
+
+      <section className="bg-light py-20 sm:py-24">
         <Container>
-          <div className="grid gap-12 lg:grid-cols-5">
-            <div className="lg:col-span-2">
-              <SectionHeading
-                title="Start a Conversation"
-                description="Tell us about your organization and how you'd like to partner. Our team will review your inquiry and respond within 5 business days."
-              />
-            </div>
-            <div className="lg:col-span-3">
-              <div className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">
-                <PartnerForm />
-              </div>
-            </div>
+          <div className="mx-auto max-w-2xl">
+            <SectionHeading
+              title="Start a Partnership Conversation"
+              description="Tell us about your organisation and how you'd like to collaborate with STEMNova."
+              align="center"
+              className="mb-10"
+            />
+            <PartnerForm />
           </div>
         </Container>
       </section>
 
-      <PartnersSection />
       <CtaSection />
     </>
   );

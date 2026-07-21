@@ -11,7 +11,7 @@ const statusStyles: Record<
 > = {
   active: {
     label: "Active",
-    className: "bg-[#218C83]/15 text-[#218C83]",
+    className: "bg-[#14B8A6]/15 text-[#14B8A6]",
   },
   upcoming: {
     label: "Upcoming",
@@ -19,7 +19,7 @@ const statusStyles: Record<
   },
   completed: {
     label: "Completed",
-    className: "bg-[#5B2C83]/15 text-[#5B2C83]",
+    className: "bg-[#0A2540]/15 text-[#0A2540]",
   },
 };
 
@@ -61,10 +61,10 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
       </div>
 
       <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-serif text-xl font-semibold text-[#252525]">
+        <h3 className="font-display text-xl font-semibold text-[#0A2540]">
           {project.title}
         </h3>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-[#252525]/70">
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-[#0A2540]/70">
           {project.shortDescription}
         </p>
 
@@ -81,7 +81,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
 
         <Link
           href={`/projects/${project.slug}`}
-          className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#5B2C83] transition-colors hover:text-[#4a2470] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B2C83] focus-visible:ring-offset-2 rounded"
+          className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#0A2540] transition-colors hover:text-[#0d3354] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2 rounded"
         >
           View project
           <ArrowRight className="h-4 w-4" aria-hidden="true" />

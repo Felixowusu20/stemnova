@@ -1,7 +1,7 @@
 import type { DonationRequest, PaymentIntent, PaymentStatus } from "@/types";
 
 /**
- * Mock payment service layer for Dr. Wynnie's Foundation.
+ * Mock payment service layer for STEMNova Foundation.
  *
  * IMPORTANT: This module NEVER confirms real payments.
  * All responses return pending or mock statuses for development and UI testing only.

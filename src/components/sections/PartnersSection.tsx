@@ -13,7 +13,7 @@ interface PartnersSectionProps {
 
 export function PartnersSection({
   title = "Our Partners & Supporters",
-  description = "Together with schools, community organizations, and corporate partners, we reach more girls with dignity-centered programs.",
+  description = "Universities, governments, technology companies, NGOs, and research institutions advancing Africa's STEM future with STEMNova.",
   className,
   showDisclaimer = true,
 }: PartnersSectionProps) {
@@ -36,7 +36,7 @@ export function PartnersSection({
         </ul>
 
         {showDisclaimer && (
-          <p className="mt-8 text-center text-xs text-[#252525]/50">
+          <p className="mt-8 text-center text-xs text-[#0A2540]/50">
             {PARTNERS_DISCLAIMER}
           </p>
         )}
