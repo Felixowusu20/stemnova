@@ -2,8 +2,8 @@ import { images } from "@/content/images";
 import type { ImpactData } from "@/types";
 
 /**
- * Impact data — ALL values are illustrative placeholders, not verified facts.
- * Replace with audited figures before public reporting.
+ * Impact data. All values are illustrative placeholders for now.
+ * Ready to be replaced by admin managed figures later.
  */
 export const impactData: ImpactData = {
   statistics: [
@@ -11,70 +11,70 @@ export const impactData: ImpactData = {
       label: "Students Empowered",
       value: 12400,
       suffix: "+",
-      note: "Illustrative cumulative reach across talent discovery, girls in STEM, and mentorship programmes",
+      note: "Across talent discovery, girls in STEM, and mentorship programmes",
       isIllustrative: true,
     },
     {
       label: "Schools Reached",
       value: 320,
       suffix: "",
-      note: "Illustrative count of partner schools across 18 African countries",
+      note: "Partner schools across African countries",
       isIllustrative: true,
     },
     {
       label: "Researchers Supported",
       value: 890,
       suffix: "+",
-      note: "Illustrative fellows and early-career researchers funded through fellowship programmes",
+      note: "Fellows and early career researchers",
       isIllustrative: true,
     },
     {
       label: "Women in STEM",
       value: 4800,
       suffix: "+",
-      note: "Illustrative girls and women participating in dedicated STEM pathways",
+      note: "Girls and women in dedicated STEM pathways",
       isIllustrative: true,
     },
     {
       label: "STEM Teachers Trained",
       value: 1250,
       suffix: "",
-      note: "Illustrative educators completing STEM Teachers Academy professional development",
+      note: "Educators from STEM Teachers Academy",
       isIllustrative: true,
     },
     {
       label: "Innovation Projects Funded",
       value: 145,
       suffix: "",
-      note: "Illustrative sustainable development and materials science innovation grants",
+      note: "Sustainable development and materials science grants",
       isIllustrative: true,
     },
     {
       label: "Research Publications",
       value: 78,
       suffix: "",
-      note: "Illustrative peer-reviewed publications co-authored by programme-supported researchers",
+      note: "Publications by programme supported researchers",
       isIllustrative: true,
     },
     {
       label: "Partner Institutions",
       value: 64,
       suffix: "",
-      note: "Illustrative universities, research centres, and government agencies in the STEMNova network",
+      note: "Universities, research centres, and agencies",
       isIllustrative: true,
     },
     {
       label: "Scholarships Awarded",
       value: 2100,
       suffix: "+",
-      note: "Illustrative scholarships supporting transitions to advanced STEM education",
+      note: "Support for advanced STEM education",
       isIllustrative: true,
     },
     {
       label: "African Countries Reached",
       value: 18,
       suffix: "",
-      note: "Illustrative countries with active programme delivery or fellowship placements",
+      note: "Countries with active programmes or fellowships",
       isIllustrative: true,
     },
   ],
@@ -84,115 +84,106 @@ export const impactData: ImpactData = {
       programSlug: "young-scholars-stem-discovery",
       programTitle: "Young Scholars STEM Discovery",
       percentage: 18,
-      description:
-        "Talent identification camps, research shadowing, and scholarship navigation for promising secondary and early university students.",
+      description: "Talent camps, research shadowing, and scholarship support.",
       isIllustrative: true,
     },
     {
       programSlug: "girls-discover-science",
       programTitle: "Girls Discover Science",
       percentage: 16,
-      description:
-        "Girls in STEM camps, women scientist role model networks, and targeted scholarship support.",
+      description: "Girls in STEM camps, role models, and scholarships.",
       isIllustrative: true,
     },
     {
       programSlug: "stem-teachers-academy",
       programTitle: "STEM Teachers Academy",
       percentage: 14,
-      description:
-        "Professional development institutes, classroom coaching, and teacher research circles.",
+      description: "Teacher training, coaching, and classroom practice.",
       isIllustrative: true,
     },
     {
       programSlug: "stemnova-mentorship-network",
       programTitle: "STEMNova Mentorship Network",
       percentage: 12,
-      description:
-        "Structured mentor-mentee matching, cohort workshops, and alumni mentorship pathways.",
+      description: "Mentor matching, workshops, and alumni pathways.",
       isIllustrative: true,
     },
     {
       programSlug: "young-african-researchers-fellowship",
       programTitle: "Young African Researchers Fellowship",
       percentage: 14,
-      description:
-        "Early-career research funding, publication support, and international collaboration access.",
+      description: "Research funding, publication support, and collaboration.",
       isIllustrative: true,
     },
     {
       programSlug: "african-stem-fellows",
       programTitle: "African STEM Fellows",
       percentage: 10,
-      description:
-        "Multi-year research leadership fellowships with laboratory placements and leadership intensives.",
+      description: "Research leadership fellowships and lab placements.",
       isIllustrative: true,
     },
     {
       programSlug: "innovation-sustainable-development",
       programTitle: "Innovation for Sustainable Development",
       percentage: 8,
-      description:
-        "Innovation challenge grants, social entrepreneurship bootcamps, and community co-design workshops.",
+      description: "Innovation grants and community focused projects.",
       isIllustrative: true,
     },
     {
       programSlug: "quantum-education-leaders",
       programTitle: "Quantum Education Leaders",
       percentage: 4,
-      description:
-        "Quantum science summer schools, curriculum development, and international lab partnerships.",
+      description: "Quantum schools, curriculum, and lab partnerships.",
       isIllustrative: true,
     },
     {
       programSlug: "materials-science-solid-state",
-      programTitle: "Materials Science & Solid-State Physics",
+      programTitle: "Materials Science and Solid State Physics",
       percentage: 4,
-      description:
-        "Research grants, shared laboratory access, and industry-academia collaboration.",
+      description: "Research grants and shared laboratory access.",
       isIllustrative: true,
     },
   ],
 
   locations: [
     {
-      name: "Accra & Greater Accra",
-      region: "West Africa — Ghana",
+      name: "Accra and Greater Accra",
+      region: "West Africa, Ghana",
       girlsReached: 1840,
       schoolsPartnered: 48,
       isIllustrative: true,
     },
     {
-      name: "Lagos & Abuja",
-      region: "West Africa — Nigeria",
+      name: "Lagos and Abuja",
+      region: "West Africa, Nigeria",
       girlsReached: 1620,
       schoolsPartnered: 42,
       isIllustrative: true,
     },
     {
-      name: "Nairobi & Central Kenya",
-      region: "East Africa — Kenya",
+      name: "Nairobi and Central Kenya",
+      region: "East Africa, Kenya",
       girlsReached: 980,
       schoolsPartnered: 28,
       isIllustrative: true,
     },
     {
-      name: "Kigali & Kigali Province",
-      region: "East Africa — Rwanda",
+      name: "Kigali and Kigali Province",
+      region: "East Africa, Rwanda",
       girlsReached: 720,
       schoolsPartnered: 18,
       isIllustrative: true,
     },
     {
-      name: "Cape Town & Western Cape",
-      region: "Southern Africa — South Africa",
+      name: "Cape Town and Western Cape",
+      region: "Southern Africa, South Africa",
       girlsReached: 890,
       schoolsPartnered: 32,
       isIllustrative: true,
     },
     {
-      name: "Dakar & Thiès",
-      region: "West Africa — Senegal",
+      name: "Dakar and Thiès",
+      region: "West Africa, Senegal",
       girlsReached: 540,
       schoolsPartnered: 16,
       isIllustrative: true,
@@ -204,7 +195,7 @@ export const impactData: ImpactData = {
       id: "ss-1",
       title: "From Rural School to Quantum Research Lab",
       summary:
-        "A Young Scholars alumna from a rural Ghanaian school progressed through mentorship and fellowship support to a quantum science research placement—an illustrative example of how structured pathways transform isolated talent into connected careers.",
+        "A Young Scholars graduate from a rural Ghanaian school moved through mentorship into a quantum science research placement.",
       programSlug: "young-scholars-stem-discovery",
       imageUrl: images.programmes.quantum,
       isIllustrative: true,
@@ -213,34 +204,34 @@ export const impactData: ImpactData = {
       id: "ss-2",
       title: "First Woman Faculty in Department History",
       summary:
-        "A Girls Discover Science participant became the first woman appointed to a faculty position in her university's physics department—illustrating how early intervention and sustained mentorship reshape institutional representation.",
+        "A Girls Discover Science participant became the first woman appointed to a faculty role in her university physics department.",
       programSlug: "girls-discover-science",
       imageUrl: images.programmes.girlsScience,
       isIllustrative: true,
     },
     {
       id: "ss-3",
-      title: "Teacher-Led Curriculum Innovation",
+      title: "Teacher Led Curriculum Innovation",
       summary:
-        "A STEM Teachers Academy graduate designed an inquiry-based physics module adopted across 12 partner schools—demonstrating how educator investment multiplies impact beyond individual classrooms.",
+        "A STEM Teachers Academy graduate designed a physics module now used across twelve partner schools.",
       programSlug: "stem-teachers-academy",
       imageUrl: images.programmes.teachers,
       isIllustrative: true,
     },
     {
       id: "ss-4",
-      title: "Solar Innovation Reaching 2,000 Households",
+      title: "Solar Innovation Reaching 2000 Households",
       summary:
-        "An Innovation for Sustainable Development grantee translated materials science research into affordable solar panels now deployed in underserved communities—an illustrative model of STEM-driven development impact.",
+        "An Innovation for Sustainable Development grantee turned materials research into affordable solar panels for underserved communities.",
       programSlug: "innovation-sustainable-development",
       imageUrl: images.programmes.innovation,
       isIllustrative: true,
     },
     {
       id: "ss-5",
-      title: "Publication in Nature Partner Journal",
+      title: "Publication in a Leading Science Journal",
       summary:
-        "A Young African Researchers Fellowship alumna published groundbreaking work on malaria diagnostics—illustrating the programme's capacity to catalyse world-class research from African laboratories.",
+        "A Young African Researchers Fellowship graduate published major work on malaria diagnostics from an African laboratory.",
       programSlug: "young-african-researchers-fellowship",
       imageUrl: images.programmes.researchers,
       isIllustrative: true,
@@ -252,19 +243,19 @@ export const impactData: ImpactData = {
       id: "ba-1",
       title: "STEM Career Aspiration",
       before:
-        "An illustrative 58% of surveyed secondary students in partner schools could not name a STEM career pathway available to them before programme enrollment.",
+        "About 58% of surveyed students could not name a STEM career path before joining.",
       after:
-        "After 12 months in Young Scholars and mentorship programmes, an illustrative 84% had identified specific STEM careers and set concrete education goals.",
+        "After one year, about 84% had clear STEM career goals and education plans.",
       programSlug: "young-scholars-stem-discovery",
       isIllustrative: true,
     },
     {
       id: "ba-2",
-      title: "Girls' STEM Course Enrollment",
+      title: "Girls STEM Course Enrollment",
       before:
-        "An illustrative 34% of girls in partner schools enrolled in advanced STEM courses at secondary level before Girls Discover Science intervention.",
+        "About 34% of girls in partner schools took advanced STEM courses before the programme.",
       after:
-        "After programme participation, an illustrative 72% of alumnae enrolled in or completed advanced STEM courses—more than doubling baseline persistence.",
+        "After joining, about 72% of alumnae enrolled in or completed advanced STEM courses.",
       programSlug: "girls-discover-science",
       isIllustrative: true,
     },
@@ -272,9 +263,9 @@ export const impactData: ImpactData = {
       id: "ba-3",
       title: "Researcher Retention",
       before:
-        "An illustrative 45% of early-career African researchers surveyed reported considering leaving research due to isolation and funding gaps.",
+        "About 45% of early career researchers considered leaving research due to limited support.",
       after:
-        "Among fellowship recipients, an illustrative 91% remained in research careers five years post-fellowship—with expanded publication records and international collaborations.",
+        "About 91% of fellowship recipients stayed in research careers five years later.",
       programSlug: "young-african-researchers-fellowship",
       isIllustrative: true,
     },
@@ -282,9 +273,9 @@ export const impactData: ImpactData = {
       id: "ba-4",
       title: "Classroom STEM Engagement",
       before:
-        "An illustrative baseline student engagement score of 52% in STEM classrooms at partner schools before teacher training.",
+        "Average student engagement in STEM classes was about 52% before teacher training.",
       after:
-        "After STEM Teachers Academy completion, an illustrative engagement score of 80%—a 28-percentage-point gain sustained over two academic terms.",
+        "After training, engagement rose to about 80% and held across two school terms.",
       programSlug: "stem-teachers-academy",
       isIllustrative: true,
     },
@@ -295,7 +286,7 @@ export const impactData: ImpactData = {
       year: 2025,
       title: "2025 Annual Impact Report",
       summary:
-        "Illustrative summary covering fellowship programme launches, continental expansion to 18 countries, and first independently reviewed impact metrics.",
+        "Fellowship launches, wider reach across Africa, and first reviewed impact metrics.",
       downloadUrl: "#",
       isIllustrative: true,
     },
@@ -303,7 +294,7 @@ export const impactData: ImpactData = {
       year: 2024,
       title: "2024 Founding Impact Report",
       summary:
-        "Illustrative document outlining STEMNova's establishment, pilot programme outcomes, and inaugural partnership network growth.",
+        "STEMNova establishment, pilot programme outcomes, and early partnership growth.",
       downloadUrl: "#",
       isIllustrative: true,
     },
@@ -314,47 +305,46 @@ export const impactData: ImpactData = {
       category: "Programme Delivery",
       percentage: 52,
       description:
-        "Direct costs for fellowships, scholarships, teacher training, talent discovery camps, and field programme staff.",
+        "Fellowships, scholarships, teacher training, talent camps, and field staff.",
       isIllustrative: true,
     },
     {
-      category: "Research & Innovation",
+      category: "Research and Innovation",
       percentage: 18,
       description:
-        "Research grants, laboratory access, innovation challenge funding, and publication support for fellows and researchers.",
+        "Research grants, lab access, innovation funding, and publication support.",
       isIllustrative: true,
     },
     {
-      category: "Partnership & Network Development",
+      category: "Partnerships and Networks",
       percentage: 12,
       description:
-        "University partnerships, international collaboration platforms, and mentorship network infrastructure.",
+        "University partnerships, collaboration platforms, and mentorship systems.",
       isIllustrative: true,
     },
     {
-      category: "Operations & Administration",
+      category: "Operations",
       percentage: 10,
       description:
-        "Essential administrative support, communications, and multi-country programme coordination.",
+        "Administration, communications, and multi country programme coordination.",
       isIllustrative: true,
     },
     {
-      category: "Monitoring & Evaluation",
+      category: "Monitoring and Evaluation",
       percentage: 5,
       description:
-        "Impact measurement, longitudinal tracking, and independent evaluation of programme outcomes.",
+        "Impact tracking and independent review of programme outcomes.",
       isIllustrative: true,
     },
     {
-      category: "Fundraising & Growth",
+      category: "Fundraising and Growth",
       percentage: 3,
       description:
-        "Donor stewardship and capacity building for sustainable institutional growth.",
+        "Donor stewardship and capacity for sustainable institutional growth.",
       isIllustrative: true,
     },
   ],
 };
 
-/** Disclaimer text for impact statistics display. */
 export const IMPACT_DATA_DISCLAIMER =
-  "All impact figures on this page are illustrative placeholders for website development. Verified statistics will be published following independent audit.";
+  "Figures on this page are illustrative for now. Verified statistics will be published after independent review.";

@@ -7,7 +7,7 @@ export const programs: Program[] = [
     slug: "young-scholars-stem-discovery",
     title: "Young Scholars STEM Discovery",
     shortDescription:
-      "A rigorous talent-discovery pathway identifying exceptional scientific potential in secondary schools and early university students across Africa.",
+      "Find and nurture exceptional STEM talent in secondary schools and early university across Africa.",
     intro:
       "Young Scholars STEM Discovery is STEMNova Foundation's flagship entry point for scientific talent identification. Through structured assessments, laboratory immersions, and mentorship introductions, we surface students whose curiosity, aptitude, and perseverance signal future research leadership—regardless of geography, gender, or socioeconomic background.",
     objectives: [
@@ -70,7 +70,7 @@ export const programs: Program[] = [
     slug: "stemnova-mentorship-network",
     title: "STEMNova Mentorship Network",
     shortDescription:
-      "A structured, continent-wide network connecting emerging African STEM talent with experienced researchers, industry leaders, and academic mentors.",
+      "Connect emerging African scientists with experienced mentors in research, academia, and industry.",
     intro:
       "The STEMNova Mentorship Network transforms isolated talent into connected careers. We match students and early-career researchers with mentors who share their discipline, context, and ambitions—creating relationships that endure through university transitions, fellowship applications, and first research appointments.",
     objectives: [
@@ -133,7 +133,7 @@ export const programs: Program[] = [
     slug: "african-stem-fellows",
     title: "African STEM Fellows",
     shortDescription:
-      "A prestigious fellowship developing the next generation of African research leaders through funded research placements, leadership training, and global collaboration.",
+      "Funded research placements and leadership training for Africa's next generation of research leaders.",
     intro:
       "African STEM Fellows is STEMNova's flagship research leadership programme. Selected fellows receive multi-year support—including research stipends, laboratory placements, publication coaching, and international conference access—designed to accelerate their trajectory toward independent research careers and institutional leadership.",
     objectives: [
@@ -196,7 +196,7 @@ export const programs: Program[] = [
     slug: "quantum-education-leaders",
     title: "Quantum Education Leaders",
     shortDescription:
-      "Building Africa's first structured pathways into quantum science education, research literacy, and leadership in an emerging frontier discipline.",
+      "Clear pathways into quantum science education and research for African learners and educators.",
     intro:
       "Quantum Education Leaders addresses a critical gap: while quantum science reshapes computing, sensing, and materials research globally, African institutions lack structured curricula, trained educators, and leadership pipelines in this discipline. STEMNova is building that infrastructure—one cohort at a time.",
     objectives: [
@@ -259,7 +259,7 @@ export const programs: Program[] = [
     slug: "materials-science-solid-state",
     title: "Materials Science & Solid-State Physics",
     shortDescription:
-      "Advancing research capacity in materials science and solid-state physics through fellowships, laboratory partnerships, and industry-academia collaboration.",
+      "Grow materials science capacity through fellowships, lab access, and university–industry partnerships.",
     intro:
       "From semiconductor innovation to sustainable energy materials, solid-state physics and materials science underpin Africa's technological future. This programme strengthens research capacity through funded projects, shared laboratory infrastructure, and mentorship connecting African researchers to global materials science communities.",
     objectives: [
@@ -322,7 +322,7 @@ export const programs: Program[] = [
     slug: "girls-discover-science",
     title: "Girls Discover Science",
     shortDescription:
-      "Expanding opportunities for girls and young women in STEM through dedicated programmes, role models, and inclusive pathways into research and innovation.",
+      "Open STEM pathways for girls and young women with dedicated programmes and strong role models.",
     intro:
       "Girls Discover Science confronts one of STEM's most persistent challenges: the underrepresentation of women across scientific careers in Africa. Through girls-only STEM camps, women scientist role model networks, and targeted scholarship support, we create environments where girls build confidence, explore frontier science, and envision research careers without limitation.",
     objectives: [
@@ -385,7 +385,7 @@ export const programs: Program[] = [
     slug: "stem-teachers-academy",
     title: "STEM Teachers Academy",
     shortDescription:
-      "Equipping educators with contemporary pedagogical methods, digital competencies, and research-informed practices for 21st-century STEM teaching.",
+      "Train educators in modern STEM teaching methods and practical digital classroom skills.",
     intro:
       "Teachers are the gatekeepers of scientific talent—and Africa's educators need modern tools to match a rapidly evolving STEM landscape. The STEM Teachers Academy delivers professional development that transforms classroom practice, from inquiry-based learning and computational thinking to frontier science literacy and inclusive pedagogy.",
     objectives: [
@@ -448,7 +448,7 @@ export const programs: Program[] = [
     slug: "young-african-researchers-fellowship",
     title: "Young African Researchers Fellowship",
     shortDescription:
-      "Supporting emerging researchers with funding, mentorship, and international collaboration opportunities essential for world-class scientific careers.",
+      "Support emerging researchers with funding, mentorship, and international collaboration.",
     intro:
       "The Young African Researchers Fellowship bridges the gap between graduate training and independent research careers. Fellows receive research funding, dedicated mentorship, publication support, and access to international collaborations—addressing the isolation and resource constraints that cause talented African researchers to leave science or emigrate without building continental capacity.",
     objectives: [
@@ -511,7 +511,7 @@ export const programs: Program[] = [
     slug: "innovation-sustainable-development",
     title: "Innovation for Sustainable Development",
     shortDescription:
-      "Connecting STEM talent to Africa's most pressing challenges—climate, energy, agriculture, and health—through funded innovation projects and social enterprise pathways.",
+      "Fund STEM solutions for climate, energy, agriculture, and health challenges across Africa.",
     intro:
       "Innovation for Sustainable Development channels scientific talent toward problems that matter. We fund and mentor STEM innovation projects addressing climate resilience, renewable energy, agricultural productivity, and public health—building a generation of scientist-innovators who translate research into community impact.",
     objectives: [

@@ -5,7 +5,7 @@ export const testimonials: Testimonial[] = [
   {
     id: "t-student-1",
     quote:
-      "Young Scholars showed me that research wasn't something that happened only in Europe or America. Meeting African scientists who looked like me and came from schools like mine changed everything about what I thought was possible.",
+      "Young Scholars showed me that research was not something that happened only in Europe or America. Meeting African scientists who looked like me and came from schools like mine changed everything about what I thought was possible.",
     author: "Abena Osei",
     role: "Student",
     organization: "Young Scholars Alumna, University of Ghana",
@@ -16,7 +16,7 @@ export const testimonials: Testimonial[] = [
   {
     id: "t-student-2",
     quote:
-      "Girls Discover Science gave me a community of girls who love physics as much as I do. For the first time, I wasn't the only girl in the room asking questions about quantum mechanics.",
+      "Girls Discover Science gave me a community of girls who love physics as much as I do. For the first time, I was not the only girl in the room asking questions about quantum mechanics.",
     author: "Efua Mensah",
     role: "Student",
     organization: "Girls Discover Science Participant, Accra",
@@ -27,7 +27,7 @@ export const testimonials: Testimonial[] = [
   {
     id: "t-teacher-1",
     quote:
-      "The STEM Teachers Academy didn't just give me new activities—it changed how I think about teaching science. My students are asking better questions, and so am I.",
+      "The STEM Teachers Academy did not just give me new activities. It changed how I think about teaching science. My students are asking better questions, and so am I.",
     author: "Mr. Kofi Darko",
     role: "STEM Teacher",
     organization: "STEM Teachers Academy Graduate, Kumasi",

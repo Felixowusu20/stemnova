@@ -67,9 +67,12 @@ export function EventCountdown({ event, className }: EventCountdownProps) {
 
   return (
     <div className={cn("space-y-4", className)}>
-      <p className="text-sm font-medium uppercase tracking-wider text-white/80">
-        Countdown to {event.title}
-      </p>
+      <div>
+        <p className="text-sm font-medium uppercase tracking-wider text-white/80">
+          Starts in
+        </p>
+        <p className="mt-1 text-xs text-white/50">Illustrative schedule</p>
+      </div>
       <div
         className="grid grid-cols-4 gap-2 sm:gap-4"
         role="timer"
@@ -81,6 +84,24 @@ export function EventCountdown({ event, className }: EventCountdownProps) {
         <CountdownUnit value={timeLeft.minutes} label="Mins" />
         <CountdownUnit value={timeLeft.seconds} label="Secs" />
       </div>
+      <dl className="grid gap-2 border-t border-white/15 pt-4 text-sm text-white/80 sm:grid-cols-2">
+        <div>
+          <dt className="text-xs uppercase tracking-wider text-white/50">Date</dt>
+          <dd className="mt-0.5 font-medium text-white">
+            <time dateTime={event.date}>
+              {new Date(event.date).toLocaleDateString("en-GH", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </time>
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs uppercase tracking-wider text-white/50">Time</dt>
+          <dd className="mt-0.5 font-medium text-white">{event.time}</dd>
+        </div>
+      </dl>
     </div>
   );
 }

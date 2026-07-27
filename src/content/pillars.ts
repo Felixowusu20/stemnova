@@ -9,37 +9,32 @@ import type {
 export const challenges: Challenge[] = [
   {
     id: "undiscovered-talent",
-    title: "Undiscovered STEM Talent",
-    description:
-      "Promising scientific minds across African schools and universities often go unnoticed—without pathways to identification, mentorship, or advanced opportunity.",
+    title: "Undiscovered Talent",
+    description: "Promising STEM minds go unnoticed without clear pathways.",
     icon: "search",
   },
   {
     id: "women-underrepresentation",
-    title: "Girls Underrepresented in STEM",
-    description:
-      "Women and girls remain significantly underrepresented in STEM careers across Africa, limiting the diversity of scientific leadership and innovation.",
+    title: "Girls Left Behind",
+    description: "Girls remain underrepresented in STEM careers across Africa.",
     icon: "venus",
   },
   {
     id: "teacher-skills",
-    title: "Teachers Need Modern Skills",
-    description:
-      "Educators need contemporary pedagogical methods and digital competencies to prepare students for frontier science and a rapidly evolving STEM landscape.",
+    title: "Teacher Gaps",
+    description: "Educators need modern methods and digital classroom skills.",
     icon: "book",
   },
   {
     id: "quantum-pathways",
-    title: "Missing Quantum Pathways",
-    description:
-      "Emerging disciplines such as Quantum Science lack structured educational pathways, curricula, and leadership pipelines across the continent.",
+    title: "Missing Pathways",
+    description: "Frontier fields like quantum lack structured learning routes.",
     icon: "atom",
   },
   {
     id: "research-isolation",
-    title: "Limited Research Support",
-    description:
-      "Many young African researchers lack mentorship, funding, and international collaboration opportunities essential for world-class scientific careers.",
+    title: "Isolated Researchers",
+    description: "Young researchers lack mentorship, funding, and collaboration.",
     icon: "network",
   },
 ];
@@ -48,50 +43,43 @@ export const strategicPillars: StrategicPillar[] = [
   {
     id: "discovering-talent",
     title: "Discovering STEM Talent",
-    description:
-      "Identifying exceptional scientific potential in schools and universities through rigorous, equitable discovery programmes.",
+    description: "Find exceptional scientific potential in schools and universities.",
     icon: "sparkles",
   },
   {
     id: "scientific-leadership",
     title: "Building Scientific Leadership",
-    description:
-      "Developing structured pathways from early talent to research leadership through fellowships, mentorship, and training.",
+    description: "Grow talent into research leaders through fellowships and mentorship.",
     icon: "award",
   },
   {
     id: "world-class-researchers",
     title: "Producing World-Class Researchers",
-    description:
-      "Equipping African scholars with the skills, networks, and resources to contribute at the highest levels of global science.",
+    description: "Equip scholars with skills, networks, and resources for global science.",
     icon: "microscope",
   },
   {
     id: "women-in-stem",
     title: "Increasing Women in STEM",
-    description:
-      "Expanding opportunities for girls and women through dedicated initiatives, role models, and inclusive programme design.",
+    description: "Expand opportunities for girls and women across STEM pathways.",
     icon: "venus",
   },
   {
     id: "quantum-education",
     title: "Advancing Quantum Education",
-    description:
-      "Building Africa's first structured pathways into quantum science education, research, and leadership.",
+    description: "Build clear pathways into quantum science education and research.",
     icon: "atom",
   },
   {
     id: "stem-policy",
-    title: "Influencing STEM Education Policy",
-    description:
-      "Shaping national and regional STEM education policy through evidence-based innovation and institutional partnerships.",
+    title: "Influencing STEM Policy",
+    description: "Shape STEM education policy through evidence and partnerships.",
     icon: "policy",
   },
   {
     id: "global-networks",
     title: "Connecting Researchers Globally",
-    description:
-      "Linking African researchers to international collaborators, labs, publications, and frontier research communities.",
+    description: "Link African researchers to international labs and collaborators.",
     icon: "globe",
   },
 ];
@@ -101,56 +89,56 @@ export const researchAreas: ResearchArea[] = [
     id: "quantum",
     title: "Quantum Science",
     description:
-      "Building foundational literacy and research capacity in quantum computing, quantum sensing, and quantum materials.",
+      "Build research capacity in quantum computing, sensing, and materials.",
     icon: "atom",
   },
   {
     id: "ai",
     title: "Artificial Intelligence",
     description:
-      "Advancing responsible AI research with African contexts—from machine learning applications to ethical frameworks.",
+      "Advance responsible AI research shaped by African contexts and needs.",
     icon: "brain",
   },
   {
     id: "computational",
     title: "Computational Science",
     description:
-      "Strengthening computational modelling, simulation, and data science skills for frontier research challenges.",
+      "Strengthen modelling, simulation, and data science for frontier research.",
     icon: "cpu",
   },
   {
     id: "materials",
     title: "Materials Science",
     description:
-      "Supporting research in solid-state physics, advanced materials, and sustainable materials innovation.",
+      "Support solid state physics, advanced materials, and sustainable innovation.",
     icon: "flask",
   },
   {
     id: "robotics",
     title: "Robotics",
     description:
-      "Fostering robotics education and applied research for industry, healthcare, and sustainable development.",
+      "Grow robotics education and applied research for industry and health.",
     icon: "bot",
   },
   {
     id: "sustainable",
     title: "Sustainable Development",
     description:
-      "Connecting STEM talent to climate, energy, agriculture, and health challenges facing African communities.",
+      "Connect STEM talent to climate, energy, agriculture, and health priorities.",
     icon: "leaf",
   },
   {
     id: "publications",
     title: "Scientific Publications",
     description:
-      "Supporting high-quality research output, open science practices, and African authorship in global journals.",
+      "Support strong research output and African authorship in global journals.",
     icon: "file",
   },
   {
     id: "networks",
     title: "Collaborative Research Networks",
     description:
-      "Building lasting partnerships between African institutions and leading global research centres.",
+      "Build lasting partnerships between African and global research centres.",
     icon: "network",
   },
 ];
@@ -159,57 +147,53 @@ export const roadmapPhases: RoadmapPhase[] = [
   {
     id: "phase-1",
     phase: 1,
-    title: "Foundation & Proof of Concept",
+    title: "Foundation",
     timeframe: "Years 1–2",
     description:
-      "Establish institutional foundations, pilot flagship programmes, and demonstrate measurable impact in priority regions.",
+      "Build the organisation, pilot first programmes, and form early partnerships.",
     milestones: [
-      "Launch Young Scholars and Girls Discover Science pilots",
-      "Recruit founding mentors and advisory committees",
-      "Secure seed partnerships with universities",
-      "Publish first impact baseline report",
+      "Launch first talent and girls-in-STEM pilots",
+      "Recruit founding mentors and advisors",
+      "Secure university partnerships",
     ],
   },
   {
     id: "phase-2",
     phase: 2,
-    title: "Consolidation & Expansion",
+    title: "Expansion",
     timeframe: "Years 3–4",
     description:
-      "Scale proven programmes nationally, deepen research fellowships, and expand teacher and mentorship networks.",
+      "Grow proven programmes and deepen fellowships and mentorship networks.",
     milestones: [
-      "Scale STEM Teachers Academy nationally",
-      "Launch African STEM Fellows cohort model",
-      "Introduce Quantum Education pathways",
-      "Grow partner institution network to 25+",
+      "Scale teacher development programmes",
+      "Launch fellowship cohorts",
+      "Open quantum education pathways",
     ],
   },
   {
     id: "phase-3",
     phase: 3,
-    title: "National & Regional Growth",
+    title: "Regional Growth",
     timeframe: "Years 5–7",
     description:
-      "Extend programmes across West, East, and Southern Africa while influencing STEM education policy.",
+      "Extend programmes across more African regions and strengthen policy engagement.",
     milestones: [
-      "Operate programmes in 15+ African countries",
-      "Establish regional innovation hubs",
-      "Influence national STEM curriculum frameworks",
-      "Launch multi-country research collaborations",
+      "Reach more African countries",
+      "Build regional partnership hubs",
+      "Support STEM education frameworks",
     ],
   },
   {
     id: "phase-4",
     phase: 4,
-    title: "Institutional Maturity",
+    title: "Institutional Strength",
     timeframe: "Years 8–10+",
     description:
-      "Cement STEMNova as Africa's premier institution for scientific talent discovery and research leadership.",
+      "Establish STEMNova as a lasting African institution for STEM talent development.",
     milestones: [
-      "Achieve continental recognition as STEM talent institution",
-      "Sustain endowment for fellowships and research",
-      "Produce globally competitive research leaders",
-      "Shape pan-African STEM excellence standards",
+      "Sustain long-term fellowship support",
+      "Grow a strong alumni network",
+      "Set clear standards for STEM excellence",
     ],
   },
 ];
@@ -220,7 +204,7 @@ export const getInvolvedOptions: GetInvolvedOption[] = [
     title: "Become a Mentor",
     description:
       "Guide emerging African STEM talent through structured mentorship across research, academia, and industry.",
-    href: "/get-involved#mentor",
+    href: "/mentor",
     icon: "mentor",
     cta: "Join the Network",
   },
@@ -237,7 +221,7 @@ export const getInvolvedOptions: GetInvolvedOption[] = [
     id: "partner",
     title: "Partner with STEMNova",
     description:
-      "Universities, governments, and organisations can co-create programmes that advance Africa's scientific future.",
+      "Universities, governments, and organisations can create programmes together that advance Africa's scientific future.",
     href: "/partner",
     icon: "partner",
     cta: "Explore Partnerships",
@@ -246,8 +230,8 @@ export const getInvolvedOptions: GetInvolvedOption[] = [
     id: "sponsor",
     title: "Sponsor a Programme",
     description:
-      "Fund a flagship initiative—from girls in science to quantum education—and multiply your institutional impact.",
-    href: "/partner",
+      "Fund a flagship initiative from girls in science to quantum education and multiply your institutional impact.",
+    href: "/sponsor",
     icon: "sponsor",
     cta: "Sponsor Now",
   },
@@ -265,17 +249,8 @@ export const getInvolvedOptions: GetInvolvedOption[] = [
     title: "Apply for Fellowships",
     description:
       "Join African STEM Fellows or Young African Researchers Fellowship and accelerate your research career.",
-    href: "/programs",
+    href: "/fellowships",
     icon: "fellowship",
     cta: "View Fellowships",
-  },
-  {
-    id: "research",
-    title: "Join Research Projects",
-    description:
-      "Collaborate on frontier research in quantum science, AI, materials, robotics, and sustainable development.",
-    href: "/research",
-    icon: "research",
-    cta: "Explore Research",
   },
 ];

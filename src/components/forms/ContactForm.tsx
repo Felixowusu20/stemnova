@@ -1,20 +1,21 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CheckCircle2, Loader2 } from "lucide-react";
+import { ApplicationFormShell } from "@/components/forms/ApplicationFormShell";
+import {
+  formHintClass,
+  formInputClass,
+  formLabelClass,
+} from "@/components/forms/formStyles";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 interface ContactFormProps {
   className?: string;
 }
 
 type FormStatus = "idle" | "loading" | "success" | "error";
-
-const inputClass =
-  "w-full rounded-xl border border-[#0A2540]/20 bg-white px-4 py-2.5 text-sm text-[#0A2540] placeholder:text-[#0A2540]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2";
-
-const labelClass = "mb-1.5 block text-sm font-medium text-[#0A2540]";
 
 export function ContactForm({ className }: ContactFormProps) {
   const [status, setStatus] = useState<FormStatus>("idle");
@@ -45,7 +46,7 @@ export function ContactForm({ className }: ContactFormProps) {
 
     setStatus("loading");
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 700));
       setStatus("success");
       setForm({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch {
@@ -55,100 +56,153 @@ export function ContactForm({ className }: ContactFormProps) {
 
   if (status === "success") {
     return (
-      <div
-        className={cn(
-          "rounded-2xl bg-[#14B8A6]/10 p-6 text-center",
-          className
-        )}
-        role="status"
-      >
-        <p className="font-semibold text-[#14B8A6]">
-          Thank you, we received your message.
-        </p>
-        <p className="mt-2 text-sm text-[#0A2540]/70">
-          Our team will respond within 2 business days.
-        </p>
-        <Button
-          variant="outline"
-          className="mt-4"
-          onClick={() => setStatus("idle")}
-        >
-          Send another message
-        </Button>
-      </div>
+      <ApplicationFormShell className={className} showNotice={false}>
+        <div className="py-4 text-center" role="status">
+          <CheckCircle2
+            className="mx-auto h-9 w-9 text-teal"
+            aria-hidden="true"
+          />
+          <p className="mt-3 font-display text-xl font-semibold text-navy">
+            Message sent
+          </p>
+          <p className="mt-2 text-sm text-navy/70">
+            Thanks. We will get back to you soon.
+          </p>
+          <Button
+            variant="outline"
+            className="mt-4"
+            onClick={() => setStatus("idle")}
+          >
+            Send another
+          </Button>
+        </div>
+      </ApplicationFormShell>
     );
   }
 
-  const field = (
-    id: keyof typeof form,
-    label: string,
-    type = "text",
-    required = false
-  ) => (
-    <div>
-      <label htmlFor={id} className={labelClass}>
-        {label}
-        {required && <span className="text-[#14B8A6]"> *</span>}
-      </label>
-      {id === "message" ? (
-        <textarea
-          id={id}
-          rows={5}
-          value={form[id]}
-          onChange={(e) => setForm((f) => ({ ...f, [id]: e.target.value }))}
-          className={cn(inputClass, "resize-y")}
-          disabled={status === "loading"}
-          aria-invalid={errors[id] ? "true" : undefined}
-          aria-describedby={errors[id] ? `${id}-error` : undefined}
-        />
-      ) : (
-        <input
-          id={id}
-          type={type}
-          value={form[id]}
-          onChange={(e) => setForm((f) => ({ ...f, [id]: e.target.value }))}
-          className={inputClass}
-          disabled={status === "loading"}
-          aria-invalid={errors[id] ? "true" : undefined}
-          aria-describedby={errors[id] ? `${id}-error` : undefined}
-        />
-      )}
-      {errors[id] && (
-        <p id={`${id}-error`} className="mt-1 text-xs text-[#14B8A6]" role="alert">
-          {errors[id]}
-        </p>
-      )}
-    </div>
-  );
-
   return (
-    <form onSubmit={handleSubmit} className={cn("space-y-5", className)} noValidate>
-      <div className="grid gap-5 sm:grid-cols-2">
-        {field("name", "Full name", "text", true)}
-        {field("email", "Email", "email", true)}
-      </div>
-      <div className="grid gap-5 sm:grid-cols-2">
-        {field("phone", "Phone (optional)", "tel")}
-        {field("subject", "Subject", "text", true)}
-      </div>
-      {field("message", "Message", "textarea", true)}
+    <ApplicationFormShell className={className} showNotice={false}>
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="contact-name" className={formLabelClass}>
+              Full name <span className="text-teal">*</span>
+            </label>
+            <input
+              id="contact-name"
+              type="text"
+              value={form.name}
+              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.name ? "true" : undefined}
+            />
+            {errors.name && (
+              <p className={formHintClass} role="alert">
+                {errors.name}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="contact-email" className={formLabelClass}>
+              Email <span className="text-teal">*</span>
+            </label>
+            <input
+              id="contact-email"
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.email ? "true" : undefined}
+            />
+            {errors.email && (
+              <p className={formHintClass} role="alert">
+                {errors.email}
+              </p>
+            )}
+          </div>
+        </div>
 
-      {status === "error" && (
-        <p className="text-sm text-[#14B8A6]" role="alert">
-          Something went wrong. Please try again.
-        </p>
-      )}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="contact-phone" className={formLabelClass}>
+              Phone
+            </label>
+            <input
+              id="contact-phone"
+              type="tel"
+              value={form.phone}
+              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+              className={formInputClass}
+              disabled={status === "loading"}
+            />
+          </div>
+          <div>
+            <label htmlFor="contact-subject" className={formLabelClass}>
+              Subject <span className="text-teal">*</span>
+            </label>
+            <input
+              id="contact-subject"
+              type="text"
+              value={form.subject}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, subject: e.target.value }))
+              }
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.subject ? "true" : undefined}
+            />
+            {errors.subject && (
+              <p className={formHintClass} role="alert">
+                {errors.subject}
+              </p>
+            )}
+          </div>
+        </div>
 
-      <Button type="submit" fullWidth disabled={status === "loading"}>
-        {status === "loading" ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" aria-hidden="true" />
-            Sending…
-          </>
-        ) : (
-          "Send Message"
+        <div>
+          <label htmlFor="contact-message" className={formLabelClass}>
+            Message <span className="text-teal">*</span>
+          </label>
+          <textarea
+            id="contact-message"
+            rows={4}
+            value={form.message}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, message: e.target.value }))
+            }
+            className={cn(formInputClass, "resize-y")}
+            disabled={status === "loading"}
+            aria-invalid={errors.message ? "true" : undefined}
+          />
+          {errors.message && (
+            <p className={formHintClass} role="alert">
+              {errors.message}
+            </p>
+          )}
+        </div>
+
+        {status === "error" && (
+          <p className="text-sm text-teal" role="alert">
+            Something went wrong. Please try again.
+          </p>
         )}
-      </Button>
-    </form>
+
+        <Button type="submit" fullWidth size="lg" disabled={status === "loading"}>
+          {status === "loading" ? (
+            <>
+              <Loader2
+                className="h-4 w-4 animate-spin motion-reduce:animate-none"
+                aria-hidden="true"
+              />
+              Sending…
+            </>
+          ) : (
+            "Send message"
+          )}
+        </Button>
+      </form>
+    </ApplicationFormShell>
   );
 }

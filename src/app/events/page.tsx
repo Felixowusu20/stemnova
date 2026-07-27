@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/ui/PageHero";
+import Link from "next/link";
 import { EventsPageContent } from "@/components/events/EventsPageContent";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Container } from "@/components/ui/Container";
 import { getUpcomingEvents, getPastEvents } from "@/content";
 import { images } from "@/content/images";
 import { getEventSchema } from "@/lib/seo-schemas";
@@ -14,11 +15,11 @@ const past = getPastEvents();
 export const metadata: Metadata = {
   title: "Events",
   description:
-    "Discover STEMNova conferences, STEM camps, hackathons, workshops, research symposiums, innovation challenges, and mentorship sessions across Africa.",
+    "Discover STEMNova conferences, STEM camps, workshops, and research gatherings across Africa.",
   openGraph: {
     title: "Events | STEMNova Foundation",
     description:
-      "Register for STEMNova conferences, camps, hackathons, workshops, and research symposiums.",
+      "Explore STEMNova conferences, camps, workshops, and research gatherings across Africa.",
     url: `${siteUrl}/events`,
     images: [{ url: images.hero.events, width: 1200, height: 630 }],
   },
@@ -35,12 +36,24 @@ export default function EventsPage() {
   return (
     <>
       <JsonLd data={eventSchemas} />
-      <PageHero
-        title="Events"
-        description="Conferences, STEM camps, hackathons, workshops, research symposiums, innovation challenges, and mentorship sessions. Event listings are illustrative until officially confirmed."
-        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Events" }]}
-        backgroundImage={images.hero.events}
-      />
+      <section className="bg-light pt-4 pb-2 sm:pt-6">
+        <Container>
+          <nav className="mb-3 text-sm text-navy/55" aria-label="Breadcrumb">
+            <ol className="flex flex-wrap items-center gap-1.5">
+              <li>
+                <Link href="/" className="hover:text-navy">
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li className="font-medium text-navy">Events</li>
+            </ol>
+          </nav>
+          <h1 className="font-display text-2xl font-bold text-navy sm:text-3xl">
+            Events
+          </h1>
+        </Container>
+      </section>
       <EventsPageContent upcoming={upcoming} past={past} />
     </>
   );

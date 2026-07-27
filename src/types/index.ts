@@ -163,7 +163,7 @@ export interface GetInvolvedOption {
   title: string;
   description: string;
   href: string;
-  icon: "mentor" | "volunteer" | "partner" | "sponsor" | "donate" | "fellowship" | "research";
+  icon: "mentor" | "volunteer" | "partner" | "sponsor" | "donate" | "fellowship";
   cta: string;
 }
 
@@ -267,9 +267,13 @@ export interface ImpactData {
 
 export interface TeamMember {
   id: string;
+  slug: string;
   name: string;
   role: string;
   bio: string;
+  fullBio: string[];
+  focusAreas: string[];
+  highlights: string[];
   imageUrl: string;
   email?: string;
   linkedin?: string;
@@ -313,6 +317,12 @@ export interface Event {
   time: string;
   location: string;
   description: string;
+  /** Longer overview shown on the event detail page. */
+  about: string;
+  /** Who the event is for. */
+  audience: string;
+  highlights: string[];
+  agenda: { time: string; title: string }[];
   registrationRequired: boolean;
   registrationUrl?: string;
   imageUrl: string;

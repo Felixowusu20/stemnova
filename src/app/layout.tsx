@@ -50,11 +50,24 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     title: siteConfig.name,
     description: siteConfig.description,
+    images: [
+      {
+        url: "/images/stemnova-logo.jpg",
+        width: 1024,
+        height: 1024,
+        alt: siteConfig.name,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
+    images: ["/images/stemnova-logo.jpg"],
+  },
+  icons: {
+    icon: "/images/stemnova-logo.jpg",
+    apple: "/images/stemnova-logo.jpg",
   },
   robots: {
     index: true,

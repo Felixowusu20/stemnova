@@ -20,6 +20,7 @@ export { Lightbox } from "@/components/ui/Lightbox";
 export { CampaignProgress } from "@/components/ui/CampaignProgress";
 export { ImpactCounter } from "@/components/ui/ImpactCounter";
 export { Container } from "@/components/ui/Container";
+export { SiteLogo } from "@/components/ui/SiteLogo";
 
 // Cards
 export { ProgramCard } from "@/components/cards/ProgramCard";
@@ -32,6 +33,11 @@ export { ResourceCard } from "@/components/cards/ResourceCard";
 export { PartnerLogo } from "@/components/cards/PartnerLogo";
 
 // Sections
+export { HeroCarousel } from "@/components/sections/HeroCarousel";
+export { ChallengesCycle } from "@/components/sections/ChallengesCycle";
+export { PillarsTree } from "@/components/sections/PillarsTree";
+export { ImpactHighlights } from "@/components/sections/ImpactHighlights";
+export { ResearchNichesMap } from "@/components/sections/ResearchNichesMap";
 export { CtaSection } from "@/components/sections/CtaSection";
 export { PartnersSection } from "@/components/sections/PartnersSection";
 export { TestimonialsSection } from "@/components/sections/TestimonialsSection";
@@ -46,4 +52,8 @@ export { ContactForm } from "@/components/forms/ContactForm";
 export { VolunteerForm } from "@/components/forms/VolunteerForm";
 export { PartnerForm } from "@/components/forms/PartnerForm";
 export { DonationForm } from "@/components/forms/DonationForm";
+export { MentorForm } from "@/components/forms/MentorForm";
+export { SponsorForm } from "@/components/forms/SponsorForm";
+export { FellowshipForm } from "@/components/forms/FellowshipForm";
 export { EventRegistrationForm } from "@/components/forms/EventRegistrationForm";
+export { TestimonialShareForm } from "@/components/forms/TestimonialShareForm";

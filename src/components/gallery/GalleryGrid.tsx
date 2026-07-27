@@ -9,12 +9,12 @@ import type { GalleryImage } from "@/types";
 
 interface GalleryGridProps {
   className?: string;
+  /** When set, show only this album and hide filter chips. */
+  albumSlug?: string;
 }
 
-type FilterOption = "all" | string;
-
-export function GalleryGrid({ className }: GalleryGridProps) {
-  const [filter, setFilter] = useState<FilterOption>("all");
+export function GalleryGrid({ className, albumSlug }: GalleryGridProps) {
+  const [filter, setFilter] = useState<string>(albumSlug ?? "all");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -31,49 +31,54 @@ export function GalleryGrid({ className }: GalleryGridProps) {
       []
     );
 
-  const filteredImages =
-    filter === "all"
-      ? allImages
-      : allImages.filter((img) => img.albumSlug === filter);
+  const filteredImages = useMemo(() => {
+    if (albumSlug) {
+      return allImages.filter((img) => img.albumSlug === albumSlug);
+    }
+    if (filter === "all") return allImages;
+    return allImages.filter((img) => img.albumSlug === filter);
+  }, [allImages, albumSlug, filter]);
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
     setLightboxOpen(true);
   };
 
-  const filters: { value: FilterOption; label: string }[] = [
+  const filters = [
     { value: "all", label: "All" },
     ...galleryAlbums.map((a) => ({ value: a.slug, label: a.title })),
   ];
 
   return (
     <div className={cn("space-y-8", className)}>
-      <div
-        className="flex flex-wrap gap-2"
-        role="group"
-        aria-label="Filter gallery albums"
-      >
-        {filters.map((f) => (
-          <button
-            key={f.value}
-            type="button"
-            onClick={() => setFilter(f.value)}
-            aria-pressed={filter === f.value}
-            className={cn(
-              "rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2",
-              filter === f.value
-                ? "bg-[#0A2540] text-white"
-                : "bg-[#0A2540]/10 text-[#0A2540] hover:bg-[#0A2540]/20"
-            )}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
+      {!albumSlug && (
+        <div
+          className="flex flex-wrap gap-2"
+          role="group"
+          aria-label="Filter gallery albums"
+        >
+          {filters.map((f) => (
+            <button
+              key={f.value}
+              type="button"
+              onClick={() => setFilter(f.value)}
+              aria-pressed={filter === f.value}
+              className={cn(
+                "rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2",
+                filter === f.value
+                  ? "bg-navy text-white"
+                  : "bg-navy/10 text-navy hover:bg-navy/20"
+              )}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {filteredImages.length === 0 ? (
-        <p className="py-12 text-center text-[#0A2540]/60">
-          No images found for this album.
+        <p className="py-12 text-center text-navy/60">
+          No images found for this album yet.
         </p>
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4">
@@ -82,7 +87,7 @@ export function GalleryGrid({ className }: GalleryGridProps) {
               <button
                 type="button"
                 onClick={() => openLightbox(index)}
-                className="group relative aspect-square w-full overflow-hidden rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
+                className="group relative aspect-square w-full overflow-hidden rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
                 aria-label={`View image: ${image.alt}`}
               >
                 <Image
@@ -93,7 +98,7 @@ export function GalleryGrid({ className }: GalleryGridProps) {
                   sizes="(max-width: 768px) 50vw, 25vw"
                 />
                 <div
-                  className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0A2540]/70 to-transparent p-3 opacity-0 motion-safe:transition-opacity motion-safe:group-hover:opacity-100"
+                  className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy/70 to-transparent p-3 opacity-0 motion-safe:transition-opacity motion-safe:group-hover:opacity-100"
                   aria-hidden="true"
                 >
                   <p className="truncate text-xs text-white">{image.caption}</p>

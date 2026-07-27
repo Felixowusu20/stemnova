@@ -4,7 +4,6 @@ import {
   ArrowRight,
   Award,
   Building2,
-  FlaskConical,
   GraduationCap,
   HandHeart,
   Heart,
@@ -22,7 +21,7 @@ import { getInvolvedOptions, images } from "@/content";
 export const metadata: Metadata = {
   title: "Get Involved",
   description:
-    "Join STEMNova Foundation — become a mentor, volunteer, partner, sponsor a programme, donate, apply for fellowships, or join research projects.",
+    "Join STEMNova Foundation as a mentor, volunteer, partner, sponsor, donor, or fellowship applicant.",
 };
 
 const optionIcons = {
@@ -32,7 +31,6 @@ const optionIcons = {
   sponsor: Award,
   donate: Heart,
   fellowship: GraduationCap,
-  research: FlaskConical,
 } as const;
 
 export default function GetInvolvedPage() {
@@ -40,7 +38,7 @@ export default function GetInvolvedPage() {
     <>
       <PageHero
         title="Get Involved"
-        description="Every contribution—mentorship, partnership, volunteering, or funding—helps discover talent and build Africa's next generation of scientific leaders."
+        description="Every contribution, from mentorship and partnership to volunteering and funding, helps discover talent and build Africa's next generation of scientific leaders."
         backgroundImage={images.gallery[0]}
         breadcrumbs={[
           { label: "Home", href: "/" },
@@ -61,26 +59,27 @@ export default function GetInvolvedPage() {
             {getInvolvedOptions.map((option) => {
               const Icon = optionIcons[option.icon];
               return (
-                <li
-                  key={option.id}
-                  id={option.id}
-                  className="scroll-mt-28 flex flex-col rounded-2xl border border-navy/5 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
-                >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue/10 text-blue">
-                    <Icon className="h-7 w-7" aria-hidden="true" />
-                  </div>
-                  <h3 className="mt-5 font-display text-xl font-semibold text-navy">
-                    {option.title}
-                  </h3>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-navy/70">
-                    {option.description}
-                  </p>
+                <li key={option.id} id={option.id} className="scroll-mt-28">
                   <Link
                     href={option.href}
-                    className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-blue hover:text-navy"
+                    className="group flex h-full flex-col rounded-2xl border border-navy/5 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
                   >
-                    {option.cta}
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue/10 text-blue">
+                      <Icon className="h-7 w-7" aria-hidden="true" />
+                    </div>
+                    <h3 className="mt-5 font-display text-xl font-semibold text-navy">
+                      {option.title}
+                    </h3>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-navy/70">
+                      {option.description}
+                    </p>
+                    <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-blue transition-colors group-hover:text-navy">
+                      {option.cta}
+                      <ArrowRight
+                        className="h-4 w-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </span>
                   </Link>
                 </li>
               );

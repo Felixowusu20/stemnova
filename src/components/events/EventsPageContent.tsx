@@ -2,240 +2,260 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { Images } from "lucide-react";
+import { Calendar, Clock, Images, MapPin } from "lucide-react";
 import { EventCard } from "@/components/cards/EventCard";
-import { AddToCalendarButton } from "@/components/events/AddToCalendarButton";
 import { EventCountdown } from "@/components/events/EventCountdown";
-import { EventRegistrationForm } from "@/components/forms/EventRegistrationForm";
+import { EventRegisterButton } from "@/components/events/EventRegisterButton";
+import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { cn } from "@/lib/utils";
-import type { Event, EventCategory } from "@/types";
-
-const categoryLabels: Record<EventCategory, string> = {
-  conference: "Conference",
-  camp: "Camp",
-  hackathon: "Hackathon",
-  workshop: "Workshop",
-  symposium: "Symposium",
-  challenge: "Challenge",
-  mentorship: "Mentorship",
-};
-
-type FilterOption = "all" | EventCategory;
+import { images } from "@/content/images";
+import type { Event } from "@/types";
 
 interface EventsPageContentProps {
   upcoming: Event[];
   past: Event[];
 }
 
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString("en-GH", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
-  const [category, setCategory] = useState<FilterOption>("all");
   const nextEvent = upcoming[0] ?? null;
-
-  const [registrationEvent, setRegistrationEvent] = useState<Event | null>(
-    () =>
-      upcoming.find((event) => event.registrationRequired) ??
-      upcoming[0] ??
-      null
-  );
-
-  const filteredUpcoming = useMemo(() => {
-    if (category === "all") return upcoming;
-    return upcoming.filter((event) => event.category === category);
-  }, [category, upcoming]);
-
-  const filteredPast = useMemo(() => {
-    if (category === "all") return past;
-    return past.filter((event) => event.category === category);
-  }, [category, past]);
-
-  const categories: FilterOption[] = [
-    "all",
-    "conference",
-    "camp",
-    "hackathon",
-    "workshop",
-    "symposium",
-    "challenge",
-    "mentorship",
-  ];
+  const otherUpcoming = upcoming.slice(1);
 
   return (
     <>
-      {nextEvent && (
-        <section className="bg-[#0A2540] text-white">
-          <Container className="py-12 sm:py-16">
-            <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-wider text-teal">
-                  Next Event
+      {nextEvent ? (
+        <section className="relative overflow-hidden bg-navy text-white">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-35"
+            aria-hidden="true"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 12% 35%, #2563EB 0%, transparent 45%), radial-gradient(circle at 88% 65%, #14B8A6 0%, transparent 42%)",
+            }}
+          />
+          <Container className="relative py-10 sm:py-12 lg:py-14">
+            <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
+              <div className="lg:col-span-7">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-teal">
+                  Featured Event
                 </p>
-                <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">
+                <h2 className="mt-3 font-display text-3xl font-bold leading-tight sm:text-4xl lg:text-[2.75rem]">
                   {nextEvent.title}
                 </h2>
-                <p className="mt-3 text-white/85">{nextEvent.location}</p>
-                <div className="mt-6">
-                  <AddToCalendarButton event={nextEvent} />
+                <ul className="mt-6 space-y-3 text-sm text-white/85 sm:text-base">
+                  <li className="flex items-start gap-3">
+                    <Calendar
+                      className="mt-0.5 h-5 w-5 shrink-0 text-teal"
+                      aria-hidden="true"
+                    />
+                    <time dateTime={nextEvent.date}>
+                      {formatDate(nextEvent.date)}
+                    </time>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Clock
+                      className="mt-0.5 h-5 w-5 shrink-0 text-teal"
+                      aria-hidden="true"
+                    />
+                    {nextEvent.time}
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <MapPin
+                      className="mt-0.5 h-5 w-5 shrink-0 text-teal"
+                      aria-hidden="true"
+                    />
+                    {nextEvent.location}
+                  </li>
+                </ul>
+                <p className="mt-5 max-w-xl text-base leading-relaxed text-white/75">
+                  {nextEvent.description}
+                </p>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <Button
+                    href={`/events/${nextEvent.slug}`}
+                    variant="teal"
+                    size="lg"
+                  >
+                    Enquire About This Event
+                  </Button>
+                  <EventRegisterButton
+                    event={nextEvent}
+                    size="lg"
+                    variant="outline"
+                    label="Register"
+                    className="border-white text-white hover:bg-white/10 hover:text-white"
+                  />
                 </div>
               </div>
-              <EventCountdown event={nextEvent} />
+              <div className="lg:col-span-5">
+                <div className="overflow-hidden rounded-2xl border border-white/15 bg-white/5 backdrop-blur-sm">
+                  <div className="relative aspect-[16/10]">
+                    <Image
+                      src={nextEvent.imageUrl}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      priority
+                    />
+                  </div>
+                  <div className="p-6 sm:p-8">
+                    <EventCountdown event={nextEvent} />
+                  </div>
+                </div>
+              </div>
             </div>
+          </Container>
+        </section>
+      ) : (
+        <section className="py-16 sm:py-20">
+          <Container>
+            <EmptyState
+              title="New events coming soon"
+              description="Confirmed dates for conferences, camps, and workshops will appear here. Contact us if you would like to host or partner on an event."
+              actionLabel="Contact STEMNova"
+              actionHref="/contact"
+            />
           </Container>
         </section>
       )}
 
-      <section className="py-12 sm:py-16">
-        <Container>
-          <div
-            className="flex flex-wrap gap-2"
-            role="group"
-            aria-label="Filter events by category"
-          >
-            {categories.map((value) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setCategory(value)}
-                aria-pressed={category === value}
-                className={cn(
-                  "rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2",
-                  category === value
-                    ? "bg-[#0A2540] text-white"
-                    : "bg-[#0A2540]/10 text-[#0A2540] hover:bg-[#0A2540]/20"
-                )}
-              >
-                {value === "all" ? "All Events" : categoryLabels[value]}
-              </button>
-            ))}
-          </div>
-
-          <SectionHeading
-            title="Upcoming Events"
-            description="Join us at workshops, fundraisers, outreach days, and community gatherings across Greater Accra."
-            className="mt-10"
-          />
-
-          {filteredUpcoming.length === 0 ? (
-            <EmptyState
-              title="No upcoming events in this category"
-              description="Check back soon or browse other categories for new dates."
-              className="mt-8"
+      {otherUpcoming.length > 0 && (
+        <section className="py-16 sm:py-20">
+          <Container>
+            <SectionHeading
+              eyebrow="Calendar"
+              title="More Upcoming Events"
+              description="Additional gatherings that bring African STEM talent together."
+              className="mb-10"
             />
-          ) : (
-            <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredUpcoming.map((event) => (
+            <ul className="grid gap-6 sm:grid-cols-2 lg:gap-8">
+              {otherUpcoming.map((event) => (
                 <li key={event.id} id={event.slug}>
                   <EventCard event={event} />
                 </li>
               ))}
             </ul>
-          )}
-        </Container>
-      </section>
-
-      {registrationEvent && registrationEvent.registrationRequired && (
-        <section className="bg-[#0A2540]/5 py-12 sm:py-16">
-          <Container>
-            <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
-              <SectionHeading
-                title="Event Registration"
-                description="Reserve your spot for an upcoming event. Confirmation details will be sent by email."
-              />
-              <div className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">
-                <label htmlFor="registration-event" className="sr-only">
-                  Select event to register
-                </label>
-                <select
-                  id="registration-event"
-                  value={registrationEvent.slug}
-                  onChange={(e) => {
-                    const selected = upcoming.find(
-                      (event) => event.slug === e.target.value
-                    );
-                    if (selected) setRegistrationEvent(selected);
-                  }}
-                  className="mb-6 w-full rounded-xl border border-[#0A2540]/20 bg-white px-4 py-2.5 text-sm text-[#0A2540] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
-                >
-                  {upcoming
-                    .filter((event) => event.registrationRequired)
-                    .map((event) => (
-                      <option key={event.slug} value={event.slug}>
-                        {event.title}
-                      </option>
-                    ))}
-                </select>
-                <EventRegistrationForm event={registrationEvent} />
-              </div>
-            </div>
           </Container>
         </section>
       )}
 
-      <section className="py-12 sm:py-16">
-        <Container>
-          <SectionHeading
-            title="Past Events"
-            description="Browse highlights from previous foundation gatherings. Event schedules shown are illustrative until confirmed."
-          />
-
-          {filteredPast.length === 0 ? (
-            <EmptyState
-              title="No past events in this category"
-              description="Try selecting a different category to see previous events."
-              className="mt-8"
+      {past.length > 0 && (
+        <section className="bg-light py-16 sm:py-20">
+          <Container>
+            <SectionHeading
+              eyebrow="Highlights"
+              title="Past Events"
+              description="Moments from gatherings that shaped STEMNova programmes across Africa."
+              className="mb-10"
             />
-          ) : (
-            <ul className="mt-8 space-y-10">
-              {filteredPast.map((event) => (
+            <ul className="space-y-4">
+              {past.map((event) => (
                 <li
                   key={event.id}
-                  className="grid gap-8 rounded-2xl border border-[#0A2540]/10 bg-white p-6 shadow-sm lg:grid-cols-3 lg:p-8"
+                  className="grid gap-5 overflow-hidden rounded-2xl border border-navy/8 bg-white p-4 shadow-sm sm:grid-cols-[180px_1fr] sm:p-5 lg:grid-cols-[220px_1fr]"
                 >
-                  <div className="lg:col-span-1">
-                    <EventCard event={event} />
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-xl sm:aspect-auto sm:min-h-[140px]">
+                    <Image
+                      src={event.imageUrl}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 100vw, 220px"
+                    />
                   </div>
-                  {event.galleryImageUrls &&
-                    event.galleryImageUrls.length > 0 && (
-                      <div className="lg:col-span-2">
-                        <h3 className="font-display text-lg font-semibold text-[#0A2540]">
-                          Event Gallery
-                        </h3>
-                        <p className="mt-1 text-sm text-[#0A2540]/70">
-                          Photos from {event.title}. Browse our full gallery
-                          for more moments from the field.
-                        </p>
-                        <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                          {event.galleryImageUrls.slice(0, 3).map((url) => (
-                            <li
-                              key={url}
-                              className="relative aspect-square overflow-hidden rounded-xl"
-                            >
-                              <Image
-                                src={url}
-                                alt=""
-                                fill
-                                className="object-cover"
-                                sizes="(max-width: 768px) 50vw, 200px"
-                              />
-                            </li>
-                          ))}
-                        </ul>
-                        <Link
-                          href="/gallery"
-                          className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#0A2540] transition-colors hover:text-[#0d3354] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2 rounded"
-                        >
-                          <Images className="h-4 w-4" aria-hidden="true" />
-                          View full photo gallery
-                        </Link>
-                      </div>
-                    )}
+                  <div className="flex flex-col justify-center py-1">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-teal">
+                      {event.category}
+                    </p>
+                    <h3 className="mt-1 font-display text-xl font-semibold text-navy">
+                      {event.title}
+                    </h3>
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-navy/65">
+                      <time dateTime={event.date}>{formatDate(event.date)}</time>
+                      <span>{event.location}</span>
+                    </div>
+                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-navy/70">
+                      {event.description}
+                    </p>
+                    <Link
+                      href={`/events/${event.slug}`}
+                      className="mt-3 inline-flex text-sm font-semibold text-blue hover:text-navy"
+                    >
+                      View event details
+                    </Link>
+                  </div>
                 </li>
               ))}
             </ul>
-          )}
+          </Container>
+        </section>
+      )}
+
+      <section className={past.length > 0 ? "py-16 sm:py-20" : "bg-light py-16 sm:py-20"}>
+        <Container>
+          <div className="overflow-hidden rounded-3xl border border-navy/8 bg-white shadow-sm">
+            <div className="grid lg:grid-cols-2">
+              <div className="relative min-h-[260px] lg:min-h-full">
+                <Image
+                  src={images.gallery[0]}
+                  alt="STEMNova programme moments"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+              <div className="flex flex-col justify-center p-8 sm:p-10 lg:p-12">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal">
+                  Programme Gallery
+                </p>
+                <h2 className="mt-3 font-display text-2xl font-bold text-navy sm:text-3xl">
+                  Moments from Our Programmes
+                </h2>
+                <p className="mt-4 text-base leading-relaxed text-navy/70">
+                  Browse photos from STEM camps, fellowships, workshops, and
+                  community gatherings across Africa.
+                </p>
+                <div className="mt-8">
+                  <Link
+                    href="/gallery"
+                    className="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
+                  >
+                    <Images className="h-4 w-4" aria-hidden="true" />
+                    Open Programme Gallery
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <section className="py-16 sm:py-20">
+        <Container>
+          <div className="mx-auto max-w-2xl text-center">
+            <SectionHeading
+              eyebrow="Host With Us"
+              title="Partner on a STEMNova Event"
+              description="Universities, schools, and organisations can collaborate with us to host camps, workshops, and research gatherings."
+              align="center"
+            />
+            <div className="mt-8 flex justify-center">
+              <Button href="/partner" variant="secondary" size="lg">
+                Become a Partner
+              </Button>
+            </div>
+          </div>
         </Container>
       </section>
     </>

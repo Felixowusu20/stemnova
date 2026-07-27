@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Atom, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { navigation, siteConfig } from "@/content";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { SiteLogo } from "@/components/ui/SiteLogo";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 import type { NavItem } from "@/types";
 
@@ -28,8 +29,17 @@ function NavDropdown({ item }: { item: NavItem }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
   return (
-    <li ref={ref} className="relative">
+    <li
+      ref={ref}
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
       <button
         type="button"
         className={cn(
@@ -51,21 +61,32 @@ function NavDropdown({ item }: { item: NavItem }) {
       </button>
       {open && item.children && (
         <ul
-          className="absolute left-0 top-full z-50 mt-1 min-w-[240px] rounded-xl border border-navy/10 bg-white/95 py-2 shadow-xl backdrop-blur-md"
+          className="absolute left-0 top-full z-50 min-w-[240px] rounded-xl border border-navy/10 bg-white py-2 shadow-xl"
           role="menu"
         >
-          {item.children.map((child) => (
-            <li key={child.href} role="none">
-              <Link
-                href={child.href}
-                role="menuitem"
-                className="block px-4 py-2.5 text-sm text-navy/80 transition-colors hover:bg-blue/5 hover:text-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue"
-                onClick={() => setOpen(false)}
-              >
-                {child.label}
-              </Link>
-            </li>
-          ))}
+          {item.children.map((child) => {
+            const childActive = pathname === child.href;
+
+            return (
+              <li key={child.href} role="none">
+                <Link
+                  href={child.href}
+                  role="menuitem"
+                  prefetch
+                  className={cn(
+                    "block px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue",
+                    childActive
+                      ? "bg-blue/5 font-semibold text-blue"
+                      : "text-navy hover:bg-blue/5 hover:text-blue"
+                  )}
+                  aria-current={childActive ? "page" : undefined}
+                  onClick={() => setOpen(false)}
+                >
+                  {child.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
     </li>
@@ -83,6 +104,7 @@ function NavLink({ item }: { item: NavItem }) {
     <li>
       <Link
         href={item.href}
+        prefetch
         className={cn(
           "rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2",
           isActive ? "text-blue" : "text-navy/80 hover:text-blue"
@@ -118,18 +140,14 @@ export function Header() {
       )}
     >
       <Container>
-        <div className="flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
+        <div className="flex h-[4.75rem] items-center justify-between gap-4 lg:h-[5.25rem]">
           <Link
             href="/"
-            className="flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
+            prefetch
+            className="flex shrink-0 items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
             aria-label={`${siteConfig.name} — Home`}
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-navy text-white">
-              <Atom className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <span className="hidden font-display text-lg font-bold text-navy sm:block">
-              STEMNova
-            </span>
+            <SiteLogo variant="header" priority />
           </Link>
 
           <nav
