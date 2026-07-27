@@ -124,7 +124,7 @@ export function MobileMenu({ isOpen, onOpen, onClose }: MobileMenuProps) {
       <button
         ref={triggerRef}
         type="button"
-        className="rounded-lg p-2 text-[#0A2540] transition-colors hover:bg-[#0A2540]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2 xl:hidden"
+        className="rounded-lg p-2 text-navy transition-colors hover:bg-navy/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 xl:hidden"
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
         aria-label={isOpen ? "Close menu" : "Open menu"}
@@ -141,26 +141,26 @@ export function MobileMenu({ isOpen, onOpen, onClose }: MobileMenuProps) {
         <>
           <button
             type="button"
-            className="fixed inset-0 z-40 bg-[#0A2540]/40 xl:hidden"
+            className="fixed inset-0 z-40 bg-navy/40 xl:hidden"
             aria-label="Close menu overlay"
             onClick={onClose}
           />
           <div
             id="mobile-menu"
             ref={panelRef}
-            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-[#F8FAFC] shadow-xl motion-safe:animate-in motion-safe:slide-in-from-right xl:hidden"
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-light shadow-xl motion-safe:animate-in motion-safe:slide-in-from-right xl:hidden"
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation"
           >
-            <div className="flex items-center justify-between border-b border-[#0A2540]/10 px-4 py-4">
-              <span className="font-display text-lg font-bold text-[#0A2540]">
+            <div className="flex items-center justify-between border-b border-navy/10 px-4 py-4">
+              <span className="font-display text-lg font-bold text-navy">
                 Menu
               </span>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg p-2 hover:bg-[#0A2540]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
+                className="rounded-lg p-2 text-navy hover:bg-navy/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
                 aria-label="Close menu"
               >
                 <X className="h-5 w-5" />
@@ -179,7 +179,7 @@ export function MobileMenu({ isOpen, onOpen, onClose }: MobileMenuProps) {
               </ul>
             </nav>
 
-            <div className="border-t border-[#0A2540]/10 p-4">
+            <div className="border-t border-navy/10 p-4">
               <Button
                 href="/donate"
                 variant="teal"

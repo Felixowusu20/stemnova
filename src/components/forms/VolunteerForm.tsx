@@ -89,7 +89,7 @@ export function VolunteerForm({ className }: VolunteerFormProps) {
 
   if (status === "success") {
     return (
-      <ApplicationFormShell className={className}>
+      <ApplicationFormShell className={className} showNotice={false}>
         <div className="py-6 text-center" role="status">
           <p className="font-display text-xl font-semibold text-navy">
             Volunteer application received
@@ -104,7 +104,7 @@ export function VolunteerForm({ className }: VolunteerFormProps) {
   }
 
   return (
-    <ApplicationFormShell className={className}>
+    <ApplicationFormShell className={className} showNotice={false}>
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <div className="grid gap-5 sm:grid-cols-2">
           <div>

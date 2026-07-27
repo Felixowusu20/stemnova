@@ -1,102 +1,75 @@
 import type { Metadata } from "next";
-import { HandHeart, Clock, Users } from "lucide-react";
-import {
-  Container,
-  CtaSection,
-  PageHero,
-  SectionHeading,
-  VolunteerForm,
-} from "@/components";
+import Image from "next/image";
+import Link from "next/link";
+import { Container, CtaSection, VolunteerForm } from "@/components";
 import { images } from "@/content";
 
 export const metadata: Metadata = {
   title: "Volunteer",
   description:
-    "Volunteer with STEMNova Foundation — support STEM camps, workshops, mentorship sessions, outreach events, and programme delivery across Africa.",
+    "Volunteer with STEMNova Foundation supporting STEM camps, workshops, outreach events, and programme delivery across Africa.",
 };
-
-const volunteerHighlights = [
-  {
-    icon: HandHeart,
-    title: "Meaningful Work",
-    description:
-      "Support STEM camps, research symposiums, workshops, and outreach events that expand opportunity for African talent.",
-  },
-  {
-    icon: Clock,
-    title: "Flexible Commitment",
-    description:
-      "Choose weekday, weekend, or event-based availability that fits your schedule and expertise.",
-  },
-  {
-    icon: Users,
-    title: "Supportive Community",
-    description:
-      "Join mentors, educators, and researchers with orientation, safeguarding training, and ongoing support.",
-  },
-];
 
 export default function VolunteerPage() {
   return (
     <>
-      <PageHero
-        title="Volunteer With STEMNova"
-        description="Contribute your skills to STEM camps, workshops, outreach events, and programme delivery across Africa."
-        backgroundImage={images.gallery[1]}
-        breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: "Get Involved", href: "/get-involved" },
-          { label: "Volunteer" },
-        ]}
-      />
-
-      <section className="py-16 sm:py-20">
+      <section className="bg-light pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-8 lg:pb-12">
         <Container>
-          <SectionHeading
-            title="Why Volunteer"
-            description="Your time helps discover talent, support educators, and connect emerging researchers to opportunity."
-            align="center"
-            className="mb-12"
-          />
-          <ul className="grid gap-8 md:grid-cols-3">
-            {volunteerHighlights.map((item) => {
-              const Icon = item.icon;
-              return (
-                <li
-                  key={item.title}
-                  className="rounded-2xl border border-navy/5 bg-white p-6 text-center shadow-sm"
-                >
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue/10 text-blue">
-                    <Icon className="h-7 w-7" aria-hidden="true" />
-                  </div>
-                  <h3 className="mt-4 font-display text-lg font-semibold text-navy">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-navy/70">
-                    {item.description}
+          <nav className="mb-3 text-sm text-navy/55" aria-label="Breadcrumb">
+            <ol className="flex flex-wrap items-center gap-1.5">
+              <li>
+                <Link href="/" className="hover:text-navy">
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li>
+                <Link href="/get-involved" className="hover:text-navy">
+                  Get Involved
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li className="font-medium text-navy">Volunteer</li>
+            </ol>
+          </nav>
+
+          <div className="overflow-hidden rounded-2xl border border-navy/8 bg-white shadow-sm sm:rounded-3xl">
+            <div className="grid lg:grid-cols-2">
+              <div className="order-1 flex flex-col justify-center p-4 sm:p-6 lg:order-2 lg:p-8">
+                <h1 className="mb-4 font-display text-2xl font-bold text-navy sm:mb-5 sm:text-3xl">
+                  Volunteer With Us
+                </h1>
+                <VolunteerForm className="border-0 bg-transparent p-0 shadow-none sm:p-0 lg:p-0" />
+              </div>
+
+              <div className="relative order-2 min-h-[160px] sm:min-h-[200px] lg:order-1 lg:min-h-full">
+                <Image
+                  src={images.programmes.teachers}
+                  alt="Volunteers supporting STEM teaching and outreach"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority
+                />
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-navy/75 via-navy/25 to-transparent"
+                  aria-hidden="true"
+                />
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
+                  <p className="font-display text-lg font-bold text-white sm:text-xl">
+                    Give your time to African STEM
                   </p>
-                </li>
-              );
-            })}
-          </ul>
-        </Container>
-      </section>
-
-      <section className="bg-light py-16 sm:py-20">
-        <Container>
-          <div className="mx-auto max-w-2xl">
-            <SectionHeading
-              title="Volunteer Application"
-              description="Tell us about your skills and availability. We typically respond within 2–3 business days."
-              align="center"
-              className="mb-10"
-            />
-            <VolunteerForm />
+                </div>
+              </div>
+            </div>
           </div>
         </Container>
       </section>
 
-      <CtaSection />
+      <CtaSection
+        title="Explore Other Ways to Help"
+        description="Mentor, partner, sponsor a programme, or donate to STEMNova."
+      />
     </>
   );
 }
