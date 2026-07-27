@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 export default function SponsorPage() {
   return (
     <>
-      <section className="bg-light pt-6 pb-10 sm:pt-8 sm:pb-14 lg:pt-10 lg:pb-16">
+      <section className="bg-light pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-8 lg:pb-12">
         <Container>
-          <nav className="mb-4 text-sm text-navy/55 sm:mb-6" aria-label="Breadcrumb">
+          <nav className="mb-3 text-sm text-navy/55" aria-label="Breadcrumb">
             <ol className="flex flex-wrap items-center gap-1.5">
               <li>
                 <Link href="/" className="hover:text-navy">
@@ -34,26 +34,16 @@ export default function SponsorPage() {
             </ol>
           </nav>
 
-          <div className="overflow-hidden rounded-3xl border border-navy/8 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-2xl border border-navy/8 bg-white shadow-sm sm:rounded-3xl">
             <div className="grid lg:grid-cols-2">
-              {/* Form first on mobile so sponsors can apply without scrolling */}
-              <div className="order-1 flex flex-col justify-center p-5 sm:p-8 lg:order-2 lg:p-10 xl:p-12">
-                <div className="mb-5 sm:mb-6">
-                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal">
-                    Sponsor
-                  </p>
-                  <h1 className="mt-2 font-display text-2xl font-bold text-navy sm:text-3xl">
-                    Sponsor a Programme
-                  </h1>
-                  <p className="mt-2 text-sm leading-relaxed text-navy/70 sm:text-base">
-                    Share your organisation details and the programme you would
-                    like to support. Backend processing will follow later.
-                  </p>
-                </div>
+              <div className="order-1 flex flex-col justify-center p-4 sm:p-6 lg:order-2 lg:p-8">
+                <h1 className="mb-4 font-display text-2xl font-bold text-navy sm:mb-5 sm:text-3xl">
+                  Sponsor a Programme
+                </h1>
                 <SponsorForm className="border-0 bg-transparent p-0 shadow-none sm:p-0 lg:p-0" />
               </div>
 
-              <div className="relative order-2 min-h-[200px] sm:min-h-[240px] lg:order-1 lg:min-h-[640px]">
+              <div className="relative order-2 min-h-[160px] sm:min-h-[200px] lg:order-1 lg:min-h-full">
                 <Image
                   src={images.hero.impact}
                   alt="STEMNova programme sponsorship in action"
@@ -63,16 +53,12 @@ export default function SponsorPage() {
                   priority
                 />
                 <div
-                  className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/30 to-navy/10"
+                  className="absolute inset-0 bg-gradient-to-t from-navy/75 via-navy/25 to-transparent"
                   aria-hidden="true"
                 />
-                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 lg:p-10">
-                  <p className="max-w-md font-display text-xl font-bold leading-snug text-white sm:text-2xl lg:text-3xl">
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
+                  <p className="font-display text-lg font-bold text-white sm:text-xl">
                     Multiply your impact across African STEM
-                  </p>
-                  <p className="mt-2 max-w-sm text-sm leading-relaxed text-white/85">
-                    Fund talent discovery, fellowships, girls in science, and
-                    teacher development with clear programme outcomes.
                   </p>
                 </div>
               </div>
@@ -83,7 +69,7 @@ export default function SponsorPage() {
 
       <CtaSection
         title="Explore Other Ways to Help"
-        description="Donate, mentor, volunteer, or partner with STEMNova to advance scientific talent across Africa."
+        description="Donate, mentor, volunteer, or partner with STEMNova."
       />
     </>
   );

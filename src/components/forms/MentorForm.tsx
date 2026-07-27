@@ -77,7 +77,7 @@ export function MentorForm({ className }: MentorFormProps) {
 
   if (status === "success") {
     return (
-      <ApplicationFormShell className={className}>
+      <ApplicationFormShell className={className} showNotice={false}>
         <div className="py-6 text-center" role="status">
           <CheckCircle2
             className="mx-auto h-10 w-10 text-teal"
@@ -96,7 +96,7 @@ export function MentorForm({ className }: MentorFormProps) {
   }
 
   return (
-    <ApplicationFormShell className={className}>
+    <ApplicationFormShell className={className} showNotice={false}>
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <div className="grid gap-5 sm:grid-cols-2">
           <div>

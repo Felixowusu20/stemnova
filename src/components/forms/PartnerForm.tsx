@@ -76,7 +76,7 @@ export function PartnerForm({ className }: PartnerFormProps) {
 
   if (status === "success") {
     return (
-      <ApplicationFormShell className={className}>
+      <ApplicationFormShell className={className} showNotice={false}>
         <div className="py-6 text-center" role="status">
           <p className="font-display text-xl font-semibold text-navy">
             Partnership enquiry received
@@ -91,7 +91,7 @@ export function PartnerForm({ className }: PartnerFormProps) {
   }
 
   return (
-    <ApplicationFormShell className={className}>
+    <ApplicationFormShell className={className} showNotice={false}>
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <div>
           <label htmlFor="organizationName" className={formLabelClass}>
