@@ -28,21 +28,28 @@ function MobileNavItem({
   const isActive =
     item.href === "/"
       ? pathname === "/"
-      : pathname === item.href || pathname.startsWith(`${item.href}/`);
+      : pathname === item.href ||
+        (depth > 0
+          ? pathname === item.href
+          : pathname === item.href || pathname.startsWith(`${item.href}/`));
+  const isExactActive = pathname === item.href;
 
   return (
     <li>
       <Link
         href={item.href}
+        prefetch
         onClick={onClose}
         className={cn(
-          "block rounded-lg px-4 py-3 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2",
+          "block rounded-lg px-4 py-3 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2",
           depth > 0 && "pl-8 text-sm",
-          isActive
-            ? "bg-[#0A2540]/10 text-[#0A2540]"
-            : "text-[#0A2540]/80 hover:bg-[#0A2540]/5 hover:text-[#0A2540]"
+          isExactActive || (depth === 0 && isActive && !item.children)
+            ? "bg-blue/10 text-blue"
+            : depth > 0 && isExactActive
+              ? "bg-blue/10 font-semibold text-blue"
+              : "text-navy/80 hover:bg-navy/5 hover:text-navy"
         )}
-        aria-current={isActive ? "page" : undefined}
+        aria-current={isExactActive ? "page" : undefined}
       >
         {item.label}
       </Link>

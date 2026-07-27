@@ -2,8 +2,14 @@
 
 import { useState, type FormEvent } from "react";
 import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ApplicationFormShell } from "@/components/forms/ApplicationFormShell";
+import {
+  formHintClass,
+  formInputClass,
+  formLabelClass,
+} from "@/components/forms/formStyles";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 interface PartnerFormProps {
   className?: string;
@@ -11,18 +17,13 @@ interface PartnerFormProps {
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
-const inputClass =
-  "w-full rounded-xl border border-[#0A2540]/20 bg-white px-4 py-2.5 text-sm text-[#0A2540] placeholder:text-[#0A2540]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2";
-
-const labelClass = "mb-1.5 block text-sm font-medium text-[#0A2540]";
-
 const partnershipTypes = [
-  "Corporate Sponsorship",
-  "In-Kind Donation",
-  "School Partnership",
-  "Community Organization",
-  "Media Partnership",
-  "Grant Funding",
+  "University partnership",
+  "Corporate sponsorship",
+  "Government collaboration",
+  "Research institution",
+  "NGO collaboration",
+  "Grant funding",
   "Other",
 ];
 
@@ -75,223 +76,220 @@ export function PartnerForm({ className }: PartnerFormProps) {
 
   if (status === "success") {
     return (
-      <div
-        className={cn(
-          "rounded-2xl bg-[#14B8A6]/10 p-6 text-center",
-          className
-        )}
-        role="status"
-      >
-        <p className="font-semibold text-[#14B8A6]">
-          Thank you, we received your message.
-        </p>
-        <p className="mt-2 text-sm text-[#0A2540]/70">
-          Our partnerships team will review your inquiry and respond soon.
-        </p>
-      </div>
+      <ApplicationFormShell className={className}>
+        <div className="py-6 text-center" role="status">
+          <p className="font-display text-xl font-semibold text-navy">
+            Partnership enquiry received
+          </p>
+          <p className="mt-2 text-sm text-navy/70">
+            Mock confirmation only. Our partnerships team will follow up once live
+            forms are connected.
+          </p>
+        </div>
+      </ApplicationFormShell>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className={cn("space-y-5", className)} noValidate>
-      <div>
-        <label htmlFor="organizationName" className={labelClass}>
-          Individual or organization name <span className="text-[#14B8A6]">*</span>
-        </label>
-        <input
-          id="organizationName"
-          type="text"
-          value={form.organizationName}
-          onChange={(e) =>
-            setForm((f) => ({ ...f, organizationName: e.target.value }))
-          }
-          className={inputClass}
-          disabled={status === "loading"}
-          aria-invalid={errors.organizationName ? "true" : undefined}
-        />
-        {errors.organizationName && (
-          <p className="mt-1 text-xs text-[#14B8A6]" role="alert">
-            {errors.organizationName}
-          </p>
-        )}
-      </div>
-
-      <div className="grid gap-5 sm:grid-cols-2">
+    <ApplicationFormShell className={className}>
+      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <div>
-          <label htmlFor="contactPerson" className={labelClass}>
-            Contact person <span className="text-[#14B8A6]">*</span>
+          <label htmlFor="organizationName" className={formLabelClass}>
+            Individual or organization name <span className="text-teal">*</span>
           </label>
           <input
-            id="contactPerson"
+            id="organizationName"
             type="text"
-            value={form.contactPerson}
+            value={form.organizationName}
             onChange={(e) =>
-              setForm((f) => ({ ...f, contactPerson: e.target.value }))
+              setForm((f) => ({ ...f, organizationName: e.target.value }))
             }
-            className={inputClass}
+            className={formInputClass}
             disabled={status === "loading"}
-            aria-invalid={errors.contactPerson ? "true" : undefined}
+            aria-invalid={errors.organizationName ? "true" : undefined}
           />
-          {errors.contactPerson && (
-            <p className="mt-1 text-xs text-[#14B8A6]" role="alert">
-              {errors.contactPerson}
+          {errors.organizationName && (
+            <p className={formHintClass} role="alert">
+              {errors.organizationName}
             </p>
           )}
         </div>
-        <div>
-          <label htmlFor="email" className={labelClass}>
-            Email <span className="text-[#14B8A6]">*</span>
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={form.email}
-            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.email ? "true" : undefined}
-          />
-          {errors.email && (
-            <p className="mt-1 text-xs text-[#14B8A6]" role="alert">
-              {errors.email}
-            </p>
-          )}
-        </div>
-      </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="phone" className={labelClass}>
-            Phone <span className="text-[#14B8A6]">*</span>
-          </label>
-          <input
-            id="phone"
-            type="tel"
-            value={form.phone}
-            onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.phone ? "true" : undefined}
-          />
-          {errors.phone && (
-            <p className="mt-1 text-xs text-[#14B8A6]" role="alert">
-              {errors.phone}
-            </p>
-          )}
-        </div>
-        <div>
-          <label htmlFor="partnershipType" className={labelClass}>
-            Partnership type <span className="text-[#14B8A6]">*</span>
-          </label>
-          <select
-            id="partnershipType"
-            value={form.partnershipType}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, partnershipType: e.target.value }))
-            }
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.partnershipType ? "true" : undefined}
-          >
-            <option value="">Select type</option>
-            {partnershipTypes.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-          {errors.partnershipType && (
-            <p className="mt-1 text-xs text-[#14B8A6]" role="alert">
-              {errors.partnershipType}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="proposedSupport" className={labelClass}>
-          Proposed support <span className="text-[#14B8A6]">*</span>
-        </label>
-        <textarea
-          id="proposedSupport"
-          rows={3}
-          value={form.proposedSupport}
-          onChange={(e) =>
-            setForm((f) => ({ ...f, proposedSupport: e.target.value }))
-          }
-          className={cn(inputClass, "resize-y")}
-          placeholder="Describe how you'd like to partner with us"
-          disabled={status === "loading"}
-          aria-invalid={errors.proposedSupport ? "true" : undefined}
-        />
-        {errors.proposedSupport && (
-          <p className="mt-1 text-xs text-[#14B8A6]" role="alert">
-            {errors.proposedSupport}
-          </p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="message" className={labelClass}>
-          Message <span className="text-[#14B8A6]">*</span>
-        </label>
-        <textarea
-          id="message"
-          rows={4}
-          value={form.message}
-          onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-          className={cn(inputClass, "resize-y")}
-          disabled={status === "loading"}
-          aria-invalid={errors.message ? "true" : undefined}
-        />
-        {errors.message && (
-          <p className="mt-1 text-xs text-[#14B8A6]" role="alert">
-            {errors.message}
-          </p>
-        )}
-      </div>
-
-      <div className="flex items-start gap-3">
-        <input
-          id="partner-consent"
-          type="checkbox"
-          checked={consent}
-          onChange={(e) => setConsent(e.target.checked)}
-          className="mt-1 h-4 w-4 rounded border-[#0A2540]/30 text-[#0A2540] focus-visible:ring-2 focus-visible:ring-[#0A2540]"
-          disabled={status === "loading"}
-          aria-invalid={errors.consent ? "true" : undefined}
-        />
-        <label htmlFor="partner-consent" className="text-sm text-[#0A2540]/80">
-          I consent to being contacted about partnership opportunities and agree
-          to the foundation&apos;s privacy policy.{" "}
-          <span className="text-[#14B8A6]">*</span>
-        </label>
-      </div>
-      {errors.consent && (
-        <p className="text-xs text-[#14B8A6]" role="alert">
-          {errors.consent}
-        </p>
-      )}
-
-      {status === "error" && (
-        <p className="text-sm text-[#14B8A6]" role="alert">
-          Something went wrong. Please try again.
-        </p>
-      )}
-
-      <Button type="submit" fullWidth disabled={status === "loading"}>
-        {status === "loading" ? (
-          <>
-            <Loader2
-              className="h-4 w-4 animate-spin motion-reduce:animate-none"
-              aria-hidden="true"
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="contactPerson" className={formLabelClass}>
+              Contact person <span className="text-teal">*</span>
+            </label>
+            <input
+              id="contactPerson"
+              type="text"
+              value={form.contactPerson}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, contactPerson: e.target.value }))
+              }
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.contactPerson ? "true" : undefined}
             />
-            Submitting…
-          </>
-        ) : (
-          "Submit Inquiry"
+            {errors.contactPerson && (
+              <p className={formHintClass} role="alert">
+                {errors.contactPerson}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="email" className={formLabelClass}>
+              Email <span className="text-teal">*</span>
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.email ? "true" : undefined}
+            />
+            {errors.email && (
+              <p className={formHintClass} role="alert">
+                {errors.email}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="phone" className={formLabelClass}>
+              Phone <span className="text-teal">*</span>
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              value={form.phone}
+              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.phone ? "true" : undefined}
+            />
+            {errors.phone && (
+              <p className={formHintClass} role="alert">
+                {errors.phone}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="partnershipType" className={formLabelClass}>
+              Partnership type <span className="text-teal">*</span>
+            </label>
+            <select
+              id="partnershipType"
+              value={form.partnershipType}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, partnershipType: e.target.value }))
+              }
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.partnershipType ? "true" : undefined}
+            >
+              <option value="">Select type</option>
+              {partnershipTypes.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+            {errors.partnershipType && (
+              <p className={formHintClass} role="alert">
+                {errors.partnershipType}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="proposedSupport" className={formLabelClass}>
+            Proposed support <span className="text-teal">*</span>
+          </label>
+          <textarea
+            id="proposedSupport"
+            rows={3}
+            value={form.proposedSupport}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, proposedSupport: e.target.value }))
+            }
+            className={cn(formInputClass, "resize-y")}
+            disabled={status === "loading"}
+            aria-invalid={errors.proposedSupport ? "true" : undefined}
+          />
+          {errors.proposedSupport && (
+            <p className={formHintClass} role="alert">
+              {errors.proposedSupport}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="message" className={formLabelClass}>
+            Message <span className="text-teal">*</span>
+          </label>
+          <textarea
+            id="message"
+            rows={4}
+            value={form.message}
+            onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+            className={cn(formInputClass, "resize-y")}
+            disabled={status === "loading"}
+            aria-invalid={errors.message ? "true" : undefined}
+          />
+          {errors.message && (
+            <p className={formHintClass} role="alert">
+              {errors.message}
+            </p>
+          )}
+        </div>
+
+        <div className="flex items-start gap-3">
+          <input
+            id="consent"
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-navy/30"
+            disabled={status === "loading"}
+            aria-invalid={errors.consent ? "true" : undefined}
+          />
+          <label htmlFor="consent" className="text-sm text-navy/80">
+            I agree to be contacted about partnership opportunities with STEMNova.{" "}
+            <span className="text-teal">*</span>
+          </label>
+        </div>
+        {errors.consent && (
+          <p className={formHintClass} role="alert">
+            {errors.consent}
+          </p>
         )}
-      </Button>
-    </form>
+
+        {status === "error" && (
+          <p className="text-sm text-teal" role="alert">
+            Something went wrong. Please try again.
+          </p>
+        )}
+
+        <Button type="submit" fullWidth disabled={status === "loading"}>
+          {status === "loading" ? (
+            <>
+              <Loader2
+                className="h-4 w-4 animate-spin motion-reduce:animate-none"
+                aria-hidden="true"
+              />
+              Submitting…
+            </>
+          ) : (
+            "Submit partnership enquiry"
+          )}
+        </Button>
+      </form>
+    </ApplicationFormShell>
   );
 }

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  Atom,
   Facebook,
   Instagram,
   Linkedin,
@@ -9,11 +8,13 @@ import {
   Phone,
   Twitter,
   Youtube,
+  Atom,
 } from "lucide-react";
 import { programs, siteConfig } from "@/content";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { SiteLogo } from "@/components/ui/SiteLogo";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import type { SocialPlatform } from "@/types";
 
@@ -67,16 +68,17 @@ export function Footer() {
     { label: "Research & Innovation", href: "/research" },
     { label: "Impact", href: "/impact" },
     { label: "Events", href: "/events" },
+    { label: "Gallery", href: "/gallery" },
     { label: "News & Publications", href: "/blog" },
     { label: "Partners", href: "/partner" },
   ];
 
   const involvedLinks = [
-    { label: "Become a Mentor", href: "/get-involved#mentor" },
+    { label: "Become a Mentor", href: "/mentor" },
     { label: "Volunteer", href: "/volunteer" },
     { label: "Partner With Us", href: "/partner" },
     { label: "Donate", href: "/donate" },
-    { label: "Apply for Fellowships", href: "/programs" },
+    { label: "Apply for Fellowships", href: "/fellowships" },
     { label: "Contact", href: "/contact" },
   ];
 
@@ -96,14 +98,10 @@ export function Footer() {
           <div className="lg:col-span-4">
             <Link
               href="/"
-              className="inline-flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-dark"
+              className="inline-flex rounded-lg bg-white p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-dark"
+              aria-label={`${siteConfig.name} — Home`}
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue">
-                <Atom className="h-5 w-5" aria-hidden="true" />
-              </span>
-              <span className="font-display text-xl font-bold">
-                {siteConfig.name}
-              </span>
+              <SiteLogo variant="footer" />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-white/65">
               {siteConfig.tagline}

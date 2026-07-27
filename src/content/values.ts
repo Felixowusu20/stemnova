@@ -6,110 +6,88 @@ import type { ValuesData } from "@/types";
  */
 export const valuesData: ValuesData = {
   vision:
-    "To build Africa's most trusted institution for discovering, developing, and connecting scientific talent—recognized globally for the quality of the researchers, teachers, innovators, and leaders it produces.",
+    "To become Africa's most trusted institution for discovering and developing scientific talent.",
   mission:
-    "STEMNova Foundation identifies promising STEM talent across African schools and universities, builds structured pathways into research leadership through fellowships and mentorship, expands opportunities for women and underserved communities, connects African researchers globally, and helps shape STEM education policy through evidence-based innovation.",
+    "We identify promising STEM talent across Africa, create clear pathways into research and teaching, expand opportunities for women and underserved communities, and connect African researchers to global networks.",
   leadershipPhilosophy:
-    "STEMNova is led by scientists who understand the barriers African talent faces—because we have navigated them ourselves. Our leadership philosophy rests on three convictions: that excellence and equity are inseparable, that institutions must be built to outlast their founders, and that African STEM talent deserves the same rigour, investment, and global connection afforded to researchers anywhere in the world. We govern with transparency, measure with integrity, and invest in people before programmes.",
+    "Excellence and equity belong together. We build institutions that outlast their founders, invest in people before programmes, and give African STEM talent the same rigour and global connection researchers receive anywhere in the world.",
   coreValues: [
     {
       title: "Excellence",
       description:
-        "We hold ourselves and our programmes to the highest standards of scientific rigour, educational quality, and institutional performance—never confusing accessibility with lowered expectations.",
+        "We hold our programmes to high standards of scientific and educational quality.",
       icon: "excellence",
     },
     {
       title: "Equity",
       description:
-        "Talent is universal; opportunity is not. We design every programme to identify and support promising STEM minds regardless of gender, geography, or socioeconomic background.",
+        "Talent is everywhere. Opportunity should be too—across gender, geography, and background.",
       icon: "equity",
     },
     {
       title: "Integrity",
       description:
-        "We report impact honestly, protect participant privacy rigorously, and operate with ethical clarity in research, education, and institutional governance.",
+        "We operate honestly, protect privacy, and govern with clear ethical standards.",
       icon: "integrity",
     },
     {
       title: "Collaboration",
       description:
-        "No institution builds Africa's scientific future alone. We partner with universities, governments, industry, and international research communities to multiply our collective impact.",
+        "We partner with universities, governments, and research communities to multiply impact.",
       icon: "collaboration",
     },
     {
       title: "Innovation",
       description:
-        "We embrace evidence-based innovation in programme design, pedagogy, and research support—continuously learning and adapting to serve talent more effectively.",
+        "We design programmes with evidence, learn quickly, and adapt to serve talent better.",
       icon: "innovation",
     },
     {
       title: "Leadership",
       description:
-        "We develop leaders, not just learners—investing in the mentorship, governance skills, and institutional capacity that sustain scientific ecosystems beyond individual careers.",
+        "We develop leaders—not only learners—who can sustain scientific ecosystems.",
       icon: "leadership",
     },
   ],
   aboutStory: [
-    "STEMNova Foundation was born from a shared conviction held by two Ghanaian scientists who had risen through African universities into international research careers—and who understood, intimately, how many promising minds never make that journey. Dr. Dorcas Attuabea Addo and Dr. Bernice Yram Danu met as graduate students navigating the isolation, resource constraints, and absent mentorship that characterize too many African STEM pathways. Rather than accept those conditions as inevitable, they envisioned an institution dedicated to changing them.",
-    "In 2024, STEMNova Foundation was established with a clear mandate: identify exceptional STEM talent early, build structured pathways into research leadership, and connect African scientists to the global research community on terms of equality—not dependency. The founders assembled an advisory network of African researchers, educators, and policymakers, secured seed partnerships with universities across West Africa, and launched pilot programmes in talent discovery, girls in STEM, and teacher professional development.",
-    "Within two years, STEMNova grew from a founding vision into a multi-programme institution operating across 18 African countries (illustrative reach). Young Scholars STEM Discovery identified thousands of promising students. The Mentorship Network connected emerging talent with experienced researchers. African STEM Fellows and the Young African Researchers Fellowship began producing the publications, grants, and faculty appointments that validate a model built on sustained investment in people.",
-    "Today, STEMNova stands at an inflection point—poised to scale proven programmes nationally, deepen frontier science pathways in quantum education and materials research, and influence STEM policy across the continent. Our ambition is institutional, not incremental: to become Africa's most trusted name in scientific talent development, producing researchers, teachers, and innovators whose quality is recognized globally. Every programme, partnership, and policy engagement is guided by the belief that Africa's scientific future depends not on importing talent, but on discovering and developing the talent that already exists.",
+    "STEMNova Foundation was founded by Dr. Dorcas Attuabea Addo and Dr. Bernice Yram Danu—Ghanaian scientists who rose through African universities into international research careers. Along the way, they saw how many promising STEM students never receive mentorship, laboratory access, or a clear path into research leadership.",
+    "Established in 2024, STEMNova was created to change that. The foundation is building structured programmes in talent discovery, girls in STEM, teacher development, research fellowships, and frontier science education—so exceptional African talent can grow with the support it deserves.",
+    "We are still in our early years, focused on strong partnerships, careful programme design, and lasting impact. Our long-term aim is clear: become Africa's trusted home for discovering scientific talent and developing the next generation of researchers, teachers, and innovators.",
   ],
   timeline: [
     {
       year: 2024,
       title: "Foundation Established",
       description:
-        "Dr. Dorcas Attuabea Addo and Dr. Bernice Yram Danu co-found STEMNova Foundation, securing seed funding and inaugural university partnerships across Ghana and Nigeria. (Illustrative milestone.)",
+        "STEMNova Foundation is co-founded and begins building its first partnerships and programme designs.",
       isIllustrative: true,
     },
     {
       year: 2025,
-      title: "Flagship Programmes Launch",
+      title: "First Programmes Take Shape",
       description:
-        "Young Scholars STEM Discovery, Girls Discover Science, and STEM Teachers Academy launch pilot cohorts. Mentorship Network reaches 500 active pairs. (Illustrative milestone.)",
+        "Pilot pathways launch in talent discovery, girls in STEM, and teacher development.",
       isIllustrative: true,
     },
     {
       year: 2026,
-      title: "Fellowship Programmes & Regional Expansion",
+      title: "Fellowships & Mentorship Grow",
       description:
-        "African STEM Fellows and Young African Researchers Fellowship welcome inaugural cohorts. Programmes expand to East and Southern Africa. (Illustrative milestone.)",
-      isIllustrative: true,
-    },
-    {
-      year: 2027,
-      title: "Quantum Education Pathways",
-      description:
-        "Quantum Education Leaders programme launches with international lab partnerships. Pilot curricula adopted at 12 partner universities. (Illustrative milestone.)",
+        "Research fellowships and mentorship networks expand across partner institutions.",
       isIllustrative: true,
     },
     {
       year: 2028,
-      title: "Continental Scale",
+      title: "Wider Reach",
       description:
-        "STEMNova operates programmes in 15+ countries, partners with 50+ institutions, and publishes first independently audited impact report. (Illustrative projection.)",
+        "Programmes deepen across more African countries with stronger university partnerships.",
       isIllustrative: true,
     },
     {
       year: 2030,
-      title: "Policy Influence & Research Leadership",
+      title: "Institutional Strength",
       description:
-        "Foundation contributes to national STEM curriculum frameworks in five countries. Fellows and researchers produce 100+ peer-reviewed publications. (Illustrative projection.)",
-      isIllustrative: true,
-    },
-    {
-      year: 2031,
-      title: "Endowment & Sustainability",
-      description:
-        "Research endowment established to sustain fellowships independently. Alumni network exceeds 5,000 researchers, teachers, and innovators. (Illustrative projection.)",
-      isIllustrative: true,
-    },
-    {
-      year: 2032,
-      title: "Institutional Maturity",
-      description:
-        "STEMNova recognized as Africa's premier institution for scientific talent discovery and research leadership development. (Illustrative projection.)",
+        "STEMNova is recognized as a trusted African institution for STEM talent development.",
       isIllustrative: true,
     },
   ],
@@ -118,37 +96,37 @@ export const valuesData: ValuesData = {
       id: "board-of-trustees",
       title: "Board of Trustees",
       description:
-        "The Board of Trustees provides strategic oversight, fiduciary responsibility, and governance accountability. Trustees bring expertise in research leadership, higher education, nonprofit governance, and international development.",
+        "Provides strategic oversight, fiduciary responsibility, and governance accountability.",
       members: [
-        "Dr. Dorcas Attuabea Addo — Co-Founder & Board Chair (illustrative)",
-        "Dr. Bernice Yram Danu — Co-Founder & Vice Chair (illustrative)",
-        "Prof. Kwame Asante — Trustee, Higher Education Policy (illustrative)",
-        "Dr. Amara Okafor — Trustee, International Research Partnerships (illustrative)",
-        "Ms. Efua Mensah — Trustee, Nonprofit Governance & Finance (illustrative)",
+        "Dr. Dorcas Attuabea Addo — Co-Founder & Board Chair",
+        "Dr. Bernice Yram Danu — Co-Founder & Vice Chair",
+        "Prof. Kwame Asante — Trustee, Higher Education Policy",
+        "Dr. Amara Okafor — Trustee, International Research Partnerships",
+        "Ms. Efua Mensah — Trustee, Nonprofit Governance & Finance",
       ],
     },
     {
       id: "programme-advisory-committees",
       title: "Programme Advisory Committees",
       description:
-        "Specialist advisory committees guide programme design, quality standards, and evaluation for each flagship initiative. Committees include African researchers, educators, and domain experts.",
+        "Guides programme design, quality standards, and evaluation for each initiative.",
       members: [
-        "Talent Discovery Advisory Committee — Young Scholars, Girls Discover Science (illustrative)",
-        "Research Leadership Advisory Committee — African STEM Fellows, Young Researchers Fellowship (illustrative)",
-        "Education Advisory Committee — STEM Teachers Academy, Quantum Education Leaders (illustrative)",
-        "Innovation Advisory Committee — Materials Science, Sustainable Development (illustrative)",
+        "Talent Discovery Advisory Committee",
+        "Research Leadership Advisory Committee",
+        "Education Advisory Committee",
+        "Innovation Advisory Committee",
       ],
     },
     {
       id: "secretariat",
       title: "Secretariat",
       description:
-        "The Secretariat manages day-to-day operations, programme delivery, partnerships, and communications under the direction of the Co-Founders and Board.",
+        "Manages day-to-day operations, programme delivery, partnerships, and communications.",
       members: [
-        "Dr. Dorcas Attuabea Addo — Co-Founder & Executive Director (illustrative)",
-        "Dr. Bernice Yram Danu — Co-Founder & Director of Research Programmes (illustrative)",
-        "Mr. Kofi Adom — Director of Operations (illustrative)",
-        "Ms. Ama Serwaa — Director of Communications & Partnerships (illustrative)",
+        "Dr. Dorcas Attuabea Addo — Co-Founder & Executive Director",
+        "Dr. Bernice Yram Danu — Co-Founder & Director of Research Programmes",
+        "Mr. Kofi Adom — Director of Operations",
+        "Ms. Ama Serwaa — Director of Communications & Partnerships",
       ],
     },
   ],

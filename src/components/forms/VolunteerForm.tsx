@@ -2,8 +2,14 @@
 
 import { useState, type FormEvent } from "react";
 import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ApplicationFormShell } from "@/components/forms/ApplicationFormShell";
+import {
+  formHintClass,
+  formInputClass,
+  formLabelClass,
+} from "@/components/forms/formStyles";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 interface VolunteerFormProps {
   className?: string;
@@ -11,23 +17,18 @@ interface VolunteerFormProps {
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
-const inputClass =
-  "w-full rounded-xl border border-[#0A2540]/20 bg-white px-4 py-2.5 text-sm text-[#0A2540] placeholder:text-[#0A2540]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2";
-
-const labelClass = "mb-1.5 block text-sm font-medium text-[#0A2540]";
-
 const interestOptions = [
-  "Menstrual Health Programs",
-  "Mental Health & Wellness",
-  "Career Development",
-  "Kit Assembly & Logistics",
-  "Event Support",
-  "Mentorship",
-  "Administrative Support",
+  "STEM camps and workshops",
+  "Event and logistics support",
+  "Mentorship programme support",
+  "Teacher training events",
+  "Outreach and community programmes",
+  "Communications and media",
+  "Administrative support",
   "Other",
 ];
 
-const ageRangeOptions = ["18–24", "25–34", "35–44", "45–54", "55+"];
+const ageRangeOptions = ["18 to 24", "25 to 34", "35 to 44", "45 to 54", "55+"];
 
 const availabilityOptions = [
   "Weekday mornings",
@@ -62,9 +63,12 @@ export function VolunteerForm({ className }: VolunteerFormProps) {
     if (!form.phone.trim()) next.phone = "Phone is required.";
     if (!form.location.trim()) next.location = "Location is required.";
     if (!form.ageRange) next.ageRange = "Please select an age range.";
-    if (!form.areaOfInterest) next.areaOfInterest = "Please select an area of interest.";
-    if (!form.availability) next.availability = "Please select your availability.";
-    if (!form.motivation.trim()) next.motivation = "Please tell us why you want to volunteer.";
+    if (!form.areaOfInterest)
+      next.areaOfInterest = "Please select an area of interest.";
+    if (!form.availability)
+      next.availability = "Please select your availability.";
+    if (!form.motivation.trim())
+      next.motivation = "Please tell us why you want to volunteer.";
     if (!consent) next.consent = "You must agree to continue.";
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -85,235 +89,277 @@ export function VolunteerForm({ className }: VolunteerFormProps) {
 
   if (status === "success") {
     return (
-      <div
-        className={cn(
-          "rounded-2xl bg-[#14B8A6]/10 p-6 text-center",
-          className
-        )}
-        role="status"
-      >
-        <p className="font-semibold text-[#14B8A6]">
-          Thank you, we received your message.
-        </p>
-        <p className="mt-2 text-sm text-[#0A2540]/70">
-          Our volunteer coordinator will contact you within 5 business days.
-        </p>
-      </div>
+      <ApplicationFormShell className={className}>
+        <div className="py-6 text-center" role="status">
+          <p className="font-display text-xl font-semibold text-navy">
+            Volunteer application received
+          </p>
+          <p className="mt-2 text-sm text-navy/70">
+            Mock confirmation only. Our volunteer team will follow up once live
+            applications are connected.
+          </p>
+        </div>
+      </ApplicationFormShell>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className={cn("space-y-5", className)} noValidate>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="fullName" className={labelClass}>
-            Full name <span className="text-[#14B8A6]">*</span>
-          </label>
-          <input
-            id="fullName"
-            type="text"
-            value={form.fullName}
-            onChange={(e) => setForm((f) => ({ ...f, fullName: e.target.value }))}
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.fullName ? "true" : undefined}
-          />
-          {errors.fullName && (
-            <p className="mt-1 text-xs text-[#14B8A6]" role="alert">{errors.fullName}</p>
-          )}
+    <ApplicationFormShell className={className}>
+      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="fullName" className={formLabelClass}>
+              Full name <span className="text-teal">*</span>
+            </label>
+            <input
+              id="fullName"
+              type="text"
+              value={form.fullName}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, fullName: e.target.value }))
+              }
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.fullName ? "true" : undefined}
+            />
+            {errors.fullName && (
+              <p className={formHintClass} role="alert">
+                {errors.fullName}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="email" className={formLabelClass}>
+              Email <span className="text-teal">*</span>
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.email ? "true" : undefined}
+            />
+            {errors.email && (
+              <p className={formHintClass} role="alert">
+                {errors.email}
+              </p>
+            )}
+          </div>
         </div>
-        <div>
-          <label htmlFor="email" className={labelClass}>
-            Email <span className="text-[#14B8A6]">*</span>
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={form.email}
-            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.email ? "true" : undefined}
-          />
-          {errors.email && (
-            <p className="mt-1 text-xs text-[#14B8A6]" role="alert">{errors.email}</p>
-          )}
-        </div>
-      </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="phone" className={labelClass}>
-            Phone <span className="text-[#14B8A6]">*</span>
-          </label>
-          <input
-            id="phone"
-            type="tel"
-            value={form.phone}
-            onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.phone ? "true" : undefined}
-          />
-          {errors.phone && (
-            <p className="mt-1 text-xs text-[#14B8A6]" role="alert">{errors.phone}</p>
-          )}
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="phone" className={formLabelClass}>
+              Phone <span className="text-teal">*</span>
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              value={form.phone}
+              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.phone ? "true" : undefined}
+            />
+            {errors.phone && (
+              <p className={formHintClass} role="alert">
+                {errors.phone}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="location" className={formLabelClass}>
+              Location <span className="text-teal">*</span>
+            </label>
+            <input
+              id="location"
+              type="text"
+              placeholder="City, Region"
+              value={form.location}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, location: e.target.value }))
+              }
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.location ? "true" : undefined}
+            />
+            {errors.location && (
+              <p className={formHintClass} role="alert">
+                {errors.location}
+              </p>
+            )}
+          </div>
         </div>
-        <div>
-          <label htmlFor="location" className={labelClass}>
-            Location <span className="text-[#14B8A6]">*</span>
-          </label>
-          <input
-            id="location"
-            type="text"
-            placeholder="City, Region"
-            value={form.location}
-            onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.location ? "true" : undefined}
-          />
-          {errors.location && (
-            <p className="mt-1 text-xs text-[#14B8A6]" role="alert">{errors.location}</p>
-          )}
-        </div>
-      </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="ageRange" className={formLabelClass}>
+              Age range <span className="text-teal">*</span>
+            </label>
+            <select
+              id="ageRange"
+              value={form.ageRange}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, ageRange: e.target.value }))
+              }
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.ageRange ? "true" : undefined}
+            >
+              <option value="">Select age range</option>
+              {ageRangeOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+            {errors.ageRange && (
+              <p className={formHintClass} role="alert">
+                {errors.ageRange}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="areaOfInterest" className={formLabelClass}>
+              Area of interest <span className="text-teal">*</span>
+            </label>
+            <select
+              id="areaOfInterest"
+              value={form.areaOfInterest}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, areaOfInterest: e.target.value }))
+              }
+              className={formInputClass}
+              disabled={status === "loading"}
+              aria-invalid={errors.areaOfInterest ? "true" : undefined}
+            >
+              <option value="">Select area</option>
+              {interestOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+            {errors.areaOfInterest && (
+              <p className={formHintClass} role="alert">
+                {errors.areaOfInterest}
+              </p>
+            )}
+          </div>
+        </div>
+
         <div>
-          <label htmlFor="ageRange" className={labelClass}>
-            Age range <span className="text-[#14B8A6]">*</span>
+          <label htmlFor="availability" className={formLabelClass}>
+            Availability <span className="text-teal">*</span>
           </label>
           <select
-            id="ageRange"
-            value={form.ageRange}
-            onChange={(e) => setForm((f) => ({ ...f, ageRange: e.target.value }))}
-            className={inputClass}
+            id="availability"
+            value={form.availability}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, availability: e.target.value }))
+            }
+            className={formInputClass}
             disabled={status === "loading"}
-            aria-invalid={errors.ageRange ? "true" : undefined}
+            aria-invalid={errors.availability ? "true" : undefined}
           >
-            <option value="">Select age range</option>
-            {ageRangeOptions.map((opt) => (
-              <option key={opt} value={opt}>{opt}</option>
+            <option value="">Select availability</option>
+            {availabilityOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
             ))}
           </select>
-          {errors.ageRange && (
-            <p className="mt-1 text-xs text-[#14B8A6]" role="alert">{errors.ageRange}</p>
+          {errors.availability && (
+            <p className={formHintClass} role="alert">
+              {errors.availability}
+            </p>
           )}
         </div>
+
         <div>
-          <label htmlFor="areaOfInterest" className={labelClass}>
-            Area of interest <span className="text-[#14B8A6]">*</span>
+          <label htmlFor="experience" className={formLabelClass}>
+            Relevant experience
           </label>
-          <select
-            id="areaOfInterest"
-            value={form.areaOfInterest}
-            onChange={(e) => setForm((f) => ({ ...f, areaOfInterest: e.target.value }))}
-            className={inputClass}
+          <textarea
+            id="experience"
+            rows={3}
+            value={form.experience}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, experience: e.target.value }))
+            }
+            className={cn(formInputClass, "resize-y")}
+            placeholder="Tell us about any relevant skills or experience (optional)"
             disabled={status === "loading"}
-            aria-invalid={errors.areaOfInterest ? "true" : undefined}
-          >
-            <option value="">Select area</option>
-            {interestOptions.map((opt) => (
-              <option key={opt} value={opt}>{opt}</option>
-            ))}
-          </select>
-          {errors.areaOfInterest && (
-            <p className="mt-1 text-xs text-[#14B8A6]" role="alert">{errors.areaOfInterest}</p>
+          />
+        </div>
+
+        <div>
+          <label htmlFor="motivation" className={formLabelClass}>
+            Why do you want to volunteer? <span className="text-teal">*</span>
+          </label>
+          <textarea
+            id="motivation"
+            rows={4}
+            value={form.motivation}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, motivation: e.target.value }))
+            }
+            className={cn(formInputClass, "resize-y")}
+            disabled={status === "loading"}
+            aria-invalid={errors.motivation ? "true" : undefined}
+          />
+          {errors.motivation && (
+            <p className={formHintClass} role="alert">
+              {errors.motivation}
+            </p>
           )}
         </div>
-      </div>
 
-      <div>
-        <label htmlFor="availability" className={labelClass}>
-          Availability <span className="text-[#14B8A6]">*</span>
-        </label>
-        <select
-          id="availability"
-          value={form.availability}
-          onChange={(e) => setForm((f) => ({ ...f, availability: e.target.value }))}
-          className={inputClass}
-          disabled={status === "loading"}
-          aria-invalid={errors.availability ? "true" : undefined}
-        >
-          <option value="">Select availability</option>
-          {availabilityOptions.map((opt) => (
-            <option key={opt} value={opt}>{opt}</option>
-          ))}
-        </select>
-        {errors.availability && (
-          <p className="mt-1 text-xs text-[#14B8A6]" role="alert">{errors.availability}</p>
+        <div className="flex items-start gap-3">
+          <input
+            id="consent"
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-navy/30 text-navy focus-visible:ring-2 focus-visible:ring-blue"
+            disabled={status === "loading"}
+            aria-invalid={errors.consent ? "true" : undefined}
+          />
+          <label htmlFor="consent" className="text-sm text-navy/80">
+            I agree to the foundation&apos;s volunteer policies and consent to
+            being contacted about volunteer opportunities.{" "}
+            <span className="text-teal">*</span>
+          </label>
+        </div>
+        {errors.consent && (
+          <p className={formHintClass} role="alert">
+            {errors.consent}
+          </p>
         )}
-      </div>
 
-      <div>
-        <label htmlFor="experience" className={labelClass}>
-          Relevant experience
-        </label>
-        <textarea
-          id="experience"
-          rows={3}
-          value={form.experience}
-          onChange={(e) => setForm((f) => ({ ...f, experience: e.target.value }))}
-          className={cn(inputClass, "resize-y")}
-          placeholder="Tell us about any relevant skills or experience (optional)"
-          disabled={status === "loading"}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="motivation" className={labelClass}>
-          Why do you want to volunteer? <span className="text-[#14B8A6]">*</span>
-        </label>
-        <textarea
-          id="motivation"
-          rows={4}
-          value={form.motivation}
-          onChange={(e) => setForm((f) => ({ ...f, motivation: e.target.value }))}
-          className={cn(inputClass, "resize-y")}
-          disabled={status === "loading"}
-          aria-invalid={errors.motivation ? "true" : undefined}
-        />
-        {errors.motivation && (
-          <p className="mt-1 text-xs text-[#14B8A6]" role="alert">{errors.motivation}</p>
+        {status === "error" && (
+          <p className="text-sm text-teal" role="alert">
+            Something went wrong. Please try again.
+          </p>
         )}
-      </div>
 
-      <div className="flex items-start gap-3">
-        <input
-          id="consent"
-          type="checkbox"
-          checked={consent}
-          onChange={(e) => setConsent(e.target.checked)}
-          className="mt-1 h-4 w-4 rounded border-[#0A2540]/30 text-[#0A2540] focus-visible:ring-2 focus-visible:ring-[#0A2540]"
-          disabled={status === "loading"}
-          aria-invalid={errors.consent ? "true" : undefined}
-        />
-        <label htmlFor="consent" className="text-sm text-[#0A2540]/80">
-          I agree to the foundation&apos;s volunteer policies and consent to being
-          contacted about volunteer opportunities. <span className="text-[#14B8A6]">*</span>
-        </label>
-      </div>
-      {errors.consent && (
-        <p className="text-xs text-[#14B8A6]" role="alert">{errors.consent}</p>
-      )}
-
-      {status === "error" && (
-        <p className="text-sm text-[#14B8A6]" role="alert">
-          Something went wrong. Please try again.
-        </p>
-      )}
-
-      <Button type="submit" fullWidth disabled={status === "loading"}>
-        {status === "loading" ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" aria-hidden="true" />
-            Submitting…
-          </>
-        ) : (
-          "Submit Application"
-        )}
-      </Button>
-    </form>
+        <Button type="submit" fullWidth disabled={status === "loading"}>
+          {status === "loading" ? (
+            <>
+              <Loader2
+                className="h-4 w-4 animate-spin motion-reduce:animate-none"
+                aria-hidden="true"
+              />
+              Submitting…
+            </>
+          ) : (
+            "Submit application"
+          )}
+        </Button>
+      </form>
+    </ApplicationFormShell>
   );
 }
+

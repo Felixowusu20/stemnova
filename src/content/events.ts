@@ -1,7 +1,10 @@
 import { images } from "@/content/images";
 import type { Event } from "@/types";
 
-/** Events — illustrative placeholder data, not confirmed schedules. */
+/**
+ * Events — dummy schedule data for the public site.
+ * Date, time, and registration will later be managed from the admin panel.
+ */
 export const events: Event[] = [
   {
     id: "evt-upcoming-1",
@@ -9,12 +12,29 @@ export const events: Event[] = [
     title: "Africa STEM Leadership Summit 2026",
     category: "conference",
     date: "2026-03-15",
-    time: "9:00 AM – 5:00 PM",
-    location: "Accra International Conference Centre, Ghana",
+    time: "9:00 AM to 5:00 PM GMT",
+    location: "Accra, Ghana",
     description:
-      "STEMNova's flagship annual gathering bringing together researchers, educators, policymakers, and funders to advance African scientific talent development. Keynote addresses, programme showcases, and policy roundtables on STEM education reform. (Illustrative event — confirm details before promotion.)",
+      "STEMNova's flagship gathering for researchers, educators, policymakers, and funders advancing African scientific talent.",
+    about:
+      "The Africa STEM Leadership Summit brings together research leaders, educators, policymakers, and partners to share progress, forge collaborations, and strengthen pathways for African scientific talent. Sessions cover talent discovery, research leadership, and continental partnership models.",
+    audience:
+      "Researchers, university leaders, educators, policymakers, funders, and STEM programme partners across Africa.",
+    highlights: [
+      "Keynote conversations with African research leaders",
+      "Panel sessions on talent pipelines and fellowships",
+      "Networking across institutions and funders",
+      "Showcases from STEMNova programme alumni",
+    ],
+    agenda: [
+      { time: "9:00 AM", title: "Registration and welcome" },
+      { time: "10:00 AM", title: "Opening keynote" },
+      { time: "11:30 AM", title: "Talent discovery panel" },
+      { time: "1:00 PM", title: "Lunch and networking" },
+      { time: "2:30 PM", title: "Partnership roundtables" },
+      { time: "4:30 PM", title: "Closing remarks" },
+    ],
     registrationRequired: true,
-    registrationUrl: "/events/africa-stem-leadership-summit-2026/register",
     imageUrl: images.hero.events,
     isPast: false,
     isIllustrative: true,
@@ -22,126 +42,67 @@ export const events: Event[] = [
   {
     id: "evt-upcoming-2",
     slug: "young-scholars-discovery-camp-2026",
-    title: "Young Scholars STEM Discovery Camp — Easter 2026",
+    title: "Young Scholars STEM Discovery Camp 2026",
     category: "camp",
     date: "2026-04-06",
-    time: "8:00 AM – 4:00 PM (5 days)",
-    location: "University of Ghana, Legon Campus",
+    time: "8:00 AM to 4:00 PM GMT",
+    location: "University of Ghana, Legon",
     description:
-      "A five-day immersive camp for 120 selected secondary students featuring laboratory modules, research shadowing, mentorship introductions, and science communication workshops. Open to Young Scholars nominees from partner schools. (Illustrative event.)",
+      "A five day immersive camp for secondary students with laboratory modules, research shadowing, and mentorship workshops.",
+    about:
+      "Young Scholars STEM Discovery Camp is an immersive experience for secondary students ready to explore laboratory science, computational thinking, and research careers. Participants join mentors for hands on modules and peer learning across STEM disciplines.",
+    audience:
+      "Secondary school students aged 14 to 19 with strong STEM interest, plus accompanying teachers from partner schools.",
+    highlights: [
+      "Laboratory immersion modules",
+      "Research shadowing with university mentors",
+      "Science communication workshops",
+      "Peer cohorts and mentorship matching",
+    ],
+    agenda: [
+      { time: "8:00 AM", title: "Check in and orientation" },
+      { time: "9:00 AM", title: "Laboratory module" },
+      { time: "12:00 PM", title: "Lunch break" },
+      { time: "1:00 PM", title: "Research shadowing" },
+      { time: "3:00 PM", title: "Mentorship circle" },
+      { time: "4:00 PM", title: "Day wrap up" },
+    ],
     registrationRequired: true,
-    registrationUrl: "/events/young-scholars-discovery-camp-2026/register",
     imageUrl: images.programmes.youngScholars,
     isPast: false,
     isIllustrative: true,
   },
   {
     id: "evt-upcoming-3",
-    slug: "sustainable-innovation-hackathon-2026",
-    title: "Innovation for Africa Hackathon 2026",
-    category: "hackathon",
-    date: "2026-05-22",
-    time: "48-hour event",
-    location: "Placeholder African Tech Hub, Lagos, Nigeria",
-    description:
-      "A 48-hour hackathon challenging university teams to develop STEM solutions for climate resilience, renewable energy, and agricultural productivity. Mentorship from researchers and social entrepreneurs. Prizes include innovation grants. (Illustrative event.)",
-    registrationRequired: true,
-    registrationUrl: "/events/sustainable-innovation-hackathon-2026/register",
-    imageUrl: images.programmes.innovation,
-    isPast: false,
-    isIllustrative: true,
-  },
-  {
-    id: "evt-upcoming-4",
-    slug: "quantum-education-workshop-2026",
-    title: "Quantum Education Workshop for University Faculty",
+    slug: "girls-discover-science-workshop-2026",
+    title: "Girls Discover Science Workshop 2026",
     category: "workshop",
-    date: "2026-06-10",
-    time: "9:00 AM – 4:00 PM (3 days)",
-    location: "Kigali, Rwanda",
+    date: "2026-05-20",
+    time: "10:00 AM to 3:00 PM SAST",
+    location: "Cape Town, South Africa",
     description:
-      "A three-day intensive for university faculty developing quantum science curricula, co-facilitated with international quantum researchers. Modules cover foundational concepts, simulation tools, and curriculum integration strategies. (Illustrative event.)",
+      "Hands on STEM workshops, career panels, and mentor conversations for girls exploring science and engineering pathways.",
+    about:
+      "Girls Discover Science Workshop creates a welcoming space for girls to try engineering challenges, meet women scientists, and explore STEM career pathways. The day blends practical activities with mentoring and peer connection.",
+    audience:
+      "Girls in secondary school, parents or guardians, and women STEM mentors from partner organisations.",
+    highlights: [
+      "Hands on engineering challenge",
+      "Women in Science role model panel",
+      "Career pathway conversations",
+      "Mentor mentee introductions",
+    ],
+    agenda: [
+      { time: "10:00 AM", title: "Welcome and icebreakers" },
+      { time: "10:30 AM", title: "Engineering challenge" },
+      { time: "12:30 PM", title: "Lunch" },
+      { time: "1:15 PM", title: "Women in Science panel" },
+      { time: "2:15 PM", title: "Mentorship conversations" },
+      { time: "3:00 PM", title: "Closing circle" },
+    ],
     registrationRequired: true,
-    registrationUrl: "/events/quantum-education-workshop-2026/register",
-    imageUrl: images.programmes.quantum,
-    isPast: false,
-    isIllustrative: true,
-  },
-  {
-    id: "evt-past-1",
-    slug: "girls-discover-science-symposium-2025",
-    title: "Girls Discover Science Symposium 2025",
-    category: "symposium",
-    date: "2025-10-18",
-    time: "10:00 AM – 4:00 PM",
-    location: "University of Cape Town, South Africa",
-    description:
-      "Over 300 girls and 80 women scientist mentors gathered for STEM workshops, career panels, and peer networking. The symposium launched the Girls Discover Science Ambassadors programme in Southern Africa. (Illustrative past event.)",
-    registrationRequired: false,
     imageUrl: images.programmes.girlsScience,
-    galleryImageUrls: [
-      images.programmes.girlsScience,
-      images.gallery[3],
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80",
-    ],
-    isPast: true,
-    isIllustrative: true,
-  },
-  {
-    id: "evt-past-2",
-    slug: "stem-teachers-conference-2025",
-    title: "STEM Teachers Academy Annual Conference 2025",
-    category: "conference",
-    date: "2025-08-14",
-    time: "9:00 AM – 5:00 PM (2 days)",
-    location: "Kumasi, Ghana",
-    description:
-      "420 educators from 180 partner schools shared classroom innovations, participated in master classes, and engaged policymakers on STEM curriculum reform. Best practice awards recognized outstanding teacher-led initiatives. (Illustrative past event.)",
-    registrationRequired: true,
-    imageUrl: images.programmes.teachers,
-    galleryImageUrls: [
-      images.programmes.teachers,
-      images.gallery[1],
-    ],
-    isPast: true,
-    isIllustrative: true,
-  },
-  {
-    id: "evt-past-3",
-    slug: "innovation-challenge-finals-2025",
-    title: "Innovation for Africa Challenge — Finals 2025",
-    category: "challenge",
-    date: "2025-11-28",
-    time: "2:00 PM – 6:00 PM",
-    location: "Nairobi Innovation Hub, Kenya",
-    description:
-      "Twelve finalist teams presented sustainable development innovations to a panel of scientists, investors, and policymakers. Three teams received follow-on grants for pilot deployment. (Illustrative past event.)",
-    registrationRequired: false,
-    imageUrl: images.programmes.innovation,
-    galleryImageUrls: [
-      images.programmes.innovation,
-      images.gallery[0],
-    ],
-    isPast: true,
-    isIllustrative: true,
-  },
-  {
-    id: "evt-past-4",
-    slug: "mentorship-network-launch-2025",
-    title: "STEMNova Mentorship Network Launch Event",
-    category: "mentorship",
-    date: "2025-02-20",
-    time: "10:00 AM – 1:00 PM",
-    location: "Accra, Ghana",
-    description:
-      "The inaugural mentor-mentee matching event connected 200 pairs across 12 STEM disciplines. Mentors and mentees participated in goal-setting workshops and signed structured mentorship agreements. (Illustrative past event.)",
-    registrationRequired: true,
-    imageUrl: images.programmes.mentorship,
-    galleryImageUrls: [
-      images.programmes.mentorship,
-      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=80",
-    ],
-    isPast: true,
+    isPast: false,
     isIllustrative: true,
   },
 ];

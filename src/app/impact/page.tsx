@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Download, MapPin, Play, Video } from "lucide-react";
+import { Download, MapPin } from "lucide-react";
 import {
-  Button,
   Container,
   CtaSection,
   ImpactCounter,
@@ -10,7 +9,10 @@ import {
   SectionHeading,
 } from "@/components";
 import {
-  galleryAlbums,
+  ImpactBarChart,
+  ImpactDonutChart,
+} from "@/components/ui/ImpactCharts";
+import {
   images,
   impactData,
   IMPACT_DATA_DISCLAIMER,
@@ -19,18 +21,22 @@ import {
 export const metadata: Metadata = {
   title: "Our Impact",
   description:
-    "Explore STEMNova Foundation's impact — students empowered, researchers supported, women in STEM, teachers trained, and African countries reached.",
+    "See STEMNova Foundation impact across students, researchers, teachers, women in STEM, and partners across Africa.",
 };
 
 export default function ImpactPage() {
-  const workshopAlbum = galleryAlbums.find((a) => a.slug === "workshops");
-  const eventsAlbum = galleryAlbums.find((a) => a.slug === "events");
+  const highlightStats = impactData.statistics.slice(0, 6);
+  const stories = impactData.successStories.slice(0, 3);
+  const locationBars = impactData.locations.map((location) => ({
+    label: location.name,
+    value: location.girlsReached,
+  }));
 
   return (
     <>
       <PageHero
         title="Our Impact"
-        description="Animated metrics, success stories, and programme outcomes illustrating STEMNova's continental reach—from talent discovery to research leadership."
+        description="Clear metrics and stories from STEMNova programmes across Africa."
         backgroundImage={images.hero.impact}
         breadcrumbs={[
           { label: "Home", href: "/" },
@@ -38,185 +44,150 @@ export default function ImpactPage() {
         ]}
       />
 
-      {/* Overview */}
       <section className="py-16 sm:py-20">
         <Container>
           <SectionHeading
             title="Impact at a Glance"
-            description="Illustrative metrics spanning talent discovery, research fellowships, women in STEM, teacher training, and continental partnerships."
-            className="mb-12"
+            description="Key figures from talent discovery, fellowships, teaching, and partnerships."
+            className="mb-10"
           />
-          <ul className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {impactData.statistics.map((stat) => (
+          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {highlightStats.map((stat) => (
               <li key={stat.label}>
-                <ImpactCounter stat={stat} />
+                <ImpactCounter
+                  stat={{ ...stat, note: undefined }}
+                  className="border-navy/10 bg-white"
+                />
               </li>
             ))}
           </ul>
-          <p className="mx-auto mt-10 max-w-2xl text-center text-xs text-[#0A2540]/50">
+          <p className="mx-auto mt-8 max-w-2xl text-center text-xs text-navy/50">
             {IMPACT_DATA_DISCLAIMER}
           </p>
         </Container>
       </section>
 
-      {/* Program Breakdown */}
-      <section className="bg-[#F8FAFC] py-16 sm:py-20">
+      <section className="bg-light py-16 sm:py-20">
         <Container>
           <SectionHeading
-            title="Impact by Programme"
-            description="How programme activity is distributed across STEMNova's nine flagship initiatives."
+            title="Insights in Charts"
+            description="A simple view of programme reach and how support is allocated."
             align="center"
             className="mb-12"
           />
-          <ul className="mx-auto max-w-3xl space-y-6">
-            {impactData.programBreakdown.map((item) => (
-              <li key={item.programSlug}>
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <h3 className="font-display text-lg font-semibold text-[#0A2540]">
-                      {item.programTitle}
-                    </h3>
-                    <p className="mt-1 text-sm text-[#0A2540]/70">
-                      {item.description}
-                    </p>
-                  </div>
-                  <span className="shrink-0 font-display text-2xl font-bold text-[#0A2540]">
-                    {item.percentage}%
-                  </span>
-                </div>
-                <div
-                  className="mt-3 h-2 overflow-hidden rounded-full bg-[#0A2540]/10"
-                  role="progressbar"
-                  aria-valuenow={item.percentage}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-label={`${item.programTitle}: ${item.percentage}% of impact`}
-                >
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-[#0A2540] to-[#14B8A6]"
-                    style={{ width: `${item.percentage}%` }}
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </section>
-
-      {/* Locations */}
-      <section className="py-16 sm:py-20">
-        <Container>
-          <SectionHeading
-            title="Where We Work"
-            description="Our programs reach communities across Greater Accra and the Eastern Region."
-            className="mb-10"
-          />
-          <div className="grid gap-10 lg:grid-cols-2">
-            {/* Map-looking section */}
-            <div
-              className="relative flex min-h-[320px] items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#0A2540]/10 via-[#14B8A6]/10 to-[#F4B942]/10"
-              aria-hidden="true"
-            >
-              <div className="absolute inset-0 opacity-20">
-                <svg
-                  viewBox="0 0 400 300"
-                  className="h-full w-full"
-                  preserveAspectRatio="xMidYMid slice"
-                >
-                  <circle cx="180" cy="140" r="80" fill="#0A2540" opacity="0.15" />
-                  <circle cx="220" cy="120" r="50" fill="#14B8A6" opacity="0.2" />
-                  <circle cx="160" cy="180" r="40" fill="#F4B942" opacity="0.15" />
-                  <circle cx="240" cy="160" r="30" fill="#14B8A6" opacity="0.1" />
-                </svg>
-              </div>
-              <div className="relative text-center">
-                <MapPin className="mx-auto h-12 w-12 text-[#0A2540]" />
-                <p className="mt-3 font-display text-xl font-semibold text-[#0A2540]">
-                  Ghana
-                </p>
-                <p className="text-sm text-[#0A2540]/60">
-                  Greater Accra & Eastern Region
-                </p>
-              </div>
-            </div>
-
-            {/* Accessible list fallback */}
-            <div>
-              <h3 className="sr-only">Community impact by location</h3>
-              <ul className="space-y-4">
-                {impactData.locations.map((location) => (
-                  <li
-                    key={location.name}
-                    className="rounded-2xl border border-[#0A2540]/10 bg-white p-5 shadow-sm"
-                  >
-                    <div className="flex items-start gap-3">
-                      <MapPin
-                        className="mt-0.5 h-5 w-5 shrink-0 text-[#14B8A6]"
-                        aria-hidden="true"
-                      />
-                      <div>
-                        <h4 className="font-semibold text-[#0A2540]">
-                          {location.name}
-                        </h4>
-                        <p className="text-sm text-[#0A2540]/60">
-                          {location.region}
-                        </p>
-                        <dl className="mt-2 flex gap-6 text-sm">
-                          <div>
-                            <dt className="text-[#0A2540]/50">Students reached</dt>
-                            <dd className="font-semibold text-[#0A2540]">
-                              {location.girlsReached.toLocaleString()}
-                            </dd>
-                          </div>
-                          <div>
-                            <dt className="text-[#0A2540]/50">Schools</dt>
-                            <dd className="font-semibold text-[#0A2540]">
-                              {location.schoolsPartnered}
-                            </dd>
-                          </div>
-                        </dl>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-xs text-[#0A2540]/50">
-                Location data is illustrative for website development.
+          <div className="grid gap-8 lg:grid-cols-2">
+            <article className="rounded-2xl border border-navy/10 bg-white p-6 sm:p-8">
+              <h3 className="font-display text-xl font-semibold text-navy">
+                Impact by Programme
+              </h3>
+              <p className="mt-2 text-sm text-navy/70">
+                Share of activity across flagship programmes.
               </p>
-            </div>
+              <ImpactBarChart
+                className="mt-6"
+                items={impactData.programBreakdown.map((item) => ({
+                  label: item.programTitle,
+                  value: item.percentage,
+                }))}
+              />
+            </article>
+
+            <article className="rounded-2xl border border-navy/10 bg-white p-6 sm:p-8">
+              <h3 className="font-display text-xl font-semibold text-navy">
+                How Support Is Used
+              </h3>
+              <p className="mt-2 text-sm text-navy/70">
+                Planned allocation of donated resources.
+              </p>
+              <ImpactDonutChart
+                className="mt-8"
+                items={impactData.donationUsage.map((item) => ({
+                  label: item.category,
+                  value: item.percentage,
+                }))}
+              />
+            </article>
           </div>
         </Container>
       </section>
 
-      {/* Success Stories */}
-      <section className="bg-[#F8FAFC] py-16 sm:py-20">
+      <section className="py-16 sm:py-20">
+        <Container>
+          <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
+            <div>
+              <SectionHeading
+                title="Where We Work"
+                description="Growing reach across partner cities and regions in Africa."
+                className="mb-8"
+              />
+              <ul className="space-y-3">
+                {impactData.locations.map((location) => (
+                  <li
+                    key={location.name}
+                    className="flex items-start gap-3 rounded-xl border border-navy/10 bg-white p-4"
+                  >
+                    <MapPin
+                      className="mt-0.5 h-5 w-5 shrink-0 text-teal"
+                      aria-hidden="true"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-navy">{location.name}</h3>
+                      <p className="text-sm text-navy/60">{location.region}</p>
+                      <p className="mt-2 text-sm text-navy">
+                        {location.girlsReached.toLocaleString()} students,{" "}
+                        {location.schoolsPartnered} schools
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <article className="rounded-2xl border border-navy/10 bg-light p-6 sm:p-8">
+              <h3 className="font-display text-xl font-semibold text-navy">
+                Reach by Location
+              </h3>
+              <p className="mt-2 text-sm text-navy/70">
+                Comparative student reach across active locations.
+              </p>
+              <ImpactBarChart
+                className="mt-6"
+                valueSuffix=""
+                items={locationBars}
+              />
+            </article>
+          </div>
+        </Container>
+      </section>
+
+      <section className="bg-light py-16 sm:py-20">
         <Container>
           <SectionHeading
-            title="Success Stories"
-            description="Illustrative stories of students, teachers, and researchers whose pathways were transformed through STEMNova programmes."
+            title="Stories of Change"
+            description="Examples of how STEMNova pathways support students, teachers, and researchers."
             align="center"
-            className="mb-12"
+            className="mb-10"
           />
-          <ul className="grid gap-8 md:grid-cols-2">
-            {impactData.successStories.map((story) => (
+          <ul className="grid gap-6 md:grid-cols-3">
+            {stories.map((story) => (
               <li
                 key={story.id}
-                className="overflow-hidden rounded-2xl bg-white shadow-sm"
+                className="overflow-hidden rounded-2xl border border-navy/10 bg-white"
               >
-                <div className="relative aspect-[16/9]">
+                <div className="relative aspect-[16/10]">
                   <Image
                     src={story.imageUrl}
                     alt=""
                     fill
                     className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
-                <div className="p-6">
-                  <h3 className="font-display text-xl font-semibold text-[#0A2540]">
+                <div className="p-5">
+                  <h3 className="font-display text-lg font-semibold text-navy">
                     {story.title}
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[#0A2540]/75">
+                  <p className="mt-2 text-sm leading-relaxed text-navy">
                     {story.summary}
                   </p>
                 </div>
@@ -226,38 +197,37 @@ export default function ImpactPage() {
         </Container>
       </section>
 
-      {/* Before & After */}
       <section className="py-16 sm:py-20">
         <Container>
           <SectionHeading
-            title="Before & After"
-            description="Illustrative comparisons showing the change our programs aim to create."
+            title="Progress Over Time"
+            description="Simple before and after markers from programme participation."
             align="center"
-            className="mb-12"
+            className="mb-10"
           />
-          <ul className="grid gap-8 md:grid-cols-3">
-            {impactData.beforeAfterStories.map((story) => (
+          <ul className="grid gap-5 md:grid-cols-2">
+            {impactData.beforeAfterStories.slice(0, 4).map((story) => (
               <li
                 key={story.id}
-                className="rounded-2xl border border-[#0A2540]/10 bg-white p-6 shadow-sm"
+                className="rounded-2xl border border-navy/10 bg-white p-6"
               >
-                <h3 className="font-display text-lg font-semibold text-[#0A2540]">
+                <h3 className="font-display text-lg font-semibold text-navy">
                   {story.title}
                 </h3>
-                <div className="mt-4 space-y-4">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-[#14B8A6]">
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-xl bg-navy/5 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-navy/50">
                       Before
                     </p>
-                    <p className="mt-1 text-sm leading-relaxed text-[#0A2540]/75">
+                    <p className="mt-2 text-sm leading-relaxed text-navy">
                       {story.before}
                     </p>
                   </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-[#14B8A6]">
+                  <div className="rounded-xl bg-teal/10 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-teal">
                       After
                     </p>
-                    <p className="mt-1 text-sm leading-relaxed text-[#0A2540]/75">
+                    <p className="mt-2 text-sm leading-relaxed text-navy">
                       {story.after}
                     </p>
                   </div>
@@ -268,125 +238,35 @@ export default function ImpactPage() {
         </Container>
       </section>
 
-      {/* Photo Section */}
-      {workshopAlbum && (
-        <section className="bg-[#0A2540]/5 py-16 sm:py-20">
-          <Container>
-            <SectionHeading
-              title="Photos From the Field"
-              description={workshopAlbum.description}
-              className="mb-10"
-            />
-            <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:gap-4">
-              {workshopAlbum.images.slice(0, 6).map((image) => (
-                <li
-                  key={image.url}
-                  className="relative aspect-square overflow-hidden rounded-2xl"
-                >
-                  <Image
-                    src={image.url}
-                    alt={image.alt}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 33vw"
-                  />
-                </li>
-              ))}
-            </ul>
-            <div className="mt-8 text-center">
-              <Button href="/gallery" variant="outline">
-                View Full Gallery
-              </Button>
-            </div>
-          </Container>
-        </section>
-      )}
-
-      {/* Video Section */}
-      {eventsAlbum && (
-        <section className="py-16 sm:py-20">
-          <Container>
-            <SectionHeading
-              title="Events & Highlights"
-              description="Video highlights and event moments from our community engagement."
-              className="mb-10"
-            />
-            <div className="grid gap-8 md:grid-cols-2">
-              <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-2xl bg-[#0A2540]">
-                <div className="text-center text-white">
-                  <Play
-                    className="mx-auto h-16 w-16 text-white/80"
-                    aria-hidden="true"
-                  />
-                  <p className="mt-3 text-sm text-white/70">
-                    Foundation highlight reel (placeholder)
-                  </p>
-                </div>
-              </div>
-              <ul className="space-y-4">
-                {eventsAlbum.images.slice(0, 3).map((image) => (
-                  <li
-                    key={image.url}
-                    className="flex items-center gap-4 rounded-xl bg-[#F8FAFC] p-3"
-                  >
-                    <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-lg">
-                      <Image
-                        src={image.url}
-                        alt={image.alt}
-                        fill
-                        className="object-cover"
-                        sizes="96px"
-                      />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-1.5 text-xs text-[#14B8A6]">
-                        <Video className="h-3.5 w-3.5" aria-hidden="true" />
-                        Event highlight
-                      </div>
-                      <p className="mt-0.5 text-sm font-medium text-[#0A2540]">
-                        {image.caption}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </Container>
-        </section>
-      )}
-
-      {/* Annual Reports */}
-      <section className="bg-[#F8FAFC] py-16 sm:py-20">
+      <section className="bg-light py-16 sm:py-20">
         <Container>
           <SectionHeading
             title="Annual Reports"
-            description="Download our impact reports to learn about program outcomes, financial stewardship, and future goals."
+            description="Download summaries of programme outcomes and institutional progress."
             align="center"
-            className="mb-12"
+            className="mb-10"
           />
-          <ul className="mx-auto grid max-w-3xl gap-6">
+          <ul className="mx-auto grid max-w-3xl gap-4">
             {impactData.annualReports.map((report) => (
               <li
                 key={report.year}
-                className="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-4 rounded-2xl border border-navy/10 bg-white p-6 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div>
                   <time
                     dateTime={String(report.year)}
-                    className="text-sm font-semibold text-[#14B8A6]"
+                    className="text-sm font-semibold text-teal"
                   >
                     {report.year}
                   </time>
-                  <h3 className="mt-1 font-display text-lg font-semibold text-[#0A2540]">
+                  <h3 className="mt-1 font-display text-lg font-semibold text-navy">
                     {report.title}
                   </h3>
-                  <p className="mt-2 text-sm text-[#0A2540]/70">
-                    {report.summary}
-                  </p>
+                  <p className="mt-2 text-sm text-navy/70">{report.summary}</p>
                 </div>
                 <a
                   href={report.downloadUrl}
-                  className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#0A2540] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#0d3354] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
+                  className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#0d3354] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
                 >
                   <Download className="h-4 w-4" aria-hidden="true" />
                   Download
@@ -394,64 +274,13 @@ export default function ImpactPage() {
               </li>
             ))}
           </ul>
-          <p className="mx-auto mt-6 max-w-xl text-center text-xs text-[#0A2540]/50">
-            Reports are illustrative placeholders. Verified reports will be
-            published following audit.
-          </p>
         </Container>
       </section>
 
-      {/* Donation Usage */}
-      <section className="py-16 sm:py-20">
-        <Container>
-          <SectionHeading
-            title="How Donations Are Used"
-            description="We prioritize direct program delivery while maintaining transparent, efficient operations."
-            align="center"
-            className="mb-12"
-          />
-          <ul className="mx-auto grid max-w-3xl gap-4">
-            {impactData.donationUsage.map((item) => (
-              <li
-                key={item.category}
-                className="rounded-2xl border border-[#0A2540]/10 bg-white p-5"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <h3 className="font-semibold text-[#0A2540]">
-                    {item.category}
-                  </h3>
-                  <span className="font-display text-xl font-bold text-[#0A2540]">
-                    {item.percentage}%
-                  </span>
-                </div>
-                <p className="mt-2 text-sm text-[#0A2540]/70">
-                  {item.description}
-                </p>
-                <div
-                  className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#0A2540]/10"
-                  role="progressbar"
-                  aria-valuenow={item.percentage}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-label={`${item.category}: ${item.percentage}%`}
-                >
-                  <div
-                    className="h-full rounded-full bg-[#14B8A6]"
-                    style={{ width: `${item.percentage}%` }}
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-10 text-center">
-            <Button href="/donate" variant="teal" size="lg">
-              Make a Donation
-            </Button>
-          </div>
-        </Container>
-      </section>
-
-      <CtaSection />
+      <CtaSection
+        title="Support Measurable Change"
+        description="Help STEMNova grow talent pathways, fellowships, and STEM opportunity across Africa."
+      />
     </>
   );
 }

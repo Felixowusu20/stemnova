@@ -44,7 +44,15 @@ The donation UI is complete, but payments use a **mock service** in `src/lib/pay
 
 ## Environment
 
-See `.env.example`:
+Copy the template and fill values:
+
+```bash
+cp .env.local.example .env.local
+```
+
+See `.env.local.example` for the full list (database, auth, email, payments, media, contact).
+
+Minimum for the current frontend:
 
 - `NEXT_PUBLIC_SITE_URL` — canonical URL for SEO/sitemap
 - `NEXT_PUBLIC_GOOGLE_MAPS_EMBED_URL` — optional contact-page map embed

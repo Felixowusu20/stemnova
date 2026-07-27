@@ -8,42 +8,44 @@ interface TestimonialCardProps {
   className?: string;
 }
 
-export function TestimonialCard({ testimonial, className }: TestimonialCardProps) {
+export function TestimonialCard({
+  testimonial,
+  className,
+}: TestimonialCardProps) {
   return (
     <blockquote
       className={cn(
-        "flex h-full flex-col rounded-2xl bg-white p-6 shadow-sm",
+        "flex h-full flex-col rounded-xl border border-navy/10 bg-white p-5",
         className
       )}
     >
-      <Quote
-        className="h-8 w-8 text-[#0A2540]/30"
-        aria-hidden="true"
-      />
+      <Quote className="h-6 w-6 text-teal/70" aria-hidden="true" />
 
-      <p className="mt-4 flex-1 text-base leading-relaxed text-[#0A2540]/80">
+      <p className="mt-3 flex-1 text-sm leading-relaxed text-navy">
         &ldquo;{testimonial.quote}&rdquo;
       </p>
 
-      <footer className="mt-6 flex items-center gap-3 border-t border-[#0A2540]/10 pt-4">
+      <footer className="mt-5 flex items-center gap-3 border-t border-navy/10 pt-4">
         {testimonial.imageUrl && (
-          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full">
+          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full">
             <Image
               src={testimonial.imageUrl}
               alt=""
               fill
               className="object-cover"
-              sizes="48px"
+              sizes="40px"
             />
           </div>
         )}
         <div>
-          <cite className="not-italic font-semibold text-[#0A2540]">
+          <cite className="not-italic text-sm font-semibold text-navy">
             {testimonial.author}
           </cite>
-          <p className="text-sm text-[#0A2540]/60">
+          <p className="text-xs text-navy/65">
             {testimonial.role}
-            {testimonial.organization && ` · ${testimonial.organization}`}
+            {testimonial.organization
+              ? `, ${testimonial.organization}`
+              : null}
           </p>
         </div>
       </footer>

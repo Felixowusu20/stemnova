@@ -14,6 +14,8 @@ export function getOrganizationSchema(): Record<string, unknown> {
     name: siteConfig.name,
     alternateName: siteConfig.shortName,
     url: siteUrl,
+    logo: `${siteUrl}/images/stemnova-logo.jpg`,
+    image: `${siteUrl}/images/stemnova-logo.jpg`,
     description: siteConfig.description,
     address: {
       "@type": "PostalAddress",

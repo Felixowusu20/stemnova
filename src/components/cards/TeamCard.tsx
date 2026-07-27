@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { Linkedin, Mail } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Linkedin, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { TeamMember } from "@/types";
 
@@ -12,42 +13,54 @@ export function TeamCard({ member, className }: TeamCardProps) {
   return (
     <article
       className={cn(
-        "group overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow hover:shadow-md",
+        "group h-full overflow-hidden rounded-xl border border-navy/10 bg-white transition-shadow hover:shadow-md",
         className
       )}
     >
-      <div className="relative aspect-[4/5] overflow-hidden">
-        <Image
-          src={member.imageUrl}
-          alt={`Portrait of ${member.name}`}
-          fill
-          className="object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-        />
-        {member.isFounder && (
-          <span className="absolute left-4 top-4 rounded-full bg-[#F4B942] px-3 py-1 text-xs font-semibold text-[#0A2540]">
-            Founder
+      <Link
+        href={`/about/leadership/${member.slug}`}
+        className="flex h-full flex-col focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
+      >
+        <div className="relative aspect-[5/4] overflow-hidden bg-navy/5 lg:aspect-[4/3]">
+          <Image
+            src={member.imageUrl}
+            alt={`Portrait of ${member.name}`}
+            fill
+            quality={90}
+            className="object-cover object-top"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+          />
+        </div>
+
+        <div className="flex flex-1 flex-col p-4">
+          <h3 className="font-display text-base font-semibold leading-snug text-navy">
+            {member.name}
+          </h3>
+          <p className="mt-1 text-xs font-medium leading-snug text-teal">
+            {member.role}
+          </p>
+          <p className="mt-2 line-clamp-2 flex-1 text-xs leading-relaxed text-navy/80">
+            {member.bio}
+          </p>
+          <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-blue transition-colors group-hover:text-navy">
+            View profile
+            <ArrowRight
+              className="h-3.5 w-3.5 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
+              aria-hidden="true"
+            />
           </span>
-        )}
-      </div>
+        </div>
+      </Link>
 
-      <div className="p-6">
-        <h3 className="font-display text-xl font-semibold text-[#0A2540]">
-          {member.name}
-        </h3>
-        <p className="mt-1 text-sm font-medium text-[#14B8A6]">{member.role}</p>
-        <p className="mt-3 line-clamp-4 text-sm leading-relaxed text-[#0A2540]/70">
-          {member.bio}
-        </p>
-
-        <div className="mt-4 flex gap-2">
+      {(member.email || member.linkedin) && (
+        <div className="flex gap-1.5 border-t border-navy/10 px-4 py-2.5">
           {member.email && (
             <a
               href={`mailto:${member.email}`}
               aria-label={`Email ${member.name}`}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0A2540]/10 text-[#0A2540] transition-colors hover:bg-[#0A2540] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-navy/10 text-navy transition-colors hover:bg-navy hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
             >
-              <Mail className="h-4 w-4" aria-hidden="true" />
+              <Mail className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
           )}
           {member.linkedin && (
@@ -56,13 +69,13 @@ export function TeamCard({ member, className }: TeamCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${member.name} on LinkedIn`}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0A2540]/10 text-[#0A2540] transition-colors hover:bg-[#0A2540] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-navy/10 text-navy transition-colors hover:bg-navy hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
             >
-              <Linkedin className="h-4 w-4" aria-hidden="true" />
+              <Linkedin className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
           )}
         </div>
-      </div>
+      )}
     </article>
   );
 }

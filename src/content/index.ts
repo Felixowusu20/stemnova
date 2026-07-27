@@ -1,6 +1,7 @@
 /** Central re-export of all content modules and helper functions. */
 
 export { siteConfig } from "@/content/site";
+export { contactPageContent } from "@/content/contact";
 export { navigation } from "@/content/navigation";
 export {
   programs,
@@ -19,6 +20,8 @@ export {
   getFounder,
   getFounders,
   getTeamMembers,
+  getLeaderBySlug,
+  getAllLeaders,
 } from "@/content/team";
 export {
   testimonials,

@@ -6,11 +6,12 @@ export const navigation: NavItem[] = [
     label: "About",
     href: "/about",
     children: [
-      { label: "Our Story", href: "/about#story" },
-      { label: "Vision & Mission", href: "/about#vision" },
-      { label: "Leadership", href: "/about#leadership" },
-      { label: "Governance", href: "/about#governance" },
-      { label: "Roadmap", href: "/about#roadmap" },
+      { label: "Overview", href: "/about" },
+      { label: "Our Story", href: "/about/story" },
+      { label: "Vision & Mission", href: "/about/vision" },
+      { label: "Leadership", href: "/about/leadership" },
+      { label: "Governance", href: "/about/governance" },
+      { label: "Roadmap", href: "/about/roadmap" },
     ],
   },
   {
@@ -56,11 +57,12 @@ export const navigation: NavItem[] = [
     label: "Get Involved",
     href: "/get-involved",
     children: [
-      { label: "Become a Mentor", href: "/get-involved#mentor" },
+      { label: "Become a Mentor", href: "/mentor" },
       { label: "Volunteer", href: "/volunteer" },
       { label: "Partner With Us", href: "/partner" },
+      { label: "Sponsor a Programme", href: "/sponsor" },
       { label: "Donate", href: "/donate" },
-      { label: "Apply for Fellowships", href: "/programs" },
+      { label: "Apply for Fellowships", href: "/fellowships" },
     ],
   },
   {

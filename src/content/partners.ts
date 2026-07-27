@@ -48,11 +48,11 @@ export const partners: Partner[] = [
   },
   {
     id: "partner-gov-2",
-    name: "African Union Commission — STI",
+    name: "African Union Commission STI",
     logoUrl: images.placeholders.partnerLogo("AU STI"),
     website: "#",
     description:
-      "Illustrative placeholder — pan-African science, technology, and innovation policy collaboration. Not an actual affiliation.",
+      "Illustrative placeholder for pan African science, technology, and innovation policy collaboration. Not an actual affiliation.",
     category: "government",
     isPlaceholder: true,
   },
@@ -148,9 +148,9 @@ export const partners: Partner[] = [
   },
 ];
 
-/** Disclaimer for partner section display. */
+/** Disclaimer shown with partner listings. */
 export const PARTNERS_DISCLAIMER =
-  "Partner logos and names shown are placeholders for website development. They do not represent current or past affiliations.";
+  "Partner names and logos on this site are illustrative placeholders for website development and do not represent confirmed affiliations.";
 
 /** Filter partners by category. */
 export function getPartnersByCategory(
