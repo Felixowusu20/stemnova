@@ -3,7 +3,8 @@
  * Falls back to localhost during development.
  */
 export function getSiteUrl(): string {
-  const url = process.env.NEXT_PUBLIC_SITE_URL;
+  const url =
+    process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL;
 
   if (url) {
     return url.replace(/\/$/, "");

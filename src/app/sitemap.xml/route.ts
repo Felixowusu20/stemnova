@@ -1,4 +1,4 @@
-import { blogPosts, events, getAllLeaders, programs, projects } from "@/content";
+import { blogPosts, events, getAllLeaders, programs } from "@/content";
 import { getSiteUrl } from "@/lib/site-url";
 
 type ChangeFrequency =
@@ -24,7 +24,6 @@ const staticRoutes: {
   { path: "/about/roadmap", priority: 0.7, changeFrequency: "monthly" },
   { path: "/programs", priority: 0.9, changeFrequency: "monthly" },
   { path: "/research", priority: 0.85, changeFrequency: "monthly" },
-  { path: "/projects", priority: 0.9, changeFrequency: "weekly" },
   { path: "/impact", priority: 0.8, changeFrequency: "monthly" },
   { path: "/resources", priority: 0.7, changeFrequency: "weekly" },
   { path: "/get-involved", priority: 0.8, changeFrequency: "monthly" },
@@ -79,12 +78,6 @@ export async function GET() {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.5,
-    })),
-    ...projects.map((project) => ({
-      url: `${baseUrl}/projects/${project.slug}`,
-      lastModified: now,
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
     })),
     ...blogPosts.map((post) => ({
       url: `${baseUrl}/blog/${post.slug}`,

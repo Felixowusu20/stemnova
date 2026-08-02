@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Facebook,
@@ -10,7 +12,7 @@ import {
   Youtube,
   Atom,
 } from "lucide-react";
-import { programs, siteConfig } from "@/content";
+import { useSite } from "@/components/layout/SiteProviders";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -56,20 +58,17 @@ function FooterLinkGroup({
 }
 
 export function Footer() {
-  const { contact, social } = siteConfig;
-
-  const programmeLinks = programs.slice(0, 5).map((p) => ({
-    label: p.title,
-    href: `/programs/${p.slug}`,
-  }));
+  const { settings, programmeLinks } = useSite();
+  const { contact, social } = settings;
 
   const exploreLinks = [
     { label: "About", href: "/about" },
-    { label: "Research & Innovation", href: "/research" },
-    { label: "Impact", href: "/impact" },
     { label: "Events", href: "/events" },
     { label: "Gallery", href: "/gallery" },
     { label: "News & Publications", href: "/blog" },
+    { label: "Resources", href: "/resources" },
+    { label: "Research & Innovation", href: "/research" },
+    { label: "Impact", href: "/impact" },
     { label: "Partners", href: "/partner" },
   ];
 
@@ -99,19 +98,19 @@ export function Footer() {
             <Link
               href="/"
               className="inline-flex rounded-lg bg-white p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-dark"
-              aria-label={`${siteConfig.name} — Home`}
+              aria-label={`${settings.name} — Home`}
             >
               <SiteLogo variant="footer" />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-white/65">
-              {siteConfig.tagline}
+              {settings.tagline}
             </p>
             <p className="mt-3 text-sm leading-relaxed text-white/55">
               Africa&apos;s institution for discovering scientific talent,
               developing research leaders, and advancing STEM excellence.
             </p>
             <Button href="/donate" variant="teal" className="mt-6">
-              Support STEMNova
+              Support {settings.shortName}
             </Button>
           </div>
 
@@ -187,7 +186,7 @@ export function Footer() {
       <div className="border-t border-white/10">
         <Container className="flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
           <p className="text-sm text-white/50">
-            © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+            © {new Date().getFullYear()} {settings.name}. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
             <Link

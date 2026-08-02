@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { navigation, siteConfig } from "@/content";
+import { useSite } from "@/components/layout/SiteProviders";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -43,7 +43,7 @@ function NavDropdown({ item }: { item: NavItem }) {
       <button
         type="button"
         className={cn(
-          "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2",
+          "flex items-center gap-0.5 rounded-lg px-2 py-2 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 xl:px-2.5 xl:text-sm",
           isActive ? "text-blue" : "text-navy/80 hover:text-blue"
         )}
         aria-expanded={open}
@@ -106,7 +106,7 @@ function NavLink({ item }: { item: NavItem }) {
         href={item.href}
         prefetch
         className={cn(
-          "rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2",
+          "rounded-lg px-2 py-2 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 xl:px-2.5 xl:text-sm",
           isActive ? "text-blue" : "text-navy/80 hover:text-blue"
         )}
         aria-current={isActive ? "page" : undefined}
@@ -118,6 +118,7 @@ function NavLink({ item }: { item: NavItem }) {
 }
 
 export function Header() {
+  const { settings, navigation } = useSite();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -145,21 +146,21 @@ export function Header() {
             href="/"
             prefetch
             className="flex shrink-0 items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
-            aria-label={`${siteConfig.name} — Home`}
+            aria-label={`${settings.name} — Home`}
           >
             <SiteLogo variant="header" priority />
           </Link>
 
           <nav
-            className="hidden items-center gap-0.5 xl:flex"
+            className="hidden items-center gap-0 lg:flex"
             aria-label="Main navigation"
           >
-            <ul className="flex items-center">
+            <ul className="flex flex-wrap items-center justify-end">
               {navigation.map((item) =>
                 item.children ? (
-                  <NavDropdown key={item.href} item={item} />
+                  <NavDropdown key={`${item.href}-${item.label}`} item={item} />
                 ) : (
-                  <NavLink key={item.href} item={item} />
+                  <NavLink key={`${item.href}-${item.label}`} item={item} />
                 )
               )}
             </ul>
@@ -172,13 +173,15 @@ export function Header() {
               variant="teal"
               className="hidden sm:inline-flex"
             >
-              Support STEMNova
+              Support {settings.shortName}
             </Button>
 
             <MobileMenu
               isOpen={mobileOpen}
               onOpen={() => setMobileOpen(true)}
               onClose={closeMobile}
+              navigation={navigation}
+              supportLabel={`Support ${settings.shortName}`}
             />
           </div>
         </div>

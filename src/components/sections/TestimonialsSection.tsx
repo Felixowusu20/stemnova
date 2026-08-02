@@ -1,25 +1,25 @@
 "use client";
 
-import { getFeaturedTestimonials } from "@/content";
 import { TestimonialCard } from "@/components/cards/TestimonialCard";
 import { TestimonialShareForm } from "@/components/forms/TestimonialShareForm";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/utils";
+import type { Testimonial } from "@/types";
 
 interface TestimonialsSectionProps {
+  testimonials: Testimonial[];
   title?: string;
   description?: string;
   className?: string;
 }
 
 export function TestimonialsSection({
+  testimonials,
   title = "Voices from the STEMNova Community",
   description = "Hear from students, teachers, and researchers shaping Africa's scientific future. Then share your own story or idea.",
   className,
 }: TestimonialsSectionProps) {
-  const testimonials = getFeaturedTestimonials(3);
-
   return (
     <section className={cn("bg-light py-16 sm:py-20", className)}>
       <Container>

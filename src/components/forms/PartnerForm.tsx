@@ -9,6 +9,7 @@ import {
   formLabelClass,
 } from "@/components/forms/formStyles";
 import { Button } from "@/components/ui/Button";
+import { submitForm } from "@/lib/submissions";
 import { cn } from "@/lib/utils";
 
 interface PartnerFormProps {
@@ -67,7 +68,10 @@ export function PartnerForm({ className }: PartnerFormProps) {
 
     setStatus("loading");
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await submitForm({
+        type: "PARTNER",
+        payload: { ...form, consent: true },
+      });
       setStatus("success");
     } catch {
       setStatus("error");
@@ -82,8 +86,8 @@ export function PartnerForm({ className }: PartnerFormProps) {
             Partnership enquiry received
           </p>
           <p className="mt-2 text-sm text-navy/70">
-            Mock confirmation only. Our partnerships team will follow up once live
-            forms are connected.
+            Thanks. Our partnerships team will review your enquiry and follow up
+            by email.
           </p>
         </div>
       </ApplicationFormShell>

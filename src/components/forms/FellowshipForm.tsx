@@ -9,9 +9,10 @@ import {
   formLabelClass,
 } from "@/components/forms/formStyles";
 import { Button } from "@/components/ui/Button";
+import { submitForm } from "@/lib/submissions";
 import { cn } from "@/lib/utils";
 
-type FormStatus = "idle" | "loading" | "success";
+type FormStatus = "idle" | "loading" | "success" | "error";
 
 const tracks = [
   "African STEM Fellows",
@@ -78,8 +79,16 @@ export function FellowshipForm({ className }: FellowshipFormProps) {
     e.preventDefault();
     if (!validate()) return;
     setStatus("loading");
-    await new Promise((r) => setTimeout(r, 700));
-    setStatus("success");
+    try {
+      await submitForm({
+        type: "FELLOWSHIP",
+        payload: { ...form, consent: true },
+        relatedTitle: form.track || undefined,
+      });
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
   };
 
   if (status === "success") {
@@ -94,8 +103,8 @@ export function FellowshipForm({ className }: FellowshipFormProps) {
             Fellowship application received
           </p>
           <p className="mt-2 text-sm text-navy/70">
-            Mock confirmation only. Applications will be reviewed once the admin
-            panel is connected.
+            Thanks. Our team will review your fellowship application and follow
+            up by email.
           </p>
         </div>
       </ApplicationFormShell>

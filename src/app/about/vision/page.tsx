@@ -11,9 +11,14 @@ import {
   Container,
   CtaSection,
   PageHero,
+  PhilosophyQuoteSlider,
   SectionHeading,
 } from "@/components";
 import { images, valuesData } from "@/content";
+import { getPhilosophyQuotes, isCmsActive } from "@/lib/cms/queries";
+import { resolveVisionMission } from "@/lib/cms/resolve-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Vision & Mission",
@@ -30,7 +35,19 @@ const valueIconMap = {
   leadership: Users,
 } as const;
 
-export default function AboutVisionPage() {
+export default async function AboutVisionPage() {
+  const [cmsQuotes, visionMission, cmsActive] = await Promise.all([
+    getPhilosophyQuotes(),
+    resolveVisionMission(),
+    isCmsActive(),
+  ]);
+  const quotes =
+    cmsQuotes.length > 0
+      ? cmsQuotes
+      : cmsActive
+        ? []
+        : valuesData.leadershipPhilosophyQuotes;
+
   return (
     <>
       <PageHero
@@ -58,7 +75,7 @@ export default function AboutVisionPage() {
                 Our Vision
               </p>
               <p className="mt-4 font-display text-xl font-semibold leading-snug text-white sm:text-2xl">
-                {valuesData.vision}
+                {visionMission.vision}
               </p>
             </article>
             <article className="rounded-2xl border border-navy/10 bg-light p-8 sm:p-10">
@@ -66,7 +83,7 @@ export default function AboutVisionPage() {
                 Our Mission
               </p>
               <p className="mt-4 text-base leading-relaxed text-navy sm:text-lg">
-                {valuesData.mission}
+                {visionMission.mission}
               </p>
             </article>
           </div>
@@ -82,7 +99,7 @@ export default function AboutVisionPage() {
             className="mb-12"
           />
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {valuesData.coreValues.map((value) => {
+            {visionMission.coreValues.map((value) => {
               const Icon = valueIconMap[value.icon];
               return (
                 <li
@@ -105,18 +122,7 @@ export default function AboutVisionPage() {
         </Container>
       </section>
 
-      <section className="bg-navy py-16 sm:py-20">
-        <Container>
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-teal">
-              Leadership Philosophy
-            </p>
-            <p className="mt-4 font-display text-xl font-semibold leading-snug text-white sm:text-2xl">
-              {valuesData.leadershipPhilosophy}
-            </p>
-          </div>
-        </Container>
-      </section>
+      <PhilosophyQuoteSlider quotes={quotes} />
 
       <CtaSection />
     </>

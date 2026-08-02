@@ -9,9 +9,10 @@ import {
   formLabelClass,
 } from "@/components/forms/formStyles";
 import { Button } from "@/components/ui/Button";
+import { submitForm } from "@/lib/submissions";
 import { cn } from "@/lib/utils";
 
-type FormStatus = "idle" | "loading" | "success";
+type FormStatus = "idle" | "loading" | "success" | "error";
 
 const programmeOptions = [
   "Young Scholars STEM Discovery",
@@ -72,8 +73,16 @@ export function SponsorForm({ className }: SponsorFormProps) {
     e.preventDefault();
     if (!validate()) return;
     setStatus("loading");
-    await new Promise((r) => setTimeout(r, 700));
-    setStatus("success");
+    try {
+      await submitForm({
+        type: "SPONSOR",
+        payload: { ...form, consent: true },
+        relatedTitle: form.programme || undefined,
+      });
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
   };
 
   if (status === "success") {
@@ -88,8 +97,8 @@ export function SponsorForm({ className }: SponsorFormProps) {
             Sponsorship enquiry received
           </p>
           <p className="mt-2 text-sm text-navy/70">
-            Mock confirmation only. Partnerships will follow up once live forms
-            are connected.
+            Thanks. Our partnerships team will review your sponsorship interest
+            and follow up by email.
           </p>
         </div>
       </ApplicationFormShell>

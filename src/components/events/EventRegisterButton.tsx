@@ -39,7 +39,7 @@ export function EventRegisterButton({
 }: EventRegisterButtonProps) {
   const [open, setOpen] = useState(false);
 
-  if (event.isPast) return null;
+  if (event.isPast || !event.registrationRequired) return null;
 
   return (
     <>
