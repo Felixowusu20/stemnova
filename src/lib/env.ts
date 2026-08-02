@@ -5,6 +5,7 @@
 
 export function getAppUrl() {
   return (
+    process.env.AUTH_URL ||
     process.env.NEXTAUTH_URL ||
     process.env.NEXT_PUBLIC_APP_URL ||
     process.env.NEXT_PUBLIC_SITE_URL ||
@@ -12,8 +13,12 @@ export function getAppUrl() {
   );
 }
 
+/**
+ * Auth.js v5 prefers AUTH_SECRET; keep legacy NextAuth / project aliases.
+ */
 export function getAuthSecret() {
   return (
+    process.env.AUTH_SECRET ||
     process.env.NEXTAUTH_SECRET ||
     process.env.APP_SECRET ||
     process.env.JWT_SECRET ||

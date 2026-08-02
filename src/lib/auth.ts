@@ -7,11 +7,18 @@ import { getAuthSecret } from "@/lib/env";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string().min(1),
 });
 
+const authSecret = getAuthSecret();
+if (!authSecret && process.env.NODE_ENV === "production") {
+  console.error(
+    "[auth] AUTH_SECRET / NEXTAUTH_SECRET is not set. Admin sign-in will fail in production."
+  );
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  secret: getAuthSecret() || undefined,
+  secret: authSecret || undefined,
   trustHost: true,
   session: { strategy: "jwt", maxAge: 60 * 60 * 12 },
   pages: {
@@ -25,22 +32,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       authorize: async (raw) => {
-        const parsed = credentialsSchema.safeParse(raw);
-        if (!parsed.success) return null;
+        try {
+          const parsed = credentialsSchema.safeParse(raw);
+          if (!parsed.success) return null;
 
-        const email = parsed.data.email.toLowerCase().trim();
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return null;
+          const email = parsed.data.email.toLowerCase().trim();
+          const user = await prisma.user.findUnique({ where: { email } });
+          if (!user?.passwordHash) return null;
 
-        const valid = await compare(parsed.data.password, user.passwordHash);
-        if (!valid) return null;
+          const valid = await compare(parsed.data.password, user.passwordHash);
+          if (!valid) return null;
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name ?? "Admin",
-          role: user.role,
-        };
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name ?? "Admin",
+            role: user.role,
+          };
+        } catch (error) {
+          console.error("[auth] authorize failed:", error);
+          return null;
+        }
       },
     }),
   ],

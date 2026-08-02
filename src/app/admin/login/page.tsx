@@ -1,16 +1,20 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/admin";
+  const configError = searchParams.get("error") === "Configuration";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(
+    configError
+      ? "Server auth is misconfigured (missing AUTH_SECRET). Check production environment variables."
+      : ""
+  );
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(event: FormEvent) {
@@ -18,21 +22,28 @@ function LoginForm() {
     setLoading(true);
     setError("");
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email: email.trim().toLowerCase(),
+        password,
+        redirect: false,
+        callbackUrl,
+      });
 
-    setLoading(false);
+      if (result?.error) {
+        setError(
+          "Invalid email or password. If this is a new deploy, make sure the admin user was seeded in production."
+        );
+        setLoading(false);
+        return;
+      }
 
-    if (result?.error) {
-      setError("Invalid email or password.");
-      return;
+      // Hard navigation so the new session cookie is always sent to middleware.
+      window.location.assign(callbackUrl);
+    } catch {
+      setError("Sign-in failed. Please try again.");
+      setLoading(false);
     }
-
-    router.push(callbackUrl);
-    router.refresh();
   }
 
   return (
