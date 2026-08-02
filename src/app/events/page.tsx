@@ -3,14 +3,14 @@ import Link from "next/link";
 import { EventsPageContent } from "@/components/events/EventsPageContent";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
-import { getUpcomingEvents, getPastEvents } from "@/content";
 import { images } from "@/content/images";
+import { resolveEvents } from "@/lib/cms/resolve-content";
 import { getEventSchema } from "@/lib/seo-schemas";
 import { getSiteUrl } from "@/lib/site-url";
 
+export const dynamic = "force-dynamic";
+
 const siteUrl = getSiteUrl();
-const upcoming = getUpcomingEvents();
-const past = getPastEvents();
 
 export const metadata: Metadata = {
   title: "Events",
@@ -28,7 +28,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const allEvents = await resolveEvents();
+  const upcoming = allEvents.filter((event) => !event.isPast);
+  const past = allEvents.filter((event) => event.isPast);
   const eventSchemas = upcoming.map((event) =>
     getEventSchema(event, `${siteUrl}/events#${event.slug}`)
   );

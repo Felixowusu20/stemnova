@@ -13,10 +13,13 @@ import {
 } from "lucide-react";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { Container } from "@/components/ui/Container";
-import { contactPageContent, siteConfig } from "@/content";
 import { images } from "@/content/images";
+import { getResolvedSiteConfig } from "@/lib/cms/queries";
+import { resolveContactPage } from "@/lib/cms/resolve-content";
 import { getSiteUrl } from "@/lib/site-url";
 import type { SocialPlatform } from "@/types";
+
+export const dynamic = "force-dynamic";
 
 const siteUrl = getSiteUrl();
 
@@ -51,9 +54,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage() {
-  const { social } = siteConfig;
-  const content = contactPageContent;
+export default async function ContactPage() {
+  const [settings, content] = await Promise.all([
+    getResolvedSiteConfig(),
+    resolveContactPage(),
+  ]);
+  const { social } = settings;
 
   return (
     <section className="bg-light pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-8 lg:pb-12">

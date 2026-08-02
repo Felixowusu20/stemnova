@@ -15,8 +15,11 @@ import {
   Venus,
 } from "lucide-react";
 import { Button, Container } from "@/components";
-import { getProgramBySlug, programs } from "@/content";
-import type { ProgramIcon, ProgramSlug } from "@/types";
+import { programs } from "@/content";
+import { resolveProgramBySlug } from "@/lib/cms/resolve-content";
+import type { ProgramIcon } from "@/types";
+
+export const dynamic = "force-dynamic";
 
 const iconMap: Record<ProgramIcon, typeof Sparkles> = {
   sparkles: Sparkles,
@@ -42,7 +45,7 @@ export async function generateMetadata({
   params,
 }: ProgramDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const program = getProgramBySlug(slug as ProgramSlug);
+  const program = await resolveProgramBySlug(slug);
 
   if (!program) {
     return { title: "Programme Not Found" };
@@ -63,14 +66,14 @@ export default async function ProgramDetailPage({
   params,
 }: ProgramDetailPageProps) {
   const { slug } = await params;
-  const program = getProgramBySlug(slug as ProgramSlug);
+  const program = await resolveProgramBySlug(slug);
 
   if (!program) {
     notFound();
   }
 
   const Icon = iconMap[program.icon];
-  const sideImage = program.galleryImageUrls[0] ?? program.heroImageUrl;
+  const sideImage = program.heroImageUrl || program.galleryImageUrls[0];
 
   return (
     <>

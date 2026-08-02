@@ -3,17 +3,18 @@
 import Link from "next/link";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { siteConfig } from "@/content";
+import { useSite } from "@/components/layout/SiteProviders";
 import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "dwf-announcement-dismissed";
 
 export function AnnouncementBar() {
+  const { settings } = useSite();
   const [visible, setVisible] = useState(false);
+  const { announcementBar } = settings;
 
   useEffect(() => {
-    const { announcementBar } = siteConfig;
-    if (!announcementBar.text) return;
+    if (!announcementBar?.text) return;
 
     try {
       const dismissed = sessionStorage.getItem(STORAGE_KEY);
@@ -23,7 +24,7 @@ export function AnnouncementBar() {
     } catch {
       setVisible(true);
     }
-  }, []);
+  }, [announcementBar]);
 
   const handleDismiss = () => {
     setVisible(false);
@@ -34,9 +35,7 @@ export function AnnouncementBar() {
     }
   };
 
-  if (!visible) return null;
-
-  const { announcementBar } = siteConfig;
+  if (!visible || !announcementBar?.text) return null;
 
   return (
     <div

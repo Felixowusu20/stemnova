@@ -2,23 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { partners, PARTNERS_DISCLAIMER } from "@/content";
+import { PARTNERS_DISCLAIMER } from "@/content";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/utils";
+import type { Partner } from "@/types";
 
 interface PartnersSectionProps {
+  partners: Partner[];
   title?: string;
   description?: string;
   className?: string;
   showDisclaimer?: boolean;
 }
 
-function PartnerMarqueeItem({
-  partner,
-}: {
-  partner: (typeof partners)[number];
-}) {
+function PartnerMarqueeItem({ partner }: { partner: Partner }) {
   const href =
     partner.website && partner.website !== "#"
       ? partner.website
@@ -60,13 +58,18 @@ function PartnerMarqueeItem({
   }
 
   return (
-    <Link href={href} aria-label={`Learn about partnering with ${partner.name}`} className={itemClass}>
+    <Link
+      href={href}
+      aria-label={`Learn about partnering with ${partner.name}`}
+      className={itemClass}
+    >
       {content}
     </Link>
   );
 }
 
 export function PartnersSection({
+  partners,
   title = "Our Partners and Supporters",
   description = "Universities, governments, technology companies, NGOs, and research institutions advancing Africa's STEM future with STEMNova.",
   className,

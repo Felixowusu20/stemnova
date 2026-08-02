@@ -2,18 +2,18 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import { galleryAlbums } from "@/content";
 import { Lightbox } from "@/components/ui/Lightbox";
 import { cn } from "@/lib/utils";
-import type { GalleryImage } from "@/types";
+import type { GalleryAlbum, GalleryImage } from "@/types";
 
 interface GalleryGridProps {
   className?: string;
+  albums: GalleryAlbum[];
   /** When set, show only this album and hide filter chips. */
   albumSlug?: string;
 }
 
-export function GalleryGrid({ className, albumSlug }: GalleryGridProps) {
+export function GalleryGrid({ className, albums, albumSlug }: GalleryGridProps) {
   const [filter, setFilter] = useState<string>(albumSlug ?? "all");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -21,14 +21,14 @@ export function GalleryGrid({ className, albumSlug }: GalleryGridProps) {
   const allImages: (GalleryImage & { albumSlug: string; albumTitle: string })[] =
     useMemo(
       () =>
-        galleryAlbums.flatMap((album) =>
+        albums.flatMap((album) =>
           album.images.map((img) => ({
             ...img,
             albumSlug: album.slug,
             albumTitle: album.title,
           }))
         ),
-      []
+      [albums]
     );
 
   const filteredImages = useMemo(() => {
@@ -46,7 +46,7 @@ export function GalleryGrid({ className, albumSlug }: GalleryGridProps) {
 
   const filters = [
     { value: "all", label: "All" },
-    ...galleryAlbums.map((a) => ({ value: a.slug, label: a.title })),
+    ...albums.map((a) => ({ value: a.slug, label: a.title })),
   ];
 
   return (

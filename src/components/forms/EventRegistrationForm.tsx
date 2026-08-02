@@ -1,8 +1,13 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import {
+  getEventRegistrationForm,
+  type EventRegistrationField,
+} from "@/lib/event-registration-form";
+import { submitForm } from "@/lib/submissions";
 import { cn } from "@/lib/utils";
 import type { Event } from "@/types";
 
@@ -12,39 +17,63 @@ interface EventRegistrationFormProps {
   onSuccess?: () => void;
 }
 
-type FormStatus = "idle" | "loading" | "success";
+type FormStatus = "idle" | "loading" | "success" | "error";
 
 const inputClass =
-  "w-full rounded-xl border border-navy/15 bg-white px-4 py-2.5 text-sm text-navy placeholder:text-navy/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2";
+  "w-full rounded-lg border border-[#dadce0] bg-white px-3.5 py-3 text-sm text-navy placeholder:text-navy/40 focus-visible:outline-none focus-visible:border-teal focus-visible:ring-1 focus-visible:ring-teal";
 
-const labelClass = "mb-1.5 block text-sm font-medium text-navy";
+const labelClass = "mb-2 block text-base font-medium text-navy";
+
+function emptyAnswers(fields: EventRegistrationField[]) {
+  return Object.fromEntries(
+    fields.map((field) => [
+      field.id,
+      field.type === "checkbox" ? false : field.type === "number" ? "1" : "",
+    ])
+  ) as Record<string, string | boolean>;
+}
 
 export function EventRegistrationForm({
   event,
   className,
   onSuccess,
 }: EventRegistrationFormProps) {
+  const formConfig = useMemo(
+    () => getEventRegistrationForm(event),
+    [event]
+  );
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [consent, setConsent] = useState(false);
-  const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    organisation: "",
-    guests: "1",
-  });
+  const [answers, setAnswers] = useState(() =>
+    emptyAnswers(formConfig.fields)
+  );
 
   const validate = (): boolean => {
     const next: Record<string, string> = {};
-    if (!form.fullName.trim()) next.fullName = "Full name is required.";
-    if (!form.email.trim()) next.email = "Email is required.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      next.email = "Please enter a valid email.";
-    if (!form.phone.trim()) next.phone = "Phone is required.";
-    const guests = parseInt(form.guests, 10);
-    if (!guests || guests < 1) next.guests = "Enter at least 1 guest.";
-    if (!consent) next.consent = "Please agree to continue.";
+    for (const field of formConfig.fields) {
+      const value = answers[field.id];
+      if (field.type === "checkbox") {
+        if (field.required && value !== true) {
+          next[field.id] = "This confirmation is required.";
+        }
+        continue;
+      }
+
+      const text = String(value ?? "").trim();
+      if (field.required && !text) {
+        next[field.id] = "This question is required.";
+        continue;
+      }
+      if (field.type === "email" && text && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) {
+        next[field.id] = "Please enter a valid email.";
+      }
+      if (field.type === "number" && text) {
+        const number = Number(text);
+        if (!Number.isFinite(number) || number < 0) {
+          next[field.id] = "Please enter a valid number.";
+        }
+      }
+    }
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -54,29 +83,81 @@ export function EventRegistrationForm({
     if (!validate()) return;
 
     setStatus("loading");
-    // Mock registration — real submissions will come from the admin panel flow.
-    await new Promise((resolve) => setTimeout(resolve, 700));
-    setStatus("success");
-    onSuccess?.();
+    try {
+      const payloadAnswers: Record<string, string | number | boolean> = {};
+      for (const field of formConfig.fields) {
+        const value = answers[field.id];
+        if (field.type === "checkbox") {
+          payloadAnswers[field.id] = Boolean(value);
+          payloadAnswers[field.label] = Boolean(value);
+        } else if (field.type === "number") {
+          const number = Number(value);
+          payloadAnswers[field.id] = Number.isFinite(number) ? number : value;
+          payloadAnswers[field.label] = payloadAnswers[field.id];
+        } else {
+          payloadAnswers[field.id] = String(value ?? "").trim();
+          payloadAnswers[field.label] = payloadAnswers[field.id];
+        }
+      }
+
+      const emailField = formConfig.fields.find((field) => field.type === "email");
+      const nameField =
+        formConfig.fields.find((field) => field.id === "fullName") ||
+        formConfig.fields.find((field) => field.type === "text");
+
+      await submitForm({
+        type: "EVENT_REGISTRATION",
+        relatedSlug: event.slug,
+        relatedTitle: event.title,
+        payload: {
+          ...payloadAnswers,
+          email: emailField
+            ? String(answers[emailField.id] ?? "").trim()
+            : undefined,
+          name: nameField
+            ? String(answers[nameField.id] ?? "").trim()
+            : undefined,
+          fullName: nameField
+            ? String(answers[nameField.id] ?? "").trim()
+            : undefined,
+          eventSlug: event.slug,
+          eventTitle: event.title,
+          eventDate: event.date,
+          eventTime: event.time,
+          eventLocation: event.location,
+          formTitle: formConfig.title,
+        },
+      });
+      setStatus("success");
+      onSuccess?.();
+    } catch {
+      setStatus("error");
+    }
   };
 
   if (status === "success") {
     return (
       <div
-        className={cn("rounded-2xl bg-teal/10 p-6 text-center", className)}
+        className={cn(
+          "overflow-hidden rounded-2xl border border-[#dadce0] bg-white shadow-sm",
+          className
+        )}
         role="status"
       >
-        <CheckCircle2
-          className="mx-auto h-10 w-10 text-teal"
-          aria-hidden="true"
-        />
-        <p className="mt-3 font-display text-lg font-semibold text-navy">
-          Registration received
-        </p>
-        <p className="mt-2 text-sm leading-relaxed text-navy/70">
-          This is a mock confirmation for <strong>{event.title}</strong>. Live
-          registration will be managed from the admin panel.
-        </p>
+        <div className="h-2.5 bg-teal" />
+        <div className="p-8 text-center">
+          <CheckCircle2
+            className="mx-auto h-12 w-12 text-teal"
+            aria-hidden="true"
+          />
+          <p className="mt-4 font-display text-2xl font-semibold text-navy">
+            Registration submitted
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-navy/70">
+            Thanks for registering for <strong>{event.title}</strong>. We will
+            confirm your place by email.
+          </p>
+        </div>
       </div>
     );
   }
@@ -84,160 +165,178 @@ export function EventRegistrationForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={cn("space-y-4", className)}
+      className={cn(
+        "overflow-hidden rounded-2xl border border-[#dadce0] bg-white shadow-sm",
+        className
+      )}
       noValidate
     >
-      <p className="text-sm text-navy/70">
-        Register for <strong className="text-navy">{event.title}</strong> on{" "}
-        {new Date(event.date).toLocaleDateString("en-GH", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}{" "}
-        at {event.time}.
-      </p>
-      <p className="rounded-xl bg-light px-3 py-2 text-xs text-navy/55">
-        Mock registration form for demonstration. Submissions are not stored yet.
-      </p>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="evt-reg-name" className={labelClass}>
-            Full name <span className="text-teal">*</span>
-          </label>
-          <input
-            id="evt-reg-name"
-            type="text"
-            value={form.fullName}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, fullName: e.target.value }))
-            }
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.fullName ? "true" : undefined}
-          />
-          {errors.fullName && (
-            <p className="mt-1 text-xs text-teal" role="alert">
-              {errors.fullName}
-            </p>
-          )}
-        </div>
-        <div>
-          <label htmlFor="evt-reg-email" className={labelClass}>
-            Email <span className="text-teal">*</span>
-          </label>
-          <input
-            id="evt-reg-email"
-            type="email"
-            value={form.email}
-            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.email ? "true" : undefined}
-          />
-          {errors.email && (
-            <p className="mt-1 text-xs text-teal" role="alert">
-              {errors.email}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="evt-reg-phone" className={labelClass}>
-            Phone <span className="text-teal">*</span>
-          </label>
-          <input
-            id="evt-reg-phone"
-            type="tel"
-            value={form.phone}
-            onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.phone ? "true" : undefined}
-          />
-          {errors.phone && (
-            <p className="mt-1 text-xs text-teal" role="alert">
-              {errors.phone}
-            </p>
-          )}
-        </div>
-        <div>
-          <label htmlFor="evt-reg-guests" className={labelClass}>
-            Guests <span className="text-teal">*</span>
-          </label>
-          <input
-            id="evt-reg-guests"
-            type="number"
-            min="1"
-            max="10"
-            value={form.guests}
-            onChange={(e) => setForm((f) => ({ ...f, guests: e.target.value }))}
-            className={inputClass}
-            disabled={status === "loading"}
-            aria-invalid={errors.guests ? "true" : undefined}
-          />
-          {errors.guests && (
-            <p className="mt-1 text-xs text-teal" role="alert">
-              {errors.guests}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="evt-reg-org" className={labelClass}>
-          Organisation or school
-        </label>
-        <input
-          id="evt-reg-org"
-          type="text"
-          value={form.organisation}
-          onChange={(e) =>
-            setForm((f) => ({ ...f, organisation: e.target.value }))
-          }
-          className={inputClass}
-          placeholder="Optional"
-          disabled={status === "loading"}
-        />
-      </div>
-
-      <div className="flex items-start gap-3">
-        <input
-          id="evt-reg-consent"
-          type="checkbox"
-          checked={consent}
-          onChange={(e) => setConsent(e.target.checked)}
-          className="mt-1 h-4 w-4 rounded border-navy/30 text-navy focus-visible:ring-2 focus-visible:ring-blue"
-          disabled={status === "loading"}
-          aria-invalid={errors.consent ? "true" : undefined}
-        />
-        <label htmlFor="evt-reg-consent" className="text-sm text-navy/80">
-          I agree to receive event updates and consent to STEMNova&apos;s privacy
-          policy. <span className="text-teal">*</span>
-        </label>
-      </div>
-      {errors.consent && (
-        <p className="text-xs text-teal" role="alert">
-          {errors.consent}
+      <div className="h-2.5 bg-teal" />
+      <div className="border-b border-[#dadce0] px-5 py-5 sm:px-7">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal">
+          Registration form
         </p>
-      )}
-
-      <Button type="submit" fullWidth disabled={status === "loading"}>
-        {status === "loading" ? (
-          <>
-            <Loader2
-              className="h-4 w-4 animate-spin motion-reduce:animate-none"
-              aria-hidden="true"
-            />
-            Submitting…
-          </>
-        ) : (
-          "Submit registration"
+        <h3 className="mt-2 font-display text-xl font-bold text-navy sm:text-2xl">
+          {formConfig.title || event.title}
+        </h3>
+        <p className="mt-2 text-sm text-navy/65">
+          {new Date(event.date).toLocaleDateString("en-GH", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}{" "}
+          · {event.time} · {event.location}
+        </p>
+        {formConfig.description && (
+          <p className="mt-3 text-sm leading-relaxed text-navy/70">
+            {formConfig.description}
+          </p>
         )}
-      </Button>
+      </div>
+
+      <div className="space-y-5 px-5 py-6 sm:px-7">
+        {formConfig.fields.map((field) => (
+          <div
+            key={field.id}
+            className="rounded-xl border border-[#dadce0] bg-white p-4 shadow-[0_1px_2px_rgba(60,64,67,0.08)]"
+          >
+            {field.type === "checkbox" ? (
+              <label className="flex items-start gap-3 text-sm text-navy/85">
+                <input
+                  type="checkbox"
+                  checked={Boolean(answers[field.id])}
+                  onChange={(e) =>
+                    setAnswers((prev) => ({
+                      ...prev,
+                      [field.id]: e.target.checked,
+                    }))
+                  }
+                  className="mt-0.5 h-4 w-4 rounded border-navy/30 text-teal focus-visible:ring-2 focus-visible:ring-teal"
+                  disabled={status === "loading"}
+                />
+                <span>
+                  {field.label}
+                  {field.required && (
+                    <span className="text-red-600"> *</span>
+                  )}
+                </span>
+              </label>
+            ) : (
+              <>
+                <label htmlFor={`reg-${field.id}`} className={labelClass}>
+                  {field.label}
+                  {field.required && (
+                    <span className="text-red-600"> *</span>
+                  )}
+                </label>
+                {field.type === "textarea" ? (
+                  <textarea
+                    id={`reg-${field.id}`}
+                    rows={4}
+                    value={String(answers[field.id] ?? "")}
+                    placeholder={field.placeholder}
+                    onChange={(e) =>
+                      setAnswers((prev) => ({
+                        ...prev,
+                        [field.id]: e.target.value,
+                      }))
+                    }
+                    className={cn(inputClass, "resize-y")}
+                    disabled={status === "loading"}
+                  />
+                ) : field.type === "select" ? (
+                  <select
+                    id={`reg-${field.id}`}
+                    value={String(answers[field.id] ?? "")}
+                    onChange={(e) =>
+                      setAnswers((prev) => ({
+                        ...prev,
+                        [field.id]: e.target.value,
+                      }))
+                    }
+                    className={inputClass}
+                    disabled={status === "loading"}
+                  >
+                    <option value="">Select an option</option>
+                    {(field.options || []).map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                ) : field.type === "radio" ? (
+                  <div className="space-y-2">
+                    {(field.options || []).map((option) => (
+                      <label
+                        key={option}
+                        className="flex items-center gap-2 text-sm text-navy"
+                      >
+                        <input
+                          type="radio"
+                          name={field.id}
+                          value={option}
+                          checked={answers[field.id] === option}
+                          onChange={() =>
+                            setAnswers((prev) => ({
+                              ...prev,
+                              [field.id]: option,
+                            }))
+                          }
+                          className="h-4 w-4 border-navy/30 text-teal focus-visible:ring-2 focus-visible:ring-teal"
+                          disabled={status === "loading"}
+                        />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                ) : (
+                  <input
+                    id={`reg-${field.id}`}
+                    type={field.type}
+                    value={String(answers[field.id] ?? "")}
+                    placeholder={field.placeholder}
+                    min={field.type === "number" ? 0 : undefined}
+                    onChange={(e) =>
+                      setAnswers((prev) => ({
+                        ...prev,
+                        [field.id]: e.target.value,
+                      }))
+                    }
+                    className={inputClass}
+                    disabled={status === "loading"}
+                  />
+                )}
+              </>
+            )}
+            {errors[field.id] && (
+              <p className="mt-2 text-xs text-red-600">{errors[field.id]}</p>
+            )}
+          </div>
+        ))}
+
+        {status === "error" && (
+          <p className="text-sm text-red-600" role="alert">
+            Something went wrong. Please try again.
+          </p>
+        )}
+      </div>
+
+      <div className="flex justify-end border-t border-[#dadce0] bg-[#f8f9fa] px-5 py-4 sm:px-7">
+        <Button type="submit" variant="teal" disabled={status === "loading"}>
+          {status === "loading" ? (
+            <>
+              <Loader2
+                className="h-4 w-4 animate-spin motion-reduce:animate-none"
+                aria-hidden="true"
+              />
+              Submitting…
+            </>
+          ) : (
+            formConfig.submitLabel || "Submit"
+          )}
+        </Button>
+      </div>
     </form>
   );
 }

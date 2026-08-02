@@ -6,9 +6,13 @@ import {
   Container,
   CtaSection,
   PageHero,
+  PhilosophyQuoteSlider,
   SectionHeading,
 } from "@/components";
-import { images } from "@/content";
+import { images, valuesData } from "@/content";
+import { getPhilosophyQuotes, isCmsActive } from "@/lib/cms/queries";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "About",
@@ -44,7 +48,18 @@ const aboutLinks = [
   },
 ] as const;
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [cmsQuotes, cmsActive] = await Promise.all([
+    getPhilosophyQuotes(),
+    isCmsActive(),
+  ]);
+  const quotes =
+    cmsQuotes.length > 0
+      ? cmsQuotes
+      : cmsActive
+        ? []
+        : valuesData.leadershipPhilosophyQuotes;
+
   return (
     <>
       <PageHero
@@ -52,7 +67,9 @@ export default function AboutPage() {
         description="Building Africa's home for scientific talent discovery and STEM leadership."
         backgroundImage={images.hero.about}
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
-      />
+      >
+        <PhilosophyQuoteSlider variant="embedded" quotes={quotes} />
+      </PageHero>
 
       <section className="py-20 sm:py-24">
         <Container>

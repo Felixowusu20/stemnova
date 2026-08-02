@@ -8,4 +8,4 @@ export const formLabelClass = "mb-1.5 block text-sm font-medium text-navy";
 export const formHintClass = "mt-1 text-xs text-teal";
 
 export const MOCK_FORM_NOTICE =
-  "This is a mock application form for demonstration. Submissions are not stored yet and will be connected to the admin panel later.";
+  "Your submission is sent to the STEMNova admin inbox for review.";

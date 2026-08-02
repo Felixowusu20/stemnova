@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { Loader2, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { submitForm } from "@/lib/submissions";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
@@ -42,7 +43,10 @@ export function TestimonialShareForm({ className }: { className?: string }) {
 
     setStatus("loading");
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await submitForm({
+        type: "TESTIMONIAL",
+        payload: { ...form },
+      });
       setStatus("success");
       setForm({ name: "", email: "", role: "", message: "" });
     } catch {

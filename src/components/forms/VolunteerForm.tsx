@@ -9,6 +9,7 @@ import {
   formLabelClass,
 } from "@/components/forms/formStyles";
 import { Button } from "@/components/ui/Button";
+import { submitForm } from "@/lib/submissions";
 import { cn } from "@/lib/utils";
 
 interface VolunteerFormProps {
@@ -80,7 +81,10 @@ export function VolunteerForm({ className }: VolunteerFormProps) {
 
     setStatus("loading");
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await submitForm({
+        type: "VOLUNTEER",
+        payload: { ...form, consent: true },
+      });
       setStatus("success");
     } catch {
       setStatus("error");
@@ -95,8 +99,8 @@ export function VolunteerForm({ className }: VolunteerFormProps) {
             Volunteer application received
           </p>
           <p className="mt-2 text-sm text-navy/70">
-            Mock confirmation only. Our volunteer team will follow up once live
-            applications are connected.
+            Thanks. Our volunteer team will review your application and follow
+            up by email.
           </p>
         </div>
       </ApplicationFormShell>

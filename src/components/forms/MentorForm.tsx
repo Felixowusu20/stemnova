@@ -9,9 +9,10 @@ import {
   formLabelClass,
 } from "@/components/forms/formStyles";
 import { Button } from "@/components/ui/Button";
+import { submitForm } from "@/lib/submissions";
 import { cn } from "@/lib/utils";
 
-type FormStatus = "idle" | "loading" | "success";
+type FormStatus = "idle" | "loading" | "success" | "error";
 
 const disciplines = [
   "Physics and Quantum Science",
@@ -71,8 +72,15 @@ export function MentorForm({ className }: MentorFormProps) {
     e.preventDefault();
     if (!validate()) return;
     setStatus("loading");
-    await new Promise((r) => setTimeout(r, 700));
-    setStatus("success");
+    try {
+      await submitForm({
+        type: "MENTOR",
+        payload: { ...form, consent: true },
+      });
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
   };
 
   if (status === "success") {
@@ -87,8 +95,8 @@ export function MentorForm({ className }: MentorFormProps) {
             Mentor application received
           </p>
           <p className="mt-2 text-sm text-navy/70">
-            Mock confirmation only. Our team will follow up once live applications
-            are connected.
+            Thanks. Our team will review your mentor application and follow up
+            by email.
           </p>
         </div>
       </ApplicationFormShell>
