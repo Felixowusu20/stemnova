@@ -57,7 +57,6 @@ export function ChallengesCycle() {
         <SectionHeading
           eyebrow="Why STEMNova Exists"
           title="The Gaps We Are Built to Close"
-          description="These connected challenges keep African STEM talent from reaching its full potential."
           align="center"
           className="mb-14"
         />
@@ -193,11 +192,6 @@ export function ChallengesCycle() {
             </div>
           </div>
         </div>
-
-        <p className="mx-auto mt-12 max-w-2xl text-center text-sm leading-relaxed text-navy/80 lg:mt-8">
-          Our flagship programmes turn these gaps into clear pathways—from talent
-          discovery to research leadership.
-        </p>
       </Container>
     </section>
   );

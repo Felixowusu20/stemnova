@@ -81,45 +81,51 @@ export default async function LeaderProfilePage({ params }: LeaderPageProps) {
             Back to Leadership
           </Link>
 
-          <div className="grid items-start gap-10 lg:grid-cols-[320px_1fr] lg:gap-14">
+          <div className="grid items-start gap-6 lg:grid-cols-[320px_1fr] lg:gap-14">
             <aside className="overflow-hidden rounded-2xl border border-navy/10 bg-white">
-              <div className="relative aspect-[4/5]">
-                <Image
-                  src={leader.imageUrl}
-                  alt={`Portrait of ${leader.name}`}
-                  fill
-                  quality={90}
-                  priority
-                  className="object-cover object-top"
-                  sizes="(max-width: 1024px) 100vw, 320px"
-                />
-              </div>
-              <div className="p-5">
-                <h1 className="font-display text-2xl font-bold text-navy">
-                  {leader.name}
-                </h1>
-                <p className="mt-1 font-medium text-teal">{leader.role}</p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {leader.email && (
-                    <a
-                      href={`mailto:${leader.email}`}
-                      className="inline-flex items-center gap-2 rounded-xl border-2 border-navy px-3 py-1.5 text-sm font-semibold text-navy transition-colors hover:bg-navy/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
-                    >
-                      <Mail className="h-4 w-4" aria-hidden="true" />
-                      Email
-                    </a>
-                  )}
-                  {leader.linkedin && (
-                    <a
-                      href={leader.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-xl border-2 border-navy px-3 py-1.5 text-sm font-semibold text-navy transition-colors hover:bg-navy/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
-                    >
-                      <Linkedin className="h-4 w-4" aria-hidden="true" />
-                      LinkedIn
-                    </a>
-                  )}
+              <div className="flex gap-3 p-2.5 lg:block lg:p-0">
+                <div className="relative w-[36%] min-w-[6.75rem] shrink-0 self-stretch overflow-hidden rounded-xl lg:w-auto lg:min-w-0 lg:rounded-none lg:aspect-[4/5]">
+                  <div className="relative h-full min-h-[9rem] lg:min-h-0 lg:aspect-[4/5]">
+                    <Image
+                      src={leader.imageUrl}
+                      alt={`Portrait of ${leader.name}`}
+                      fill
+                      quality={90}
+                      priority
+                      className="object-cover object-top"
+                      sizes="(max-width: 1024px) 36vw, 320px"
+                    />
+                  </div>
+                </div>
+                <div className="flex min-w-0 flex-1 flex-col justify-center py-1 pr-1 lg:p-5">
+                  <h1 className="font-display text-base font-bold leading-snug text-navy sm:text-xl lg:text-2xl">
+                    {leader.name}
+                  </h1>
+                  <p className="mt-1 text-xs font-medium text-teal sm:text-sm">
+                    {leader.role}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2 lg:mt-5">
+                    {leader.email && (
+                      <a
+                        href={`mailto:${leader.email}`}
+                        className="inline-flex items-center gap-1.5 rounded-xl border-2 border-navy px-2.5 py-1 text-xs font-semibold text-navy transition-colors hover:bg-navy/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm"
+                      >
+                        <Mail className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
+                        Email
+                      </a>
+                    )}
+                    {leader.linkedin && (
+                      <a
+                        href={leader.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-xl border-2 border-navy px-2.5 py-1 text-xs font-semibold text-navy transition-colors hover:bg-navy/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm"
+                      >
+                        <Linkedin className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
+                        LinkedIn
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </aside>

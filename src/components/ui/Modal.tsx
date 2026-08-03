@@ -11,13 +11,19 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl" | "full";
+  /** Hide the built-in title row when children render their own header. */
+  hideHeader?: boolean;
+  /** Remove default panel padding so content can go edge-to-edge. */
+  flush?: boolean;
 }
 
 const sizeStyles = {
   sm: "max-w-md",
   md: "max-w-lg",
   lg: "max-w-2xl",
+  xl: "max-w-5xl",
+  full: "max-w-7xl",
 };
 
 export function Modal({
@@ -27,6 +33,8 @@ export function Modal({
   children,
   className,
   size = "md",
+  hideHeader = false,
+  flush = false,
 }: ModalProps) {
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -84,7 +92,7 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4 md:p-6"
       role="presentation"
     >
       <button
@@ -99,25 +107,53 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={titleId}
         className={cn(
-          "relative z-10 w-full rounded-2xl bg-white p-6 shadow-xl motion-safe:animate-in motion-safe:zoom-in-95",
+          "relative z-10 flex w-full flex-col overflow-hidden bg-white shadow-xl",
+          "max-h-[100dvh] rounded-t-2xl sm:max-h-[min(94dvh,960px)] sm:rounded-2xl",
+          "motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 sm:motion-safe:zoom-in-95 sm:motion-safe:slide-in-from-bottom-0",
+          (size === "xl" || size === "full") &&
+            "h-[100dvh] sm:h-auto sm:min-h-[min(80dvh,720px)]",
           sizeStyles[size],
+          !flush && "p-5 sm:p-6",
           className
         )}
       >
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <h2 id={titleId} className="font-display text-xl font-semibold text-[#0A2540]">
+        {hideHeader ? (
+          <h2 id={titleId} className="sr-only">
             {title}
           </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg p-1.5 text-[#0A2540]/60 transition-colors hover:bg-[#0A2540]/10 hover:text-[#0A2540] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
-            aria-label="Close"
+        ) : (
+          <div
+            className={cn(
+              "mb-4 flex shrink-0 items-start justify-between gap-4",
+              flush && "border-b border-navy/8 px-5 py-4 sm:px-6"
+            )}
           >
-            <X className="h-5 w-5" />
-          </button>
+            <h2
+              id={titleId}
+              className="font-display text-xl font-semibold text-[#0A2540]"
+            >
+              {title}
+            </h2>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-1.5 text-[#0A2540]/60 transition-colors hover:bg-[#0A2540]/10 hover:text-[#0A2540] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        )}
+        <div
+          className={cn(
+            "min-h-0 flex-1 overscroll-contain",
+            hideHeader && flush
+              ? "flex flex-col overflow-hidden"
+              : "overflow-y-auto"
+          )}
+        >
+          {children}
         </div>
-        {children}
       </div>
     </div>
   );

@@ -43,9 +43,70 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
                 "radial-gradient(circle at 12% 35%, #2563EB 0%, transparent 45%), radial-gradient(circle at 88% 65%, #14B8A6 0%, transparent 42%)",
             }}
           />
-          <Container className="relative py-10 sm:py-12 lg:py-14">
-            <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
-              <div className="lg:col-span-7">
+          <Container className="relative py-8 sm:py-12 lg:py-14">
+            <div className="grid gap-5 sm:gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
+              {/* Mobile: image left + details right; desktop: text first, image second */}
+              <div className="order-1 flex gap-3 sm:hidden">
+                <div className="relative w-[40%] min-w-[7.75rem] shrink-0 overflow-hidden rounded-2xl">
+                  <div className="relative h-full min-h-[9.5rem]">
+                    <Image
+                      src={nextEvent.imageUrl}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="40vw"
+                      priority
+                    />
+                  </div>
+                </div>
+                <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-teal">
+                      Featured Event
+                    </p>
+                    <h2 className="mt-1.5 font-display text-base font-bold leading-snug">
+                      {nextEvent.title}
+                    </h2>
+                    <ul className="mt-2.5 space-y-1.5 text-[11px] text-white/80">
+                      <li className="flex items-start gap-1.5">
+                        <Calendar
+                          className="mt-0.5 h-3 w-3 shrink-0 text-teal"
+                          aria-hidden="true"
+                        />
+                        <time dateTime={nextEvent.date}>
+                          {formatDate(nextEvent.date)}
+                        </time>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <MapPin
+                          className="mt-0.5 h-3 w-3 shrink-0 text-teal"
+                          aria-hidden="true"
+                        />
+                        <span className="line-clamp-1">{nextEvent.location}</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="mt-3 flex flex-col gap-2">
+                    <Button
+                      href={`/events/${nextEvent.slug}`}
+                      variant="teal"
+                      size="sm"
+                      className="w-full justify-center"
+                    >
+                      View event
+                    </Button>
+                    <EventRegisterButton
+                      event={nextEvent}
+                      size="sm"
+                      variant="outline"
+                      label="Register"
+                      className="w-full justify-center border-white text-white hover:bg-white/10 hover:text-white"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="hidden sm:block lg:col-span-7">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-teal">
                   Featured Event
                 </p>
@@ -97,7 +158,7 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
                   />
                 </div>
               </div>
-              <div className="lg:col-span-5">
+              <div className="order-2 hidden sm:block lg:col-span-5">
                 <div className="overflow-hidden rounded-2xl border border-white/15 bg-white/5 backdrop-blur-sm">
                   <div className="relative aspect-[16/10]">
                     <Image
@@ -139,7 +200,7 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
               description="Additional gatherings that bring African STEM talent together."
               className="mb-10"
             />
-            <ul className="grid gap-6 sm:grid-cols-2 lg:gap-8">
+            <ul className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:gap-8">
               {otherUpcoming.map((event) => (
                 <li key={event.id} id={event.slug}>
                   <EventCard event={event} />
@@ -159,38 +220,38 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
               description="Moments from gatherings that shaped STEMNova programmes across Africa."
               className="mb-10"
             />
-            <ul className="space-y-4">
+            <ul className="space-y-3 sm:space-y-4">
               {past.map((event) => (
                 <li
                   key={event.id}
-                  className="grid gap-5 overflow-hidden rounded-2xl border border-navy/8 bg-white p-4 shadow-sm sm:grid-cols-[180px_1fr] sm:p-5 lg:grid-cols-[220px_1fr]"
+                  className="flex gap-3 overflow-hidden rounded-2xl border border-navy/8 bg-white p-2.5 shadow-sm sm:grid sm:grid-cols-[180px_1fr] sm:gap-5 sm:p-5 lg:grid-cols-[220px_1fr]"
                 >
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-xl sm:aspect-auto sm:min-h-[140px]">
+                  <div className="relative w-[36%] min-w-[6.75rem] shrink-0 overflow-hidden rounded-xl self-stretch sm:w-auto sm:min-w-0 sm:aspect-auto sm:min-h-[140px]">
                     <Image
                       src={event.imageUrl}
                       alt=""
                       fill
                       className="object-cover"
-                      sizes="(max-width: 640px) 100vw, 220px"
+                      sizes="(max-width: 640px) 36vw, 220px"
                     />
                   </div>
-                  <div className="flex flex-col justify-center py-1">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-teal">
+                  <div className="flex min-w-0 flex-1 flex-col justify-center py-1 pr-1 sm:pr-0">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-teal sm:text-xs">
                       {event.category}
                     </p>
-                    <h3 className="mt-1 font-display text-xl font-semibold text-navy">
+                    <h3 className="mt-0.5 font-display text-sm font-semibold leading-snug text-navy line-clamp-2 sm:mt-1 sm:text-xl">
                       {event.title}
                     </h3>
-                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-navy/65">
+                    <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-navy/65 sm:mt-2 sm:gap-x-4 sm:text-sm">
                       <time dateTime={event.date}>{formatDate(event.date)}</time>
-                      <span>{event.location}</span>
+                      <span className="line-clamp-1">{event.location}</span>
                     </div>
-                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-navy/70">
+                    <p className="mt-3 hidden max-w-2xl text-sm leading-relaxed text-navy/70 sm:block">
                       {event.description}
                     </p>
                     <Link
                       href={`/events/${event.slug}`}
-                      className="mt-3 inline-flex text-sm font-semibold text-blue hover:text-navy"
+                      className="mt-2 inline-flex text-xs font-semibold text-blue hover:text-navy sm:mt-3 sm:text-sm"
                     >
                       View event details
                     </Link>

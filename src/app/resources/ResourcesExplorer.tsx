@@ -70,7 +70,8 @@ export function ResourcesExplorer({
           className="w-full rounded-xl border border-[#0A2540]/20 bg-white px-4 py-3 text-sm text-[#0A2540] placeholder:text-[#0A2540]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
         />
 
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by topic">
+        <div className="flex flex-wrap gap-2 sm:flex-wrap" role="group" aria-label="Filter by topic">
+          <div className="-mx-1 flex w-full gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible">
           {topicFilters.map((filter) => (
             <button
               key={filter.value}
@@ -78,7 +79,7 @@ export function ResourcesExplorer({
               onClick={() => setTopic(filter.value)}
               aria-pressed={topic === filter.value}
               className={cn(
-                "rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2",
+                "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2 sm:px-4 sm:py-2 sm:text-sm",
                 topic === filter.value
                   ? "bg-[#0A2540] text-white"
                   : "bg-[#0A2540]/10 text-[#0A2540] hover:bg-[#0A2540]/20"
@@ -87,9 +88,11 @@ export function ResourcesExplorer({
               {filter.label}
             </button>
           ))}
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by type">
+          <div className="-mx-1 flex w-full gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible">
           {typeFilters.map((filter) => (
             <button
               key={filter.value}
@@ -97,7 +100,7 @@ export function ResourcesExplorer({
               onClick={() => setType(filter.value)}
               aria-pressed={type === filter.value}
               className={cn(
-                "rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2",
+                "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2 sm:px-4 sm:py-2 sm:text-sm",
                 type === filter.value
                   ? "bg-[#14B8A6] text-white"
                   : "bg-[#14B8A6]/10 text-[#14B8A6] hover:bg-[#14B8A6]/20"
@@ -106,6 +109,7 @@ export function ResourcesExplorer({
               {filter.label}
             </button>
           ))}
+          </div>
         </div>
       </div>
 
@@ -118,7 +122,7 @@ export function ResourcesExplorer({
           No resources match your search. Try adjusting filters or keywords.
         </p>
       ) : (
-        <ul className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-3 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8">
           {filtered.map((resource) => (
             <li key={resource.id}>
               <ResourceCard resource={resource} />

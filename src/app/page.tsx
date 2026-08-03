@@ -87,11 +87,10 @@ export default async function HomePage() {
           <SectionHeading
             eyebrow="Flagship Programmes"
             title="Nine Programmes. Clear Pathways."
-            description="From talent discovery and girls in STEM to fellowships, teacher training, and frontier science."
             align="center"
             className="mb-14"
           />
-          <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          <ul className="grid gap-3 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8">
             {featuredProgrammes.map((program) => (
               <li key={program.slug}>
                 <ProgramCard program={program} />
@@ -113,7 +112,6 @@ export default async function HomePage() {
           <SectionHeading
             eyebrow="Research and Innovation"
             title="Committed to Frontier Science"
-            description="STEMNova advances African capacity in quantum science, AI, materials research, robotics, and sustainable development."
             align="center"
             className="mb-14"
           />
@@ -149,17 +147,17 @@ export default async function HomePage() {
       {/* Success Story */}
       <section className="py-20 sm:py-24">
         <Container>
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
+          <div className="flex gap-3 overflow-hidden rounded-2xl border border-navy/8 bg-white p-2.5 shadow-sm sm:grid sm:items-center sm:gap-10 sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none lg:grid-cols-2 lg:gap-16">
+            <div className="relative w-[38%] min-w-[7.5rem] shrink-0 self-stretch overflow-hidden rounded-xl sm:w-auto sm:min-w-0 sm:aspect-[4/3] sm:rounded-3xl">
               <Image
                 src={featuredStory.imageUrl}
                 alt=""
                 fill
                 className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
+                sizes="(max-width: 640px) 40vw, (max-width: 1024px) 100vw, 50vw"
               />
             </div>
-            <div>
+            <div className="flex min-w-0 flex-1 flex-col justify-center py-1 pr-1 sm:py-0 sm:pr-0">
               <SectionHeading
                 eyebrow="Success Story"
                 title={featuredStory.title}
@@ -167,10 +165,10 @@ export default async function HomePage() {
               />
               <Link
                 href="/impact"
-                className="mt-6 inline-flex items-center gap-1.5 rounded text-sm font-semibold text-blue hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
+                className="mt-3 inline-flex items-center gap-1.5 rounded text-xs font-semibold text-blue hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:mt-6 sm:text-sm"
               >
                 Read more success stories
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -190,7 +188,7 @@ export default async function HomePage() {
             align="center"
             className="mb-12"
           />
-          <ul className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-3 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8">
             {latestPosts.map((post) => (
               <li key={post.slug}>
                 <BlogCard post={post} />

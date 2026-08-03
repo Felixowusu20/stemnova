@@ -168,26 +168,26 @@ export default async function ImpactPage() {
             align="center"
             className="mb-10"
           />
-          <ul className="grid gap-6 md:grid-cols-3">
+          <ul className="grid gap-3 md:grid-cols-3 md:gap-6">
             {stories.map((story) => (
               <li
                 key={story.id}
-                className="overflow-hidden rounded-2xl border border-navy/10 bg-white"
+                className="flex overflow-hidden rounded-2xl border border-navy/10 bg-white md:flex-col"
               >
-                <div className="relative aspect-[16/10]">
+                <div className="relative w-[38%] min-w-[7.5rem] shrink-0 self-stretch md:w-full md:min-w-0 md:aspect-[16/10]">
                   <Image
                     src={story.imageUrl}
                     alt=""
                     fill
                     className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    sizes="(max-width: 768px) 40vw, 33vw"
                   />
                 </div>
-                <div className="p-5">
-                  <h3 className="font-display text-lg font-semibold text-navy">
+                <div className="flex min-w-0 flex-1 flex-col justify-center p-3 sm:p-4 md:p-5">
+                  <h3 className="font-display text-sm font-semibold leading-snug text-navy line-clamp-2 md:text-lg">
                     {story.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-navy">
+                  <p className="mt-1.5 text-xs leading-relaxed text-navy line-clamp-3 md:mt-2 md:text-sm md:line-clamp-none">
                     {story.summary}
                   </p>
                 </div>

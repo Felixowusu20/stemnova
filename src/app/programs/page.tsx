@@ -51,7 +51,7 @@ export default async function ProgramsPage() {
 
       <section className="bg-light pb-12 pt-6 sm:pb-16 sm:pt-8">
         <Container>
-          <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          <ul className="grid gap-3 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8">
             {programs.map((program) => (
               <li key={program.slug}>
                 <ProgramCard program={program} />

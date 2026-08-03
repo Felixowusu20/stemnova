@@ -72,8 +72,52 @@ export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
     <div className="py-12 sm:py-16">
       <Container>
         {featured && (
-          <article className="overflow-hidden rounded-2xl bg-white shadow-md">
-            <div className="grid lg:grid-cols-2">
+          <article className="overflow-hidden rounded-2xl border border-navy/8 bg-white shadow-md">
+            {/* Mobile: image left + details right */}
+            <div className="flex gap-3 p-2.5 sm:hidden">
+              <div className="relative w-[40%] min-w-[7.75rem] shrink-0 overflow-hidden rounded-xl self-stretch">
+                <div className="relative h-full min-h-[9.5rem]">
+                  <Image
+                    src={featured.imageUrl}
+                    alt=""
+                    fill
+                    priority
+                    className="object-cover"
+                    sizes="40vw"
+                  />
+                </div>
+                <span className="absolute left-2 top-2 rounded-full bg-[#F4B942] px-2 py-0.5 text-[10px] font-semibold text-navy">
+                  Featured
+                </span>
+              </div>
+              <div className="flex min-w-0 flex-1 flex-col justify-between py-1 pr-1">
+                <div>
+                  <div className="flex flex-wrap items-center gap-2 text-[10px] text-navy/60">
+                    <span className="rounded-full bg-navy px-2 py-0.5 font-semibold text-white">
+                      {categoryLabels[featured.category]}
+                    </span>
+                    <time dateTime={featured.publishedAt}>
+                      {formatDate(featured.publishedAt)}
+                    </time>
+                  </div>
+                  <h2 className="mt-1.5 font-display text-sm font-bold leading-snug text-navy line-clamp-3">
+                    <Link href={`/blog/${featured.slug}`}>{featured.title}</Link>
+                  </h2>
+                  <p className="mt-1.5 text-xs leading-relaxed text-navy/70 line-clamp-2">
+                    {featured.excerpt}
+                  </p>
+                </div>
+                <Link
+                  href={`/blog/${featured.slug}`}
+                  className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-navy"
+                >
+                  Read article
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="hidden sm:grid lg:grid-cols-2">
               <div className="relative aspect-[16/10] lg:aspect-auto lg:min-h-[20rem]">
                 <Image
                   src={featured.imageUrl}
@@ -87,7 +131,7 @@ export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
                   Featured
                 </span>
               </div>
-              <div className="flex flex-col justify-center p-8 lg:p-10">
+              <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
                 <div className="flex flex-wrap items-center gap-3 text-xs text-[#0A2540]/60">
                   <span className="rounded-full bg-[#0A2540] px-3 py-1 font-semibold text-white">
                     {categoryLabels[featured.category]}
@@ -100,7 +144,7 @@ export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
                 <h2 className="mt-4 font-display text-2xl font-bold text-[#0A2540] sm:text-3xl">
                   <Link
                     href={`/blog/${featured.slug}`}
-                    className="hover:text-[#0A2540] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2 rounded"
+                    className="rounded hover:text-[#0A2540] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
                   >
                     {featured.title}
                   </Link>
@@ -108,7 +152,7 @@ export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
                 <p className="mt-3 text-[#0A2540]/75">{featured.excerpt}</p>
                 <Link
                   href={`/blog/${featured.slug}`}
-                  className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#0A2540] transition-colors hover:text-[#0d3354] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2 rounded"
+                  className="mt-6 inline-flex items-center gap-1.5 rounded text-sm font-semibold text-[#0A2540] transition-colors hover:text-[#0d3354] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2"
                 >
                   Read featured article
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -118,7 +162,7 @@ export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
           </article>
         )}
 
-        <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 sm:mt-12 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative max-w-md flex-1">
             <Search
               className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#0A2540]/40"
@@ -138,7 +182,7 @@ export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
           </div>
 
           <div
-            className="flex flex-wrap gap-2"
+            className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible"
             role="group"
             aria-label="Filter articles by category"
           >
@@ -149,7 +193,7 @@ export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
                 onClick={() => setCategory(value)}
                 aria-pressed={category === value}
                 className={cn(
-                  "rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2",
+                  "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A2540] focus-visible:ring-offset-2 sm:px-4 sm:py-2 sm:text-sm",
                   category === value
                     ? "bg-[#0A2540] text-white"
                     : "bg-[#0A2540]/10 text-[#0A2540] hover:bg-[#0A2540]/20"
@@ -164,7 +208,7 @@ export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
         <SectionHeading
           title="Latest Articles"
           description="Foundation news, research updates, and thought leadership from STEMNova Foundation."
-          className="mt-12"
+          className="mt-10 sm:mt-12"
         />
 
         {filteredPosts.length === 0 ? (
@@ -174,7 +218,7 @@ export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
             className="mt-8"
           />
         ) : (
-          <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
             {filteredPosts.map((post) => (
               <li key={post.slug}>
                 <BlogCard post={post} />

@@ -111,13 +111,79 @@ export default async function EventDetailPage({
             Back to events
           </Link>
 
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+            {/* Mobile summary card: image left, details + register right */}
+            <div className="lg:hidden">
+              <div className="overflow-hidden rounded-2xl border border-navy/8 bg-white shadow-sm">
+                <div className="flex gap-3 p-2.5">
+                  <div className="relative w-[38%] min-w-[7.25rem] shrink-0 overflow-hidden rounded-xl self-stretch">
+                    <div className="relative h-full min-h-[10rem]">
+                      <Image
+                        src={event.imageUrl}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        sizes="38vw"
+                        priority
+                      />
+                    </div>
+                  </div>
+                  <div className="flex min-w-0 flex-1 flex-col justify-between py-1 pr-1">
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-teal">
+                        {categoryLabels[event.category]}
+                      </p>
+                      <ul className="mt-2 space-y-1.5 text-[11px] text-navy/75">
+                        <li className="flex items-start gap-1.5">
+                          <Calendar
+                            className="mt-0.5 h-3 w-3 shrink-0 text-teal"
+                            aria-hidden="true"
+                          />
+                          <time dateTime={event.date}>
+                            {formatDate(event.date)}
+                          </time>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <Clock
+                            className="mt-0.5 h-3 w-3 shrink-0 text-teal"
+                            aria-hidden="true"
+                          />
+                          <span className="line-clamp-1">{event.time}</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <MapPin
+                            className="mt-0.5 h-3 w-3 shrink-0 text-teal"
+                            aria-hidden="true"
+                          />
+                          <span className="line-clamp-2">{event.location}</span>
+                        </li>
+                      </ul>
+                    </div>
+                    {!event.isPast && (
+                      <div className="mt-3 space-y-2">
+                        <div className="rounded-lg bg-navy px-2.5 py-2 text-white">
+                          <EventCountdown event={event} compact />
+                        </div>
+                        <EventRegisterButton
+                          event={event}
+                          size="sm"
+                          variant="teal"
+                          label="Register"
+                          className="w-full justify-center"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-10 lg:col-span-7">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal">
+                <p className="hidden text-sm font-semibold uppercase tracking-[0.16em] text-teal lg:block">
                   {categoryLabels[event.category]}
                 </p>
-                <SectionHeading title="About This Event" className="mt-3" />
+                <SectionHeading title="About This Event" className="lg:mt-3" />
                 <p className="mt-4 text-base leading-relaxed text-navy sm:text-lg">
                   {event.about}
                 </p>
@@ -182,7 +248,7 @@ export default async function EventDetailPage({
               </div>
             </div>
 
-            <aside className="lg:col-span-5">
+            <aside className="hidden lg:col-span-5 lg:block">
               <div className="sticky top-28 space-y-6">
                 <div className="overflow-hidden rounded-2xl border border-navy/8 bg-white shadow-sm">
                   <div className="relative aspect-[16/10]">
@@ -191,7 +257,7 @@ export default async function EventDetailPage({
                       alt=""
                       fill
                       className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      sizes="40vw"
                       priority
                     />
                   </div>
