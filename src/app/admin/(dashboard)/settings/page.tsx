@@ -1,11 +1,24 @@
 import { prisma } from "@/lib/db";
 import { SettingsForm } from "@/components/admin/SettingsForm";
 import { siteConfig } from "@/content";
+import { resolveAnnouncementEvent } from "@/lib/cms/resolve-content";
 
 export default async function AdminSettingsPage() {
-  const row = await prisma.siteSettings.findUnique({
-    where: { id: "default" },
-  });
+  const [row, announcementEvent] = await Promise.all([
+    prisma.siteSettings.findUnique({
+      where: { id: "default" },
+    }),
+    resolveAnnouncementEvent(),
+  ]);
+
+  const featuredAnnouncement = announcementEvent
+    ? `${announcementEvent.title} — ${new Date(announcementEvent.date).toLocaleDateString("en-GH", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })}`
+    : null;
 
   const initial = row
     ? {
@@ -40,12 +53,15 @@ export default async function AdminSettingsPage() {
           Site settings
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-navy/60">
-          Update the foundation name, tagline, logo, announcement bar, and
-          contact details used across the public site.
+          Update the foundation name, tagline, logo, and contact details. The
+          announcement bar shows your next upcoming event automatically.
         </p>
       </header>
 
-      <SettingsForm initial={initial} />
+      <SettingsForm
+        initial={initial}
+        featuredAnnouncement={featuredAnnouncement}
+      />
     </div>
   );
 }

@@ -12,6 +12,7 @@ export type CollectionListItem = {
   slug: string | null;
   status: string;
   updatedAt: string;
+  badge?: string | null;
 };
 
 type PendingDelete =
@@ -120,7 +121,16 @@ export function CollectionItemsTable({
           <tbody>
             {items.map((item) => (
               <tr key={item.id} className="border-t border-navy/5">
-                <td className="px-4 py-3 font-medium text-navy">{item.title}</td>
+                <td className="px-4 py-3 font-medium text-navy">
+                  <span className="inline-flex flex-wrap items-center gap-2">
+                    {item.title}
+                    {item.badge ? (
+                      <span className="rounded-full bg-navy/8 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-navy/70">
+                        {item.badge}
+                      </span>
+                    ) : null}
+                  </span>
+                </td>
                 <td className="px-4 py-3 text-navy/55">{item.slug || "—"}</td>
                 <td className="px-4 py-3">
                   <span className="rounded-full bg-teal/10 px-2 py-0.5 text-xs font-semibold text-teal">

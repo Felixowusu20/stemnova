@@ -58,6 +58,12 @@ function revalidateCollection(collection: string, slug?: string | null) {
     if (slug === "vision-mission") revalidatePath("/about/vision");
     if (slug === "about-story") revalidatePath("/about/story");
     if (slug === "contact") revalidatePath("/contact");
+    if (slug === "governance") revalidatePath("/about/governance");
+    if (slug === "roadmap") revalidatePath("/about/roadmap");
+    if (slug === "impact") {
+      revalidatePath("/impact");
+      revalidatePath("/");
+    }
     revalidatePath("/about");
   }
 }

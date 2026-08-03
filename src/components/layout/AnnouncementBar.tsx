@@ -6,30 +6,31 @@ import { useEffect, useState } from "react";
 import { useSite } from "@/components/layout/SiteProviders";
 import { cn } from "@/lib/utils";
 
-const STORAGE_KEY = "dwf-announcement-dismissed";
+const STORAGE_PREFIX = "dwf-announcement-dismissed:";
 
 export function AnnouncementBar() {
   const { settings } = useSite();
   const [visible, setVisible] = useState(false);
   const { announcementBar } = settings;
+  const storageKey = `${STORAGE_PREFIX}${announcementBar?.href || announcementBar?.text || ""}`;
 
   useEffect(() => {
     if (!announcementBar?.text) return;
 
     try {
-      const dismissed = sessionStorage.getItem(STORAGE_KEY);
+      const dismissed = sessionStorage.getItem(storageKey);
       if (!dismissed || !announcementBar.dismissible) {
         setVisible(true);
       }
     } catch {
       setVisible(true);
     }
-  }, [announcementBar]);
+  }, [announcementBar, storageKey]);
 
   const handleDismiss = () => {
     setVisible(false);
     try {
-      sessionStorage.setItem(STORAGE_KEY, "true");
+      sessionStorage.setItem(storageKey, "true");
     } catch {
       /* sessionStorage unavailable */
     }

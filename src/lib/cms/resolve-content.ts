@@ -8,8 +8,11 @@ import {
   contactPageContent,
   events,
   galleryAlbums,
+  impactData,
+  IMPACT_DATA_DISCLAIMER,
   programs,
   resources,
+  roadmapPhases,
   teamMembers,
   testimonials,
   partners,
@@ -22,8 +25,11 @@ import type {
   Event,
   GalleryAlbum,
   GalleryImage,
+  GovernanceBody,
+  ImpactData,
   Program,
   Resource,
+  RoadmapPhase,
   TeamMember,
   Testimonial,
   Partner,
@@ -195,6 +201,26 @@ export async function resolveEventBySlug(slug: string) {
   return list.find((item) => item.slug === slug);
 }
 
+/** Next upcoming event for the site announcement bar (soonest date first). */
+export async function resolveAnnouncementEvent(): Promise<{
+  title: string;
+  date: string;
+  slug: string;
+} | null> {
+  const list = await resolveEvents();
+  const next = list
+    .filter((event) => !event.isPast)
+    .sort((a, b) => a.date.localeCompare(b.date))[0];
+
+  if (!next?.title || !next.slug) return null;
+
+  return {
+    title: next.title,
+    date: next.date,
+    slug: next.slug,
+  };
+}
+
 export async function resolveBlogPosts(): Promise<BlogPost[]> {
   const items = await getContentByCollection("blog");
   if (!(await isCmsActive())) return blogPosts;
@@ -313,7 +339,10 @@ export async function resolveTeam(): Promise<TeamMember[]> {
               ? data.linkedin.trim()
               : undefined
             : member?.linkedin,
-        isFounder: data.isFounder ?? member?.isFounder ?? false,
+        isFounder:
+          typeof data.isFounder === "boolean"
+            ? data.isFounder
+            : (member?.isFounder ?? false),
         isIllustrative: true as const,
       };
     });
@@ -545,5 +574,116 @@ export async function resolveContactPage() {
     details: Array.isArray(data.details)
       ? data.details
       : contactPageContent.details,
+  };
+}
+
+export async function resolveGovernance(): Promise<{
+  title: string;
+  description: string;
+  bodies: GovernanceBody[];
+}> {
+  const fallback = {
+    title: "Governance",
+    description:
+      "Clear oversight across the Board, advisory committees, and Secretariat.",
+    bodies: valuesData.governance,
+  };
+
+  const item = await getContentBySlug("pages", "governance");
+  if (!item) return fallback;
+
+  const data = asData<{ bodies?: GovernanceBody[] }>(item.data);
+
+  return {
+    title: item.title || fallback.title,
+    description: item.excerpt || fallback.description,
+    bodies: Array.isArray(data.bodies) && data.bodies.length > 0
+      ? data.bodies
+      : fallback.bodies,
+  };
+}
+
+export async function resolveRoadmap(): Promise<{
+  title: string;
+  description: string;
+  timeline: TimelineMilestone[];
+  phases: RoadmapPhase[];
+}> {
+  const fallback = {
+    title: "Roadmap",
+    description:
+      "Our phased path from a new foundation to lasting institutional strength.",
+    timeline: valuesData.timeline,
+    phases: roadmapPhases,
+  };
+
+  const item = await getContentBySlug("pages", "roadmap");
+  if (!item) return fallback;
+
+  const data = asData<{
+    timeline?: TimelineMilestone[];
+    phases?: RoadmapPhase[];
+  }>(item.data);
+
+  return {
+    title: item.title || fallback.title,
+    description: item.excerpt || fallback.description,
+    timeline:
+      Array.isArray(data.timeline) && data.timeline.length > 0
+        ? data.timeline
+        : fallback.timeline,
+    phases:
+      Array.isArray(data.phases) && data.phases.length > 0
+        ? data.phases
+        : fallback.phases,
+  };
+}
+
+export async function resolveImpact(): Promise<
+  ImpactData & {
+    title: string;
+    description: string;
+    disclaimer: string;
+  }
+> {
+  const fallback = {
+    ...impactData,
+    title: "Our Impact",
+    description:
+      "Clear metrics and stories from STEMNova programmes across Africa.",
+    disclaimer: IMPACT_DATA_DISCLAIMER,
+  };
+
+  const item = await getContentBySlug("pages", "impact");
+  if (!item) return fallback;
+
+  const data = asData<ImpactData & { disclaimer?: string }>(item.data);
+
+  return {
+    title: item.title || fallback.title,
+    description: item.excerpt || fallback.description,
+    disclaimer:
+      item.body || data.disclaimer || fallback.disclaimer,
+    statistics: Array.isArray(data.statistics)
+      ? data.statistics
+      : fallback.statistics,
+    programBreakdown: Array.isArray(data.programBreakdown)
+      ? data.programBreakdown
+      : fallback.programBreakdown,
+    locations: Array.isArray(data.locations)
+      ? data.locations
+      : fallback.locations,
+    successStories: Array.isArray(data.successStories)
+      ? data.successStories
+      : fallback.successStories,
+    beforeAfterStories: Array.isArray(data.beforeAfterStories)
+      ? data.beforeAfterStories
+      : fallback.beforeAfterStories,
+    annualReports: Array.isArray(data.annualReports)
+      ? data.annualReports
+      : fallback.annualReports,
+    donationUsage: Array.isArray(data.donationUsage)
+      ? data.donationUsage
+      : fallback.donationUsage,
   };
 }
