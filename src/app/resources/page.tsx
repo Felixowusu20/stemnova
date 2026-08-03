@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Container, PageHero, SectionHeading } from "@/components";
-import { images, resources } from "@/content";
+import { images } from "@/content";
+import { resolveResources } from "@/lib/cms/resolve-content";
 import { ResourcesExplorer } from "./ResourcesExplorer";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Resources",
@@ -9,7 +12,9 @@ export const metadata: Metadata = {
     "Browse STEMNova Foundation resources — guides, articles, videos, and FAQs on talent discovery, research leadership, women in STEM, quantum education, and teacher development.",
 };
 
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  const resources = await resolveResources();
+
   return (
     <>
       <PageHero

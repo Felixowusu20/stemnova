@@ -10,11 +10,13 @@ import {
   SectionHeading,
   TeamCard,
 } from "@/components";
+import { images, getAllLeaders } from "@/content";
 import {
-  getAllLeaders,
-  getLeaderBySlug,
-  images,
-} from "@/content";
+  resolveLeaderBySlug,
+  resolveTeam,
+} from "@/lib/cms/resolve-content";
+
+export const dynamic = "force-dynamic";
 
 interface LeaderPageProps {
   params: Promise<{ slug: string }>;
@@ -28,7 +30,7 @@ export async function generateMetadata({
   params,
 }: LeaderPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const leader = getLeaderBySlug(slug);
+  const leader = await resolveLeaderBySlug(slug);
 
   if (!leader) {
     return { title: "Leader Not Found" };
@@ -42,13 +44,16 @@ export async function generateMetadata({
 
 export default async function LeaderProfilePage({ params }: LeaderPageProps) {
   const { slug } = await params;
-  const leader = getLeaderBySlug(slug);
+  const [leader, allLeaders] = await Promise.all([
+    resolveLeaderBySlug(slug),
+    resolveTeam(),
+  ]);
 
   if (!leader) {
     notFound();
   }
 
-  const related = getAllLeaders()
+  const related = allLeaders
     .filter((member) => member.slug !== leader.slug)
     .slice(0, 3);
 

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
-import { navigation } from "@/content";
+import { navigation as staticNavigation } from "@/content";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import type { NavItem } from "@/types";
@@ -13,6 +13,8 @@ interface MobileMenuProps {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
+  navigation?: NavItem[];
+  supportLabel?: string;
 }
 
 function MobileNavItem({
@@ -69,7 +71,13 @@ function MobileNavItem({
   );
 }
 
-export function MobileMenu({ isOpen, onOpen, onClose }: MobileMenuProps) {
+export function MobileMenu({
+  isOpen,
+  onOpen,
+  onClose,
+  navigation = staticNavigation,
+  supportLabel = "Support STEMNova",
+}: MobileMenuProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -124,7 +132,7 @@ export function MobileMenu({ isOpen, onOpen, onClose }: MobileMenuProps) {
       <button
         ref={triggerRef}
         type="button"
-        className="rounded-lg p-2 text-navy transition-colors hover:bg-navy/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 xl:hidden"
+        className="rounded-lg p-2 text-navy transition-colors hover:bg-navy/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 lg:hidden"
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
         aria-label={isOpen ? "Close menu" : "Open menu"}
@@ -141,14 +149,14 @@ export function MobileMenu({ isOpen, onOpen, onClose }: MobileMenuProps) {
         <>
           <button
             type="button"
-            className="fixed inset-0 z-40 bg-navy/40 xl:hidden"
+            className="fixed inset-0 z-40 bg-navy/40 lg:hidden"
             aria-label="Close menu overlay"
             onClick={onClose}
           />
           <div
             id="mobile-menu"
             ref={panelRef}
-            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-light shadow-xl motion-safe:animate-in motion-safe:slide-in-from-right xl:hidden"
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-light shadow-xl motion-safe:animate-in motion-safe:slide-in-from-right lg:hidden"
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation"
@@ -186,7 +194,7 @@ export function MobileMenu({ isOpen, onOpen, onClose }: MobileMenuProps) {
                 fullWidth
                 onClick={onClose}
               >
-                Support STEMNova
+                {supportLabel}
               </Button>
             </div>
           </div>

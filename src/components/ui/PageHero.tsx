@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Breadcrumbs, type BreadcrumbItem } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
@@ -9,6 +10,7 @@ interface PageHeroProps {
   breadcrumbs?: BreadcrumbItem[];
   backgroundImage?: string;
   className?: string;
+  children?: ReactNode;
 }
 
 export function PageHero({
@@ -17,6 +19,7 @@ export function PageHero({
   breadcrumbs,
   backgroundImage,
   className,
+  children,
 }: PageHeroProps) {
   return (
     <section
@@ -54,6 +57,7 @@ export function PageHero({
             {description}
           </p>
         )}
+        {children}
       </Container>
     </section>
   );

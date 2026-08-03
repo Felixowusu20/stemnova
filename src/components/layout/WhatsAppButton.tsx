@@ -1,5 +1,7 @@
+"use client";
+
 import { MessageCircle } from "lucide-react";
-import { siteConfig } from "@/content";
+import { useSite } from "@/components/layout/SiteProviders";
 import { cn } from "@/lib/utils";
 
 interface WhatsAppButtonProps {
@@ -7,7 +9,8 @@ interface WhatsAppButtonProps {
 }
 
 export function WhatsAppButton({ className }: WhatsAppButtonProps) {
-  const { whatsappLink, whatsapp } = siteConfig.contact;
+  const { settings } = useSite();
+  const { whatsappLink, whatsapp } = settings.contact;
 
   return (
     <a

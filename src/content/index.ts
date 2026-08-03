@@ -8,12 +8,6 @@ export {
   getProgramBySlug,
   getProgramBySlugString,
 } from "@/content/programs";
-export {
-  projects,
-  getProjectBySlug,
-  getFeaturedProject,
-  getProjectsByStatus,
-} from "@/content/projects";
 export { impactData, IMPACT_DATA_DISCLAIMER } from "@/content/impact";
 export {
   teamMembers,

@@ -1,12 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, Plus_Jakarta_Sans } from "next/font/google";
-import {
-  AnnouncementBar,
-  Footer,
-  Header,
-  WhatsAppButton,
-} from "@/components";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { PublicChrome } from "@/components/layout/PublicChrome";
 import { siteConfig } from "@/content";
 import { getOrganizationSchema } from "@/lib/seo-schemas";
 import { getSiteUrl } from "@/lib/site-url";
@@ -96,13 +91,7 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <AnnouncementBar />
-        <Header />
-        <main id="main-content" className="flex-1">
-          {children}
-        </main>
-        <Footer />
-        <WhatsAppButton />
+        <PublicChrome>{children}</PublicChrome>
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Linkedin, Mail } from "lucide-react";
 import {
   Container,
   CtaSection,
@@ -9,7 +9,13 @@ import {
   SectionHeading,
   TeamCard,
 } from "@/components";
-import { getFounders, getTeamMembers, images } from "@/content";
+import { images } from "@/content";
+import {
+  resolveFounders,
+  resolveNonFounderTeam,
+} from "@/lib/cms/resolve-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Leadership",
@@ -17,9 +23,11 @@ export const metadata: Metadata = {
     "Meet STEMNova Foundation co-founders and institutional leadership team.",
 };
 
-export default function AboutLeadershipPage() {
-  const founders = getFounders();
-  const team = getTeamMembers();
+export default async function AboutLeadershipPage() {
+  const [founders, team] = await Promise.all([
+    resolveFounders(),
+    resolveNonFounderTeam(),
+  ]);
 
   return (
     <>
@@ -46,39 +54,65 @@ export default function AboutLeadershipPage() {
           <ul className="mx-auto grid max-w-4xl gap-5 lg:grid-cols-2">
             {founders.map((founder) => (
               <li key={founder.id}>
-                <Link
-                  href={`/about/leadership/${founder.slug}`}
-                  className="group grid overflow-hidden rounded-xl border border-navy/10 bg-white transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:grid-cols-[140px_1fr]"
-                >
-                  <div className="relative aspect-[4/3] sm:aspect-auto sm:min-h-[180px]">
-                    <Image
-                      src={founder.imageUrl}
-                      alt={`Portrait of ${founder.name}`}
-                      fill
-                      quality={90}
-                      className="object-cover object-top"
-                      sizes="(max-width: 640px) 100vw, 140px"
-                    />
-                  </div>
-                  <div className="flex flex-col p-4 sm:p-5">
-                    <h2 className="font-display text-lg font-bold leading-snug text-navy">
-                      {founder.name}
-                    </h2>
-                    <p className="mt-1 text-xs font-medium text-teal">
-                      {founder.role}
-                    </p>
-                    <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-navy/80 sm:text-sm">
-                      {founder.bio}
-                    </p>
-                    <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-blue transition-colors group-hover:text-navy">
-                      View profile
-                      <ArrowRight
-                        className="h-3.5 w-3.5 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
-                        aria-hidden="true"
+                <article className="overflow-hidden rounded-xl border border-navy/10 bg-white transition-shadow hover:shadow-md">
+                  <Link
+                    href={`/about/leadership/${founder.slug}`}
+                    className="group grid focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:grid-cols-[140px_1fr]"
+                  >
+                    <div className="relative aspect-[4/3] sm:aspect-auto sm:min-h-[180px]">
+                      <Image
+                        src={founder.imageUrl}
+                        alt={`Portrait of ${founder.name}`}
+                        fill
+                        quality={90}
+                        className="object-cover object-top"
+                        sizes="(max-width: 640px) 100vw, 140px"
                       />
-                    </span>
-                  </div>
-                </Link>
+                    </div>
+                    <div className="flex flex-col p-4 sm:p-5">
+                      <h2 className="font-display text-lg font-bold leading-snug text-navy">
+                        {founder.name}
+                      </h2>
+                      <p className="mt-1 text-xs font-medium text-teal">
+                        {founder.role}
+                      </p>
+                      <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-navy/80 sm:text-sm">
+                        {founder.bio}
+                      </p>
+                      <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-blue transition-colors group-hover:text-navy">
+                        View profile
+                        <ArrowRight
+                          className="h-3.5 w-3.5 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </div>
+                  </Link>
+                  {(founder.email || founder.linkedin) && (
+                    <div className="flex gap-1.5 border-t border-navy/10 px-4 py-2.5 sm:px-5">
+                      {founder.email && (
+                        <a
+                          href={`mailto:${founder.email}`}
+                          aria-label={`Email ${founder.name}`}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-navy/10 text-navy transition-colors hover:bg-navy hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
+                        >
+                          <Mail className="h-3.5 w-3.5" aria-hidden="true" />
+                        </a>
+                      )}
+                      {founder.linkedin && (
+                        <a
+                          href={founder.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${founder.name} on LinkedIn`}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-navy/10 text-navy transition-colors hover:bg-navy hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
+                        >
+                          <Linkedin className="h-3.5 w-3.5" aria-hidden="true" />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </article>
               </li>
             ))}
           </ul>

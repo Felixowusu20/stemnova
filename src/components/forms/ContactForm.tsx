@@ -9,6 +9,7 @@ import {
   formLabelClass,
 } from "@/components/forms/formStyles";
 import { Button } from "@/components/ui/Button";
+import { submitForm } from "@/lib/submissions";
 import { cn } from "@/lib/utils";
 
 interface ContactFormProps {
@@ -46,7 +47,10 @@ export function ContactForm({ className }: ContactFormProps) {
 
     setStatus("loading");
     try {
-      await new Promise((resolve) => setTimeout(resolve, 700));
+      await submitForm({
+        type: "CONTACT",
+        payload: { ...form },
+      });
       setStatus("success");
       setForm({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch {

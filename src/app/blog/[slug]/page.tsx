@@ -12,12 +12,16 @@ import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
   blogPosts,
-  getBlogPostBySlug,
-  getRelatedPosts,
 } from "@/content";
+import {
+  resolveBlogPostBySlug,
+  resolveRelatedPosts,
+} from "@/lib/cms/resolve-content";
 import { getArticleSchema } from "@/lib/seo-schemas";
 import { getSiteUrl } from "@/lib/site-url";
 import type { BlogCategory } from "@/types";
+
+export const dynamic = "force-dynamic";
 
 const categoryLabels: Record<BlogCategory, string> = {
   news: "News",
@@ -58,7 +62,7 @@ export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await resolveBlogPostBySlug(slug);
 
   if (!post) {
     return { title: "Article Not Found" };
@@ -94,7 +98,7 @@ export async function generateMetadata({
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await resolveBlogPostBySlug(slug);
 
   if (!post) {
     notFound();
@@ -102,7 +106,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const siteUrl = getSiteUrl();
   const url = `${siteUrl}/blog/${post.slug}`;
-  const relatedPosts = getRelatedPosts(post.slug, 3);
+  const relatedPosts = await resolveRelatedPosts(post.slug, 3);
 
   return (
     <>

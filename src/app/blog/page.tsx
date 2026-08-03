@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { BlogExplorer } from "@/components/blog/BlogExplorer";
 import { PageHero } from "@/components/ui/PageHero";
 import { images } from "@/content/images";
+import { resolveBlogPosts } from "@/lib/cms/resolve-content";
 import { getSiteUrl } from "@/lib/site-url";
+
+export const dynamic = "force-dynamic";
 
 const siteUrl = getSiteUrl();
 
@@ -22,7 +25,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await resolveBlogPosts();
+
   return (
     <>
       <PageHero
@@ -31,7 +36,7 @@ export default function BlogPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "News" }]}
         backgroundImage={images.blog.default}
       />
-      <BlogExplorer />
+      <BlogExplorer posts={posts} />
     </>
   );
 }

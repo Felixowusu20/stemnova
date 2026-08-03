@@ -28,13 +28,19 @@ import {
   TestimonialsSection,
 } from "@/components";
 import {
-  getLatestPosts,
-  images,
-  impactData,
-  programs,
   researchAreas,
   siteConfig,
 } from "@/content";
+import { getResolvedSiteConfig } from "@/lib/cms/queries";
+import {
+  resolveImpact,
+  resolveLatestPosts,
+  resolvePartners,
+  resolvePrograms,
+  resolveTestimonials,
+} from "@/lib/cms/resolve-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -52,15 +58,24 @@ const researchIcons = {
   network: Network,
 } as const;
 
-export default function HomePage() {
-  const latestPosts = getLatestPosts(3);
+export default async function HomePage() {
+  const [settings, programs, latestPosts, testimonials, partners, impact] =
+    await Promise.all([
+      getResolvedSiteConfig(),
+      resolvePrograms(),
+      resolveLatestPosts(3),
+      resolveTestimonials(),
+      resolvePartners(),
+      resolveImpact(),
+    ]);
   const featuredProgrammes = programs.slice(0, 6);
-  const featuredStory = impactData.successStories[0];
-  const highlightStats = impactData.statistics.slice(0, 6);
+  const featuredStory = impact.successStories[0];
+  const highlightStats = impact.statistics.slice(0, 6);
+  const featuredTestimonials = testimonials.slice(0, 3);
 
   return (
     <>
-      <HeroCarousel slides={images.homeSlides} />
+      <HeroCarousel slides={settings.heroSlides} />
 
       <ChallengesCycle />
 
@@ -162,8 +177,8 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <TestimonialsSection />
-      <PartnersSection />
+      <TestimonialsSection testimonials={featuredTestimonials} />
+      <PartnersSection partners={partners} />
 
       {/* Latest News */}
       <section className="py-20 sm:py-24">

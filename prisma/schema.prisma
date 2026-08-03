@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum FormSubmissionType {
+  CONTACT
+  TESTIMONIAL
+  EVENT_REGISTRATION
+  VOLUNTEER
+  MENTOR
+  FELLOWSHIP
+  SPONSOR
+  PARTNER
+  NEWSLETTER
+}
+
+enum FormSubmissionStatus {
+  NEW
+  READ
+  ARCHIVED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         UserRole @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model MediaAsset {
+  id           String   @id @default(cuid())
+  publicId     String   @unique
+  url          String
+  secureUrl    String
+  width        Int?
+  height       Int?
+  format       String?
+  resourceType String   @default("image")
+  folder       String?
+  alt          String?
+  title        String?
+  bytes        Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
+/// Singleton site branding, contact, and announcement settings.
+model SiteSettings {
+  id              String   @id @default("default")
+  name            String
+  shortName       String
+  tagline         String
+  description     String   @db.Text
+  logoUrl         String?
+  logoAlt         String?
+  faviconUrl      String?
+  contact         Json
+  social          Json
+  announcementBar Json?
+  heroSlides      Json?
+  pageHeroImages  Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model NavItem {
+  id        String    @id @default(cuid())
+  label     String
+  href      String
+  parentId  String?
+  parent    NavItem?  @relation("NavTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children  NavItem[] @relation("NavTree")
+  sortOrder Int       @default(0)
+  isVisible Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([parentId, sortOrder])
+}
+
+/// Flexible CMS entries for programmes, events, blog, team, pages, quotes, etc.
+model ContentItem {
+  id          String        @id @default(cuid())
+  collection  String
+  slug        String?
+  title       String
+  excerpt     String?       @db.Text
+  body        String?       @db.Text
+  coverUrl    String?
+  data        Json?
+  status      ContentStatus @default(PUBLISHED)
+  sortOrder   Int           @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([collection, slug])
+  @@index([collection, status, sortOrder])
+  @@index([collection, publishedAt])
+}
+
+/// Public form submissions (contact, event registration, get-involved, testimonials).
+model FormSubmission {
+  id        String               @id @default(cuid())
+  type      FormSubmissionType
+  status    FormSubmissionStatus @default(NEW)
+  name      String?
+  email     String?
+  subject   String?
+  message   String?              @db.Text
+  /// Related event slug for EVENT_REGISTRATION, programme slug for sponsor, etc.
+  relatedSlug String?
+  relatedTitle String?
+  payload   Json
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  @@index([type, status, createdAt])
+  @@index([email])
+  @@index([createdAt])
+}

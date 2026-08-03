@@ -5,7 +5,10 @@ import {
   CtaSection,
   ProgramCard,
 } from "@/components";
-import { images, programs } from "@/content";
+import { images } from "@/content";
+import { resolvePrograms } from "@/lib/cms/resolve-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Flagship Programmes",
@@ -19,7 +22,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProgramsPage() {
+export default async function ProgramsPage() {
+  const programs = await resolvePrograms();
+
   return (
     <>
       <section className="bg-light pt-4 pb-2 sm:pt-6">

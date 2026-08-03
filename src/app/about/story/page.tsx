@@ -6,7 +6,10 @@ import {
   PageHero,
   SectionHeading,
 } from "@/components";
-import { images, valuesData } from "@/content";
+import { images } from "@/content";
+import { resolveAboutStory } from "@/lib/cms/resolve-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Our Story",
@@ -14,7 +17,10 @@ export const metadata: Metadata = {
     "Learn why STEMNova Foundation was founded and what we are building for African STEM talent.",
 };
 
-export default function AboutStoryPage() {
+export default async function AboutStoryPage() {
+  const story = await resolveAboutStory();
+  const coverImage = story.coverUrl || images.hero.research;
+
   return (
     <>
       <PageHero
@@ -38,14 +44,14 @@ export default function AboutStoryPage() {
                 className="mb-6"
               />
               <div className="space-y-4 text-base leading-relaxed text-navy sm:text-lg">
-                {valuesData.aboutStory.map((paragraph, index) => (
+                {story.paragraphs.map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
               </div>
             </div>
             <div className="relative min-h-[280px] overflow-hidden rounded-2xl shadow-sm lg:min-h-full">
               <Image
-                src={images.hero.research}
+                src={coverImage}
                 alt="Researchers collaborating in a modern laboratory"
                 fill
                 quality={90}

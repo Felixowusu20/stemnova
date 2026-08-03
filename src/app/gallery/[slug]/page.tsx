@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { PageHero } from "@/components/ui/PageHero";
 import { galleryAlbums, getGalleryAlbumBySlug } from "@/content";
+import {
+  resolveGalleryAlbumBySlug,
+  resolveGalleryAlbums,
+} from "@/lib/cms/resolve-content";
 import { getSiteUrl } from "@/lib/site-url";
+
+export const dynamic = "force-dynamic";
 
 const siteUrl = getSiteUrl();
 
@@ -23,7 +29,8 @@ export async function generateMetadata({
   params,
 }: GalleryAlbumPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const album = getGalleryAlbumBySlug(slug);
+  const album =
+    (await resolveGalleryAlbumBySlug(slug)) ?? getGalleryAlbumBySlug(slug);
   if (!album) {
     return { title: "Album Not Found" };
   }
@@ -47,7 +54,10 @@ export default async function GalleryAlbumPage({
   params,
 }: GalleryAlbumPageProps) {
   const { slug } = await params;
-  const album = getGalleryAlbumBySlug(slug);
+  const [album, albums] = await Promise.all([
+    resolveGalleryAlbumBySlug(slug),
+    resolveGalleryAlbums(),
+  ]);
 
   if (!album) {
     notFound();
@@ -80,7 +90,7 @@ export default async function GalleryAlbumPage({
               {album.images.length === 1 ? "photo" : "photos"}
             </p>
           </div>
-          <GalleryGrid albumSlug={album.slug} />
+          <GalleryGrid albums={albums} albumSlug={album.slug} />
           <div className="mt-12 flex flex-col items-center justify-center gap-3 border-t border-navy/8 pt-10 sm:flex-row">
             <Button href={`/programs/${album.slug}`} variant="secondary">
               Learn About This Programme

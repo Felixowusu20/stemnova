@@ -16,10 +16,13 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { events, getEventBySlug } from "@/content";
+import { events } from "@/content";
+import { resolveEventBySlug } from "@/lib/cms/resolve-content";
 import { getEventSchema } from "@/lib/seo-schemas";
 import { getSiteUrl } from "@/lib/site-url";
 import type { EventCategory } from "@/types";
+
+export const dynamic = "force-dynamic";
 
 const categoryLabels: Record<EventCategory, string> = {
   conference: "Conference",
@@ -45,7 +48,7 @@ export async function generateMetadata({
   params,
 }: EventDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await resolveEventBySlug(slug);
   if (!event) return { title: "Event Not Found" };
 
   return {
@@ -76,7 +79,7 @@ export default async function EventDetailPage({
   params,
 }: EventDetailPageProps) {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await resolveEventBySlug(slug);
 
   if (!event) {
     notFound();

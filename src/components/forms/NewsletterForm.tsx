@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { submitForm } from "@/lib/submissions";
 
 interface NewsletterFormProps {
   className?: string;
@@ -40,7 +41,10 @@ export function NewsletterForm({
     setStatus("loading");
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await submitForm({
+        type: "NEWSLETTER",
+        payload: { email },
+      });
       setStatus("success");
       setEmail("");
     } catch {

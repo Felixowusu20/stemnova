@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useSiteOptional } from "@/components/layout/SiteProviders";
 
-const LOGO_SRC = "/images/stemnova-logo.jpg";
+const FALLBACK_LOGO = "/images/stemnova-logo.jpg";
 
 type LogoVariant = "header" | "footer" | "mark";
 
@@ -22,10 +25,14 @@ export function SiteLogo({
   className,
   priority = false,
 }: SiteLogoProps) {
+  const site = useSiteOptional();
+  const src = site?.settings.logoUrl || FALLBACK_LOGO;
+  const alt = site?.settings.logoAlt || site?.settings.name || "STEMNova Foundation";
+
   return (
     <Image
-      src={LOGO_SRC}
-      alt="STEMNova Foundation"
+      src={src}
+      alt={alt}
       width={1024}
       height={1024}
       priority={priority}

@@ -24,7 +24,6 @@ export { SiteLogo } from "@/components/ui/SiteLogo";
 
 // Cards
 export { ProgramCard } from "@/components/cards/ProgramCard";
-export { ProjectCard } from "@/components/cards/ProjectCard";
 export { TestimonialCard } from "@/components/cards/TestimonialCard";
 export { TeamCard } from "@/components/cards/TeamCard";
 export { BlogCard } from "@/components/cards/BlogCard";
@@ -42,6 +41,7 @@ export { CtaSection } from "@/components/sections/CtaSection";
 export { PartnersSection } from "@/components/sections/PartnersSection";
 export { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 export { NewsletterSection } from "@/components/sections/NewsletterSection";
+export { PhilosophyQuoteSlider } from "@/components/sections/PhilosophyQuoteSlider";
 
 // Gallery
 export { GalleryGrid } from "@/components/gallery/GalleryGrid";

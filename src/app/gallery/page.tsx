@@ -5,9 +5,11 @@ import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/ui/PageHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { galleryAlbums } from "@/content";
 import { images } from "@/content/images";
+import { resolveGalleryAlbums } from "@/lib/cms/resolve-content";
 import { getSiteUrl } from "@/lib/site-url";
+
+export const dynamic = "force-dynamic";
 
 const siteUrl = getSiteUrl();
 
@@ -27,7 +29,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const albums = await resolveGalleryAlbums();
+
   return (
     <>
       <PageHero
@@ -45,7 +49,7 @@ export default function GalleryPage() {
             className="mb-10"
           />
           <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {galleryAlbums.map((album) => (
+            {albums.map((album) => (
               <li key={album.slug}>
                 <Link
                   href={`/gallery/${album.slug}`}

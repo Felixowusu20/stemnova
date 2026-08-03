@@ -1,6 +1,11 @@
 import type { NavItem } from "@/types";
 
-/** Primary site navigation matching application routes. */
+/**
+ * Primary site navigation — aligned with admin CMS collections and public routes
+ * so seeded mock data is reachable from the navbar.
+ *
+ * Programme dropdown children are filled at runtime from the CMS.
+ */
 export const navigation: NavItem[] = [
   {
     label: "About",
@@ -12,46 +17,30 @@ export const navigation: NavItem[] = [
       { label: "Leadership", href: "/about/leadership" },
       { label: "Governance", href: "/about/governance" },
       { label: "Roadmap", href: "/about/roadmap" },
+      { label: "Research & Innovation", href: "/research" },
+      { label: "Impact", href: "/impact" },
     ],
   },
   {
     label: "Programmes",
     href: "/programs",
-    children: [
-      {
-        label: "Young Scholars STEM Discovery",
-        href: "/programs/young-scholars-stem-discovery",
-      },
-      {
-        label: "African STEM Fellows",
-        href: "/programs/african-stem-fellows",
-      },
-      {
-        label: "Quantum Education & Leaders",
-        href: "/programs/quantum-education-leaders",
-      },
-      {
-        label: "Girls Discover Science",
-        href: "/programs/girls-discover-science",
-      },
-      { label: "View All Programmes", href: "/programs" },
-    ],
-  },
-  {
-    label: "Research",
-    href: "/research",
-  },
-  {
-    label: "Impact",
-    href: "/impact",
+    children: [{ label: "View All Programmes", href: "/programs" }],
   },
   {
     label: "Events",
     href: "/events",
   },
   {
+    label: "Gallery",
+    href: "/gallery",
+  },
+  {
     label: "News",
     href: "/blog",
+  },
+  {
+    label: "Resources",
+    href: "/resources",
   },
   {
     label: "Get Involved",

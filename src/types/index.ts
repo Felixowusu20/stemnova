@@ -1,4 +1,6 @@
-/** Shared TypeScript types for STEMNova Foundation website content. */
+import type {
+  EventRegistrationFormConfig,
+} from "@/lib/event-registration-form";
 
 export type SocialPlatform =
   | "facebook"
@@ -167,45 +169,6 @@ export interface GetInvolvedOption {
   cta: string;
 }
 
-export type ProjectStatus = "active" | "upcoming" | "completed";
-
-export interface ProjectUpdate {
-  date: string;
-  title: string;
-  summary: string;
-}
-
-export interface ProjectSponsor {
-  name: string;
-  logoUrl: string;
-  isPlaceholder: true;
-}
-
-export interface Project {
-  slug: string;
-  title: string;
-  shortDescription: string;
-  status: ProjectStatus;
-  featured: boolean;
-  goal?: number;
-  raised?: number;
-  currency: string;
-  girlsSupported?: number;
-  timeline: {
-    start: string;
-    end?: string;
-    milestones: { date: string; label: string }[];
-  };
-  location: string;
-  activities: string[];
-  impact: string[];
-  sponsors: ProjectSponsor[];
-  updates: ProjectUpdate[];
-  galleryImageUrls: string[];
-  heroImageUrl: string;
-  isIllustrative: true;
-}
-
 export interface ProgramBreakdown {
   programSlug: ProgramSlug;
   programTitle: string;
@@ -325,6 +288,8 @@ export interface Event {
   agenda: { time: string; title: string }[];
   registrationRequired: boolean;
   registrationUrl?: string;
+  /** CMS-editable Google Form–style registration questions for this event. */
+  registrationForm?: EventRegistrationFormConfig;
   imageUrl: string;
   galleryImageUrls?: string[];
   isPast: boolean;
@@ -417,7 +382,7 @@ export interface GovernanceBody {
 export interface ValuesData {
   vision: string;
   mission: string;
-  leadershipPhilosophy: string;
+  leadershipPhilosophyQuotes: string[];
   coreValues: CoreValue[];
   aboutStory: string[];
   timeline: TimelineMilestone[];

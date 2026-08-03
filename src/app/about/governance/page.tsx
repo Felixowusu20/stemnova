@@ -6,7 +6,10 @@ import {
   PageHero,
   SectionHeading,
 } from "@/components";
-import { images, valuesData } from "@/content";
+import { images } from "@/content";
+import { resolveGovernance } from "@/lib/cms/resolve-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Governance",
@@ -14,12 +17,14 @@ export const metadata: Metadata = {
     "How STEMNova Foundation stays accountable through the Board, advisory committees, and Secretariat.",
 };
 
-export default function AboutGovernancePage() {
+export default async function AboutGovernancePage() {
+  const governance = await resolveGovernance();
+
   return (
     <>
       <PageHero
-        title="Governance"
-        description="Clear oversight across the Board, advisory committees, and Secretariat."
+        title={governance.title}
+        description={governance.description}
         backgroundImage={images.hero.about}
         breadcrumbs={[
           { label: "Home", href: "/" },
@@ -38,7 +43,7 @@ export default function AboutGovernancePage() {
             className="mb-12"
           />
           <ul className="grid gap-6 lg:grid-cols-3">
-            {valuesData.governance.map((body) => (
+            {governance.bodies.map((body) => (
               <li
                 key={body.id}
                 className="rounded-2xl border border-navy/10 bg-white p-7"

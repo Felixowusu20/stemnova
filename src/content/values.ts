@@ -9,8 +9,12 @@ export const valuesData: ValuesData = {
     "To become Africa's most trusted institution for discovering and developing scientific talent.",
   mission:
     "We identify promising STEM talent across Africa, create clear pathways into research and teaching, expand opportunities for women and underserved communities, and connect African researchers to global networks.",
-  leadershipPhilosophy:
+  leadershipPhilosophyQuotes: [
     "Excellence and equity belong together. We build institutions that outlast their founders, invest in people before programmes, and give African STEM talent the same rigour and global connection researchers receive anywhere in the world.",
+    "Scientific talent is not scarce in Africa — opportunity is. Our work is to find that talent early, mentor it carefully, and open doors that lead to research leadership.",
+    "We measure success by the researchers, teachers, and innovators who stay and lead. Strong institutions grow when people are trusted with responsibility and given room to excel.",
+    "Global science needs African minds at the centre of discovery, not at the margins of participation. We build pathways that make that shift lasting and real.",
+  ],
   coreValues: [
     {
       title: "Excellence",

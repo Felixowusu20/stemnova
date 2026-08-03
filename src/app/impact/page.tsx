@@ -12,11 +12,10 @@ import {
   ImpactBarChart,
   ImpactDonutChart,
 } from "@/components/ui/ImpactCharts";
-import {
-  images,
-  impactData,
-  IMPACT_DATA_DISCLAIMER,
-} from "@/content";
+import { images } from "@/content";
+import { resolveImpact } from "@/lib/cms/resolve-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Our Impact",
@@ -24,10 +23,11 @@ export const metadata: Metadata = {
     "See STEMNova Foundation impact across students, researchers, teachers, women in STEM, and partners across Africa.",
 };
 
-export default function ImpactPage() {
-  const highlightStats = impactData.statistics.slice(0, 6);
-  const stories = impactData.successStories.slice(0, 3);
-  const locationBars = impactData.locations.map((location) => ({
+export default async function ImpactPage() {
+  const impact = await resolveImpact();
+  const highlightStats = impact.statistics.slice(0, 6);
+  const stories = impact.successStories.slice(0, 3);
+  const locationBars = impact.locations.map((location) => ({
     label: location.name,
     value: location.girlsReached,
   }));
@@ -35,8 +35,8 @@ export default function ImpactPage() {
   return (
     <>
       <PageHero
-        title="Our Impact"
-        description="Clear metrics and stories from STEMNova programmes across Africa."
+        title={impact.title}
+        description={impact.description}
         backgroundImage={images.hero.impact}
         breadcrumbs={[
           { label: "Home", href: "/" },
@@ -62,7 +62,7 @@ export default function ImpactPage() {
             ))}
           </ul>
           <p className="mx-auto mt-8 max-w-2xl text-center text-xs text-navy/50">
-            {IMPACT_DATA_DISCLAIMER}
+            {impact.disclaimer}
           </p>
         </Container>
       </section>
@@ -85,7 +85,7 @@ export default function ImpactPage() {
               </p>
               <ImpactBarChart
                 className="mt-6"
-                items={impactData.programBreakdown.map((item) => ({
+                items={impact.programBreakdown.map((item) => ({
                   label: item.programTitle,
                   value: item.percentage,
                 }))}
@@ -101,7 +101,7 @@ export default function ImpactPage() {
               </p>
               <ImpactDonutChart
                 className="mt-8"
-                items={impactData.donationUsage.map((item) => ({
+                items={impact.donationUsage.map((item) => ({
                   label: item.category,
                   value: item.percentage,
                 }))}
@@ -121,7 +121,7 @@ export default function ImpactPage() {
                 className="mb-8"
               />
               <ul className="space-y-3">
-                {impactData.locations.map((location) => (
+                {impact.locations.map((location) => (
                   <li
                     key={location.name}
                     className="flex items-start gap-3 rounded-xl border border-navy/10 bg-white p-4"
@@ -206,7 +206,7 @@ export default function ImpactPage() {
             className="mb-10"
           />
           <ul className="grid gap-5 md:grid-cols-2">
-            {impactData.beforeAfterStories.slice(0, 4).map((story) => (
+            {impact.beforeAfterStories.slice(0, 4).map((story) => (
               <li
                 key={story.id}
                 className="rounded-2xl border border-navy/10 bg-white p-6"
@@ -247,7 +247,7 @@ export default function ImpactPage() {
             className="mb-10"
           />
           <ul className="mx-auto grid max-w-3xl gap-4">
-            {impactData.annualReports.map((report) => (
+            {impact.annualReports.map((report) => (
               <li
                 key={report.year}
                 className="flex flex-col gap-4 rounded-2xl border border-navy/10 bg-white p-6 sm:flex-row sm:items-center sm:justify-between"
