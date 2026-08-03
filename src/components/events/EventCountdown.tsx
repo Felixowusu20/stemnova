@@ -7,6 +7,8 @@ import type { Event } from "@/types";
 interface EventCountdownProps {
   event: Event;
   className?: string;
+  /** Tighter layout for mobile side-by-side cards. */
+  compact?: boolean;
 }
 
 interface TimeLeft {
@@ -31,20 +33,47 @@ function getTimeLeft(targetDate: string): TimeLeft | null {
   };
 }
 
-function CountdownUnit({ value, label }: { value: number; label: string }) {
+function CountdownUnit({
+  value,
+  label,
+  compact,
+}: {
+  value: number;
+  label: string;
+  compact?: boolean;
+}) {
   return (
-    <div className="flex flex-col items-center rounded-xl bg-white/10 px-4 py-3 sm:px-6 sm:py-4">
-      <span className="font-display text-3xl font-bold tabular-nums sm:text-4xl">
+    <div
+      className={cn(
+        "flex flex-col items-center rounded-xl bg-white/10",
+        compact ? "rounded-lg px-1.5 py-1.5" : "px-4 py-3 sm:px-6 sm:py-4"
+      )}
+    >
+      <span
+        className={cn(
+          "font-display font-bold tabular-nums",
+          compact ? "text-sm" : "text-3xl sm:text-4xl"
+        )}
+      >
         {String(value).padStart(2, "0")}
       </span>
-      <span className="mt-1 text-xs uppercase tracking-wider text-white/80">
+      <span
+        className={cn(
+          "uppercase tracking-wider text-white/80",
+          compact ? "mt-0.5 text-[8px]" : "mt-1 text-xs"
+        )}
+      >
         {label}
       </span>
     </div>
   );
 }
 
-export function EventCountdown({ event, className }: EventCountdownProps) {
+export function EventCountdown({
+  event,
+  className,
+  compact = false,
+}: EventCountdownProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(() =>
     getTimeLeft(event.date)
   );
@@ -59,9 +88,30 @@ export function EventCountdown({ event, className }: EventCountdownProps) {
 
   if (!timeLeft) {
     return (
-      <p className={cn("text-white/90", className)}>
+      <p className={cn("text-white/90", compact && "text-[11px]", className)}>
         This event is happening soon or has already started.
       </p>
+    );
+  }
+
+  if (compact) {
+    return (
+      <div className={cn("space-y-1.5", className)}>
+        <p className="text-[9px] font-medium uppercase tracking-wider text-white/70">
+          Starts in
+        </p>
+        <div
+          className="grid grid-cols-4 gap-1"
+          role="timer"
+          aria-live="polite"
+          aria-label={`${timeLeft.days} days, ${timeLeft.hours} hours, ${timeLeft.minutes} minutes, and ${timeLeft.seconds} seconds until ${event.title}`}
+        >
+          <CountdownUnit value={timeLeft.days} label="D" compact />
+          <CountdownUnit value={timeLeft.hours} label="H" compact />
+          <CountdownUnit value={timeLeft.minutes} label="M" compact />
+          <CountdownUnit value={timeLeft.seconds} label="S" compact />
+        </div>
+      </div>
     );
   }
 

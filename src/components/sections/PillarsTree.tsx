@@ -91,7 +91,6 @@ export function PillarsTree() {
         <SectionHeading
           eyebrow="Our Strategic Pillars"
           title="Seven Focus Areas Driving Africa's STEM Future"
-          description="Every programme and partnership maps to one of these connected priorities."
           align="center"
           className="mb-14"
         />

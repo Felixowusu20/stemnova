@@ -42,16 +42,16 @@ export default async function AboutGovernancePage() {
             align="center"
             className="mb-12"
           />
-          <ul className="grid gap-6 lg:grid-cols-3">
+          <ul className="grid gap-3 sm:gap-6 lg:grid-cols-3">
             {governance.bodies.map((body) => (
               <li
                 key={body.id}
-                className="rounded-2xl border border-navy/10 bg-white p-7"
+                className="rounded-2xl border border-navy/10 bg-white p-4 sm:p-7"
               >
-                <h2 className="font-display text-xl font-semibold text-navy">
+                <h2 className="font-display text-lg font-semibold text-navy sm:text-xl">
                   {body.title}
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-navy">
+                <p className="mt-2 text-sm leading-relaxed text-navy sm:mt-3">
                   {body.description}
                 </p>
                 <ul className="mt-5 space-y-2">

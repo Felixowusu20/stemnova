@@ -59,9 +59,14 @@ export function EventRegisterButton({
         isOpen={open}
         onClose={() => setOpen(false)}
         title="Event registration"
-        size="lg"
+        size="full"
+        hideHeader
+        flush
       >
-        <EventRegistrationForm event={event} />
+        <EventRegistrationForm
+          event={event}
+          onClose={() => setOpen(false)}
+        />
       </Modal>
     </>
   );

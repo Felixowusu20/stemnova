@@ -55,25 +55,25 @@ export default function GetInvolvedPage() {
             align="center"
             className="mb-14"
           />
-          <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-3 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
             {getInvolvedOptions.map((option) => {
               const Icon = optionIcons[option.icon];
               return (
                 <li key={option.id} id={option.id} className="scroll-mt-28">
                   <Link
                     href={option.href}
-                    className="group flex h-full flex-col rounded-2xl border border-navy/5 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
+                    className="group flex h-full flex-col rounded-2xl border border-navy/5 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:p-8"
                   >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue/10 text-blue">
-                      <Icon className="h-7 w-7" aria-hidden="true" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue/10 text-blue sm:h-14 sm:w-14">
+                      <Icon className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />
                     </div>
-                    <h3 className="mt-5 font-display text-xl font-semibold text-navy">
+                    <h3 className="mt-4 font-display text-lg font-semibold text-navy sm:mt-5 sm:text-xl">
                       {option.title}
                     </h3>
-                    <p className="mt-3 flex-1 text-sm leading-relaxed text-navy/70">
+                    <p className="mt-2 flex-1 text-sm leading-relaxed text-navy/70 sm:mt-3">
                       {option.description}
                     </p>
-                    <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-blue transition-colors group-hover:text-navy">
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-blue transition-colors group-hover:text-navy sm:mt-6">
                       {option.cta}
                       <ArrowRight
                         className="h-4 w-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
