@@ -56,8 +56,10 @@ const PAGE_HERO_KEYS = [
 
 export function SettingsForm({
   initial,
+  featuredAnnouncement,
 }: {
   initial: SettingsShape | null;
+  featuredAnnouncement?: string | null;
 }) {
   const router = useRouter();
   const [form, setForm] = useState<SettingsShape>(
@@ -256,10 +258,27 @@ export function SettingsForm({
         <h2 className="font-display text-lg font-semibold text-navy">
           Announcement bar
         </h2>
+        <p className="mt-2 text-sm text-navy/55">
+          The bar above the navbar shows your next upcoming event title and date
+          automatically (from Content → Events). If there is no upcoming event,
+          the fallback text below is used.
+        </p>
         <div className="mt-4 grid gap-4">
+          {featuredAnnouncement ? (
+            <div className="rounded-xl border border-teal/20 bg-teal/5 px-3.5 py-3 text-sm text-navy">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal">
+                Currently showing
+              </p>
+              <p className="mt-1 font-medium">{featuredAnnouncement}</p>
+            </div>
+          ) : (
+            <p className="rounded-xl border border-navy/10 bg-light/60 px-3.5 py-3 text-sm text-navy/60">
+              No upcoming events — fallback text will show (if set).
+            </p>
+          )}
           <div>
             <label className={labelClass} htmlFor="announcement">
-              Text
+              Fallback text
             </label>
             <input
               id="announcement"
@@ -275,11 +294,12 @@ export function SettingsForm({
                   },
                 })
               }
+              placeholder="Shown only when there is no upcoming event"
             />
           </div>
           <div>
             <label className={labelClass} htmlFor="announcementHref">
-              Link (optional)
+              Fallback link (optional)
             </label>
             <input
               id="announcementHref"
@@ -295,8 +315,27 @@ export function SettingsForm({
                   },
                 })
               }
+              placeholder="/events"
             />
           </div>
+          <label className="inline-flex items-center gap-2 text-sm text-navy">
+            <input
+              type="checkbox"
+              checked={form.announcementBar?.dismissible ?? true}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  announcementBar: {
+                    text: form.announcementBar?.text || "",
+                    href: form.announcementBar?.href,
+                    dismissible: e.target.checked,
+                  },
+                })
+              }
+              className="h-4 w-4 rounded border-navy/20 text-blue focus:ring-blue"
+            />
+            Allow visitors to dismiss the bar
+          </label>
         </div>
       </section>
 

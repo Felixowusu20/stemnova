@@ -6,7 +6,10 @@ import {
   PageHero,
   SectionHeading,
 } from "@/components";
-import { images, roadmapPhases, valuesData } from "@/content";
+import { images } from "@/content";
+import { resolveRoadmap } from "@/lib/cms/resolve-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Roadmap",
@@ -14,12 +17,14 @@ export const metadata: Metadata = {
     "STEMNova Foundation's phased roadmap from early foundation work to long-term institutional strength.",
 };
 
-export default function AboutRoadmapPage() {
+export default async function AboutRoadmapPage() {
+  const roadmap = await resolveRoadmap();
+
   return (
     <>
       <PageHero
-        title="Roadmap"
-        description="Our phased path from a new foundation to lasting institutional strength."
+        title={roadmap.title}
+        description={roadmap.description}
         backgroundImage={images.hero.about}
         breadcrumbs={[
           { label: "Home", href: "/" },
@@ -38,7 +43,7 @@ export default function AboutRoadmapPage() {
             className="mb-12"
           />
           <ol className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {valuesData.timeline.map((milestone) => (
+            {roadmap.timeline.map((milestone) => (
               <li
                 key={`${milestone.year}-${milestone.title}`}
                 className="rounded-2xl border border-navy/10 bg-white p-6"
@@ -71,7 +76,7 @@ export default function AboutRoadmapPage() {
             className="mb-12"
           />
           <ol className="grid gap-5 lg:grid-cols-4">
-            {roadmapPhases.map((phase) => (
+            {roadmap.phases.map((phase) => (
               <li
                 key={phase.id}
                 className="flex flex-col rounded-2xl border border-navy/10 bg-white p-6"

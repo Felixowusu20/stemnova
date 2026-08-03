@@ -56,7 +56,8 @@ export const CMS_COLLECTIONS = [
   {
     id: "pages",
     label: "Pages",
-    description: "About, vision, contact, and other page copy",
+    description:
+      "About, vision, governance, roadmap, impact, contact, and other page copy",
     hasSlug: true,
   },
 ] as const;

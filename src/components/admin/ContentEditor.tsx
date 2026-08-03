@@ -4,7 +4,18 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { EventRegistrationFormBuilder } from "@/components/admin/EventRegistrationFormBuilder";
+import { GovernancePageFields } from "@/components/admin/GovernancePageFields";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { ImpactPageFields } from "@/components/admin/ImpactPageFields";
+import { RoadmapPageFields } from "@/components/admin/RoadmapPageFields";
+import {
+  parseGovernancePageData,
+  parseImpactPageData,
+  parseRoadmapPageData,
+  type GovernancePageData,
+  type ImpactPageData,
+  type RoadmapPageData,
+} from "@/lib/cms/page-forms";
 import {
   parseRegistrationForm,
   type EventRegistrationFormConfig,
@@ -24,12 +35,13 @@ type ContentItem = {
 
 function readTeamContact(data: unknown) {
   if (!data || typeof data !== "object") {
-    return { email: "", linkedin: "" };
+    return { email: "", linkedin: "", isFounder: false };
   }
   const record = data as Record<string, unknown>;
   return {
     email: typeof record.email === "string" ? record.email : "",
     linkedin: typeof record.linkedin === "string" ? record.linkedin : "",
+    isFounder: Boolean(record.isFounder),
   };
 }
 
@@ -78,6 +90,7 @@ export function ContentEditor({
   const [body, setBody] = useState(initial?.body || "");
   const [email, setEmail] = useState(initialContact.email);
   const [linkedin, setLinkedin] = useState(initialContact.linkedin);
+  const [isFounder, setIsFounder] = useState(initialContact.isFounder);
   const [eventDate, setEventDate] = useState(initialEvent.date);
   const [eventTime, setEventTime] = useState(initialEvent.time);
   const [eventLocation, setEventLocation] = useState(initialEvent.location);
@@ -98,6 +111,15 @@ export function ContentEditor({
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [governanceData, setGovernanceData] = useState<GovernancePageData>(() =>
+    parseGovernancePageData(initial?.data)
+  );
+  const [roadmapData, setRoadmapData] = useState<RoadmapPageData>(() =>
+    parseRoadmapPageData(initial?.data)
+  );
+  const [impactData, setImpactData] = useState<ImpactPageData>(() =>
+    parseImpactPageData(initial?.data)
+  );
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -129,6 +151,7 @@ export function ContentEditor({
       }
       existingData.email = email.trim();
       existingData.linkedin = linkedin.trim();
+      existingData.isFounder = isFounder;
     }
 
     if (collection === "programs") {
@@ -236,6 +259,100 @@ export function ContentEditor({
         existingData.headline = title;
         if (excerpt) existingData.shortIntro = excerpt;
       }
+      if (slug === "governance") {
+        existingData.bodies = governanceData.bodies
+          .map((body) => ({
+            ...body,
+            title: body.title.trim(),
+            description: body.description.trim(),
+            members: body.members.map((member) => member.trim()).filter(Boolean),
+          }))
+          .filter((body) => body.title);
+      }
+      if (slug === "roadmap") {
+        existingData.timeline = roadmapData.timeline
+          .map((item) => ({
+            ...item,
+            title: item.title.trim(),
+            description: item.description.trim(),
+            isIllustrative: true as const,
+          }))
+          .filter((item) => item.title);
+        existingData.phases = roadmapData.phases
+          .map((phase) => ({
+            ...phase,
+            title: phase.title.trim(),
+            timeframe: phase.timeframe.trim(),
+            description: phase.description.trim(),
+            milestones: phase.milestones
+              .map((milestone) => milestone.trim())
+              .filter(Boolean),
+          }))
+          .filter((phase) => phase.title);
+      }
+      if (slug === "impact") {
+        existingData.statistics = impactData.statistics
+          .map((item) => ({
+            ...item,
+            label: item.label.trim(),
+            note: item.note?.trim() || undefined,
+            prefix: item.prefix?.trim() || undefined,
+            suffix: item.suffix?.trim() || undefined,
+            isIllustrative: true as const,
+          }))
+          .filter((item) => item.label);
+        existingData.programBreakdown = impactData.programBreakdown
+          .map((item) => ({
+            ...item,
+            programTitle: item.programTitle.trim(),
+            description: item.description.trim(),
+            isIllustrative: true as const,
+          }))
+          .filter((item) => item.programTitle);
+        existingData.locations = impactData.locations
+          .map((item) => ({
+            ...item,
+            name: item.name.trim(),
+            region: item.region.trim(),
+            isIllustrative: true as const,
+          }))
+          .filter((item) => item.name);
+        existingData.successStories = impactData.successStories
+          .map((item) => ({
+            ...item,
+            title: item.title.trim(),
+            summary: item.summary.trim(),
+            isIllustrative: true as const,
+          }))
+          .filter((item) => item.title);
+        existingData.beforeAfterStories = impactData.beforeAfterStories
+          .map((item) => ({
+            ...item,
+            title: item.title.trim(),
+            before: item.before.trim(),
+            after: item.after.trim(),
+            isIllustrative: true as const,
+          }))
+          .filter((item) => item.title);
+        existingData.annualReports = impactData.annualReports
+          .map((item) => ({
+            ...item,
+            title: item.title.trim(),
+            summary: item.summary.trim(),
+            downloadUrl: item.downloadUrl.trim() || "#",
+            isIllustrative: true as const,
+          }))
+          .filter((item) => item.title);
+        existingData.donationUsage = impactData.donationUsage
+          .map((item) => ({
+            ...item,
+            category: item.category.trim(),
+            description: item.description.trim(),
+            isIllustrative: true as const,
+          }))
+          .filter((item) => item.category);
+        if (body) existingData.disclaimer = body;
+      }
     }
 
     const payload = {
@@ -301,7 +418,12 @@ export function ContentEditor({
                     ? "Vision"
                     : collection === "pages" && slug === "contact"
                       ? "Short intro"
-                      : "Excerpt";
+                      : collection === "pages" &&
+                          (slug === "governance" ||
+                            slug === "roadmap" ||
+                            slug === "impact")
+                        ? "Page hero description"
+                        : "Excerpt";
 
   const bodyLabel =
     collection === "team"
@@ -320,7 +442,9 @@ export function ContentEditor({
                   ? "Mission"
                   : collection === "pages" && slug === "about-story"
                     ? "Story"
-                    : "Body";
+                    : collection === "pages" && slug === "impact"
+                      ? "Impact disclaimer"
+                      : "Body";
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
@@ -358,24 +482,43 @@ export function ContentEditor({
                 onChange={(e) => setExcerpt(e.target.value)}
               />
             </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-medium">
-                {bodyLabel}
-              </label>
-              <textarea
-                className={field}
-                rows={10}
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                placeholder={
-                  collection === "blog" ||
-                  collection === "team" ||
-                  collection === "pages"
-                    ? "Separate paragraphs with a blank line."
-                    : undefined
-                }
+            {slug !== "governance" && slug !== "roadmap" && (
+              <div>
+                <label className="mb-1.5 block text-sm font-medium">
+                  {bodyLabel}
+                </label>
+                <textarea
+                  className={field}
+                  rows={slug === "impact" ? 4 : 10}
+                  value={body}
+                  onChange={(e) => setBody(e.target.value)}
+                  placeholder={
+                    slug === "impact"
+                      ? "Shown under Impact at a Glance"
+                      : collection === "blog" ||
+                          collection === "team" ||
+                          collection === "pages"
+                        ? "Separate paragraphs with a blank line."
+                        : undefined
+                  }
+                />
+              </div>
+            )}
+            {slug === "governance" && (
+              <GovernancePageFields
+                value={governanceData}
+                onChange={setGovernanceData}
               />
-            </div>
+            )}
+            {slug === "roadmap" && (
+              <RoadmapPageFields
+                value={roadmapData}
+                onChange={setRoadmapData}
+              />
+            )}
+            {slug === "impact" && (
+              <ImpactPageFields value={impactData} onChange={setImpactData} />
+            )}
             {collection === "events" && (
               <div className="grid gap-4 rounded-xl border border-navy/10 bg-light/60 p-4 sm:grid-cols-2">
                 <div>
@@ -469,30 +612,52 @@ export function ContentEditor({
               />
             )}
             {collection === "team" && (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-4">
                 <div>
                   <label className="mb-1.5 block text-sm font-medium">
-                    Email
+                    Leadership category
                   </label>
-                  <input
-                    type="email"
+                  <select
                     className={field}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@stemnovafoundation.org"
-                  />
+                    value={isFounder ? "co-founder" : "leadership"}
+                    onChange={(e) =>
+                      setIsFounder(e.target.value === "co-founder")
+                    }
+                  >
+                    <option value="co-founder">Co-Founder</option>
+                    <option value="leadership">Other leadership</option>
+                  </select>
+                  <p className="mt-1.5 text-xs text-navy/55">
+                    Co-Founders appear in the top co-founder slots on the
+                    Leadership page. Other leadership appears in the
+                    institutional team grid below.
+                  </p>
                 </div>
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium">
-                    LinkedIn
-                  </label>
-                  <input
-                    type="url"
-                    className={field}
-                    value={linkedin}
-                    onChange={(e) => setLinkedin(e.target.value)}
-                    placeholder="https://linkedin.com/in/..."
-                  />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      className={field}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@stemnovafoundation.org"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">
+                      LinkedIn
+                    </label>
+                    <input
+                      type="url"
+                      className={field}
+                      value={linkedin}
+                      onChange={(e) => setLinkedin(e.target.value)}
+                      placeholder="https://linkedin.com/in/..."
+                    />
+                  </div>
                 </div>
               </div>
             )}

@@ -42,13 +42,27 @@ export default async function AdminCollectionPage({
 
       <CollectionItemsTable
         collection={collection}
-        items={items.map((item) => ({
-          id: item.id,
-          title: item.title,
-          slug: item.slug,
-          status: item.status,
-          updatedAt: item.updatedAt.toISOString(),
-        }))}
+        items={items.map((item) => {
+          const data =
+            item.data && typeof item.data === "object" && item.data !== null
+              ? (item.data as Record<string, unknown>)
+              : null;
+          const badge =
+            collection === "team"
+              ? data?.isFounder
+                ? "Co-Founder"
+                : "Leadership"
+              : null;
+
+          return {
+            id: item.id,
+            title: item.title,
+            slug: item.slug,
+            status: item.status,
+            updatedAt: item.updatedAt.toISOString(),
+            badge,
+          };
+        })}
       />
     </div>
   );

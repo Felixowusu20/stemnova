@@ -28,12 +28,12 @@ import {
   TestimonialsSection,
 } from "@/components";
 import {
-  impactData,
   researchAreas,
   siteConfig,
 } from "@/content";
 import { getResolvedSiteConfig } from "@/lib/cms/queries";
 import {
+  resolveImpact,
   resolveLatestPosts,
   resolvePartners,
   resolvePrograms,
@@ -59,17 +59,18 @@ const researchIcons = {
 } as const;
 
 export default async function HomePage() {
-  const [settings, programs, latestPosts, testimonials, partners] =
+  const [settings, programs, latestPosts, testimonials, partners, impact] =
     await Promise.all([
       getResolvedSiteConfig(),
       resolvePrograms(),
       resolveLatestPosts(3),
       resolveTestimonials(),
       resolvePartners(),
+      resolveImpact(),
     ]);
   const featuredProgrammes = programs.slice(0, 6);
-  const featuredStory = impactData.successStories[0];
-  const highlightStats = impactData.statistics.slice(0, 6);
+  const featuredStory = impact.successStories[0];
+  const highlightStats = impact.statistics.slice(0, 6);
   const featuredTestimonials = testimonials.slice(0, 3);
 
   return (

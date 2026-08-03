@@ -16,6 +16,8 @@ import { galleryAlbums } from "../src/content/gallery";
 import { resources } from "../src/content/resources";
 import { valuesData } from "../src/content/values";
 import { contactPageContent } from "../src/content/contact";
+import { impactData, IMPACT_DATA_DISCLAIMER } from "../src/content/impact";
+import { roadmapPhases } from "../src/content/pillars";
 
 loadEnv({ path: ".env.local" });
 loadEnv();
@@ -368,6 +370,49 @@ async function seedCollections() {
     "Contact",
     contactPageContent as unknown as Record<string, unknown>,
     { excerpt: contactPageContent.shortIntro }
+  );
+
+  await upsertContent(
+    "pages",
+    "governance",
+    "Governance",
+    { bodies: valuesData.governance },
+    {
+      excerpt:
+        "Clear oversight across the Board, advisory committees, and Secretariat.",
+      sortOrder: 10,
+    }
+  );
+
+  await upsertContent(
+    "pages",
+    "roadmap",
+    "Roadmap",
+    {
+      timeline: valuesData.timeline,
+      phases: roadmapPhases,
+    },
+    {
+      excerpt:
+        "Our phased path from a new foundation to lasting institutional strength.",
+      sortOrder: 11,
+    }
+  );
+
+  await upsertContent(
+    "pages",
+    "impact",
+    "Our Impact",
+    {
+      ...impactData,
+      disclaimer: IMPACT_DATA_DISCLAIMER,
+    } as unknown as Record<string, unknown>,
+    {
+      excerpt:
+        "Clear metrics and stories from STEMNova programmes across Africa.",
+      body: IMPACT_DATA_DISCLAIMER,
+      sortOrder: 12,
+    }
   );
 
   await prisma.contentItem.upsert({
