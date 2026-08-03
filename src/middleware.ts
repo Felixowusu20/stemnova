@@ -8,7 +8,7 @@ import { getAuthSecret } from "@/lib/env";
  * getToken() defaults secureCookie to false, so production logins looked
  * successful but middleware never saw the session cookie.
  */
-function useSecureAuthCookie(request: NextRequest) {
+function shouldUseSecureAuthCookie(request: NextRequest) {
   const forwarded = request.headers.get("x-forwarded-proto");
   if (forwarded) {
     return forwarded.split(",")[0]?.trim() === "https";
@@ -46,7 +46,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  const secureCookie = useSecureAuthCookie(request);
+  const secureCookie = shouldUseSecureAuthCookie(request);
   let token = await getToken({
     req: request,
     secret,
