@@ -11,6 +11,7 @@ import {
 } from "@/components";
 import { images, valuesData } from "@/content";
 import { getPhilosophyQuotes, isCmsActive } from "@/lib/cms/queries";
+import { resolveAboutOverview } from "@/lib/cms/resolve-content";
 
 export const dynamic = "force-dynamic";
 
@@ -20,38 +21,11 @@ export const metadata: Metadata = {
     "Learn about STEMNova Foundation — our story, vision, leadership, governance, and roadmap.",
 };
 
-const aboutLinks = [
-  {
-    title: "Our Story",
-    description: "Why STEMNova was founded and what we are building.",
-    href: "/about/story",
-  },
-  {
-    title: "Vision & Mission",
-    description: "What we exist to build for African STEM talent.",
-    href: "/about/vision",
-  },
-  {
-    title: "Leadership",
-    description: "Meet our co-founders and institutional leadership team.",
-    href: "/about/leadership",
-  },
-  {
-    title: "Governance",
-    description: "How we stay accountable through clear oversight.",
-    href: "/about/governance",
-  },
-  {
-    title: "Roadmap",
-    description: "Our phased path from a new foundation to lasting impact.",
-    href: "/about/roadmap",
-  },
-] as const;
-
 export default async function AboutPage() {
-  const [cmsQuotes, cmsActive] = await Promise.all([
+  const [cmsQuotes, cmsActive, about] = await Promise.all([
     getPhilosophyQuotes(),
     isCmsActive(),
+    resolveAboutOverview(),
   ]);
   const quotes =
     cmsQuotes.length > 0
@@ -60,11 +34,16 @@ export default async function AboutPage() {
         ? []
         : valuesData.leadershipPhilosophyQuotes;
 
+  const sectionImage = about.imageUrl || images.hero.research;
+
   return (
     <>
       <PageHero
-        title="About STEMNova Foundation"
-        description="Building Africa's home for scientific talent discovery and STEM leadership."
+        title={about.heroTitle || "About STEMNova Foundation"}
+        description={
+          about.heroDescription ||
+          "Building Africa's home for scientific talent discovery and STEM leadership."
+        }
         backgroundImage={images.hero.about}
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
       >
@@ -76,20 +55,17 @@ export default async function AboutPage() {
           <div className="grid items-stretch gap-5 lg:grid-cols-2 lg:gap-14">
             <div>
               <SectionHeading
-                eyebrow="About Us"
-                title="Get to Know STEMNova"
+                eyebrow={about.sectionEyebrow || "About Us"}
+                title={about.sectionTitle || "Get to Know STEMNova"}
                 className="mb-4 sm:mb-6"
               />
               <p className="text-sm leading-relaxed text-navy sm:text-lg">
-                STEMNova Foundation is a pan-African non-profit dedicated to
-                discovering scientific talent, developing research leaders, and
-                advancing STEM education across Africa. Explore each area below
-                to learn more about who we are and where we are going.
+                {about.intro}
               </p>
             </div>
             <div className="relative min-h-[180px] overflow-hidden rounded-2xl shadow-sm sm:min-h-[260px] lg:min-h-full">
               <Image
-                src={images.hero.research}
+                src={sectionImage}
                 alt="Researchers collaborating in a modern laboratory"
                 fill
                 quality={90}
@@ -100,7 +76,7 @@ export default async function AboutPage() {
           </div>
 
           <ul className="mt-10 grid gap-3 sm:mt-14 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-            {aboutLinks.map((item) => (
+            {about.links.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}

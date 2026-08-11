@@ -1,6 +1,7 @@
 import type {
   AnnualReport,
   BeforeAfterStory,
+  CoreValue,
   DonationUsage,
   GovernanceBody,
   ImpactData,
@@ -25,6 +26,48 @@ export type ImpactPageData = ImpactData & {
   disclaimer?: string;
 };
 
+export type VisionMissionPageData = {
+  vision: string;
+  mission: string;
+  heroDescription: string;
+  sectionTitle: string;
+  coreValues: CoreValue[];
+};
+
+export type AboutStoryPageData = {
+  heroDescription: string;
+  sectionEyebrow: string;
+  sectionTitle: string;
+  paragraphs: string[];
+  timeline: TimelineMilestone[];
+};
+
+export type AboutOverviewLink = {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+};
+
+export type AboutOverviewPageData = {
+  heroTitle: string;
+  heroDescription: string;
+  sectionEyebrow: string;
+  sectionTitle: string;
+  intro: string;
+  imageUrl: string;
+  links: AboutOverviewLink[];
+};
+
+const CORE_VALUE_ICONS: CoreValue["icon"][] = [
+  "excellence",
+  "equity",
+  "integrity",
+  "collaboration",
+  "innovation",
+  "leadership",
+];
+
 function asRecord(data: unknown): Record<string, unknown> {
   return data && typeof data === "object" && data !== null
     ? (data as Record<string, unknown>)
@@ -44,6 +87,10 @@ export function linesToList(value: string): string[] {
 
 export function listToLines(value: string[] | undefined): string {
   return (value || []).join("\n");
+}
+
+export function isCoreValueIcon(value: string): value is CoreValue["icon"] {
+  return CORE_VALUE_ICONS.includes(value as CoreValue["icon"]);
 }
 
 export function parseGovernancePageData(data: unknown): GovernancePageData {
@@ -207,5 +254,168 @@ export function parseImpactPageData(data: unknown): ImpactPageData {
     donationUsage,
     disclaimer:
       typeof record.disclaimer === "string" ? record.disclaimer : undefined,
+  };
+}
+
+export function parseVisionMissionPageData(
+  data: unknown,
+  fallback?: {
+    vision?: string;
+    mission?: string;
+    excerpt?: string;
+    body?: string;
+  }
+): VisionMissionPageData {
+  const record = asRecord(data);
+  const coreValues = Array.isArray(record.coreValues)
+    ? (record.coreValues as CoreValue[]).map((value) => ({
+        title: value.title || "",
+        description: value.description || "",
+        icon: isCoreValueIcon(String(value.icon || ""))
+          ? value.icon
+          : ("excellence" as const),
+      }))
+    : [];
+
+  return {
+    vision:
+      (typeof record.vision === "string" && record.vision) ||
+      fallback?.excerpt ||
+      fallback?.vision ||
+      "",
+    mission:
+      (typeof record.mission === "string" && record.mission) ||
+      fallback?.body ||
+      fallback?.mission ||
+      "",
+    heroDescription:
+      typeof record.heroDescription === "string"
+        ? record.heroDescription
+        : "What we exist to build for scientific talent across Africa.",
+    sectionTitle:
+      typeof record.sectionTitle === "string"
+        ? record.sectionTitle
+        : "What We Exist to Build",
+    coreValues:
+      coreValues.length > 0
+        ? coreValues
+        : [
+            {
+              title: "",
+              description: "",
+              icon: "excellence",
+            },
+          ],
+  };
+}
+
+export function parseAboutStoryPageData(
+  data: unknown,
+  fallback?: { body?: string }
+): AboutStoryPageData {
+  const record = asRecord(data);
+  const fromBody = fallback?.body
+    ? fallback.body
+        .split(/\n\s*\n/)
+        .map((part) => part.trim())
+        .filter(Boolean)
+    : [];
+
+  const paragraphs = Array.isArray(record.paragraphs)
+    ? (record.paragraphs as string[]).map((p) => String(p || "")).filter(Boolean)
+    : fromBody;
+
+  const timeline = Array.isArray(record.timeline)
+    ? (record.timeline as TimelineMilestone[]).map((item) => ({
+        year: Number(item.year) || new Date().getFullYear(),
+        title: item.title || "",
+        description: item.description || "",
+        isIllustrative: true as const,
+      }))
+    : [];
+
+  return {
+    heroDescription:
+      typeof record.heroDescription === "string"
+        ? record.heroDescription
+        : "Why STEMNova exists and what we are building for African STEM talent.",
+    sectionEyebrow:
+      typeof record.sectionEyebrow === "string"
+        ? record.sectionEyebrow
+        : "Our Story",
+    sectionTitle:
+      typeof record.sectionTitle === "string"
+        ? record.sectionTitle
+        : "Why STEMNova Exists",
+    paragraphs: paragraphs.length > 0 ? paragraphs : [""],
+    timeline:
+      timeline.length > 0
+        ? timeline
+        : [
+            {
+              year: new Date().getFullYear(),
+              title: "",
+              description: "",
+              isIllustrative: true,
+            },
+          ],
+  };
+}
+
+export function parseAboutOverviewPageData(
+  data: unknown,
+  fallback?: {
+    title?: string;
+    excerpt?: string;
+    body?: string;
+    coverUrl?: string;
+  }
+): AboutOverviewPageData {
+  const record = asRecord(data);
+  const links = Array.isArray(record.links)
+    ? (record.links as AboutOverviewLink[]).map((link, index) => ({
+        id: link.id || createId(`link-${index}`),
+        title: link.title || "",
+        description: link.description || "",
+        href: link.href || "",
+      }))
+    : [];
+
+  return {
+    heroTitle:
+      (typeof record.heroTitle === "string" && record.heroTitle) ||
+      fallback?.title ||
+      "About STEMNova Foundation",
+    heroDescription:
+      (typeof record.heroDescription === "string" && record.heroDescription) ||
+      fallback?.excerpt ||
+      "Building Africa's home for scientific talent discovery and STEM leadership.",
+    sectionEyebrow:
+      typeof record.sectionEyebrow === "string"
+        ? record.sectionEyebrow
+        : "About Us",
+    sectionTitle:
+      typeof record.sectionTitle === "string"
+        ? record.sectionTitle
+        : "Get to Know STEMNova",
+    intro:
+      (typeof record.intro === "string" && record.intro) ||
+      fallback?.body ||
+      "",
+    imageUrl:
+      (typeof record.imageUrl === "string" && record.imageUrl) ||
+      fallback?.coverUrl ||
+      "",
+    links:
+      links.length > 0
+        ? links
+        : [
+            {
+              id: createId("link"),
+              title: "",
+              description: "",
+              href: "",
+            },
+          ],
   };
 }

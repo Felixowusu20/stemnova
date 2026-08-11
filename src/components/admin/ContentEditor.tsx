@@ -3,18 +3,27 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { AboutOverviewPageFields } from "@/components/admin/AboutOverviewPageFields";
+import { AboutStoryPageFields } from "@/components/admin/AboutStoryPageFields";
 import { EventRegistrationFormBuilder } from "@/components/admin/EventRegistrationFormBuilder";
 import { GovernancePageFields } from "@/components/admin/GovernancePageFields";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { ImpactPageFields } from "@/components/admin/ImpactPageFields";
 import { RoadmapPageFields } from "@/components/admin/RoadmapPageFields";
+import { VisionMissionPageFields } from "@/components/admin/VisionMissionPageFields";
 import {
+  parseAboutOverviewPageData,
+  parseAboutStoryPageData,
   parseGovernancePageData,
   parseImpactPageData,
   parseRoadmapPageData,
+  parseVisionMissionPageData,
+  type AboutOverviewPageData,
+  type AboutStoryPageData,
   type GovernancePageData,
   type ImpactPageData,
   type RoadmapPageData,
+  type VisionMissionPageData,
 } from "@/lib/cms/page-forms";
 import {
   parseRegistrationForm,
@@ -120,6 +129,27 @@ export function ContentEditor({
   const [impactData, setImpactData] = useState<ImpactPageData>(() =>
     parseImpactPageData(initial?.data)
   );
+  const [visionMissionData, setVisionMissionData] =
+    useState<VisionMissionPageData>(() =>
+      parseVisionMissionPageData(initial?.data, {
+        excerpt: initial?.excerpt || undefined,
+        body: initial?.body || undefined,
+      })
+    );
+  const [aboutStoryData, setAboutStoryData] = useState<AboutStoryPageData>(() =>
+    parseAboutStoryPageData(initial?.data, {
+      body: initial?.body || undefined,
+    })
+  );
+  const [aboutOverviewData, setAboutOverviewData] =
+    useState<AboutOverviewPageData>(() =>
+      parseAboutOverviewPageData(initial?.data, {
+        title: initial?.title || undefined,
+        excerpt: initial?.excerpt || undefined,
+        body: initial?.body || undefined,
+        coverUrl: initial?.coverUrl || undefined,
+      })
+    );
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -246,14 +276,51 @@ export function ContentEditor({
 
     if (collection === "pages") {
       if (slug === "vision-mission") {
-        if (excerpt) existingData.vision = excerpt;
-        if (body) existingData.mission = body;
+        existingData.vision = visionMissionData.vision.trim();
+        existingData.mission = visionMissionData.mission.trim();
+        existingData.heroDescription =
+          visionMissionData.heroDescription.trim();
+        existingData.sectionTitle = visionMissionData.sectionTitle.trim();
+        existingData.coreValues = visionMissionData.coreValues
+          .map((value) => ({
+            ...value,
+            title: value.title.trim(),
+            description: value.description.trim(),
+          }))
+          .filter((value) => value.title);
       }
-      if (slug === "about-story" && body) {
-        existingData.paragraphs = body
-          .split(/\n\s*\n/)
-          .map((part) => part.trim())
+      if (slug === "about-story") {
+        existingData.heroDescription = aboutStoryData.heroDescription.trim();
+        existingData.sectionEyebrow = aboutStoryData.sectionEyebrow.trim();
+        existingData.sectionTitle = aboutStoryData.sectionTitle.trim();
+        existingData.paragraphs = aboutStoryData.paragraphs
+          .map((paragraph) => paragraph.trim())
           .filter(Boolean);
+        existingData.timeline = aboutStoryData.timeline
+          .map((item) => ({
+            ...item,
+            title: item.title.trim(),
+            description: item.description.trim(),
+            isIllustrative: true as const,
+          }))
+          .filter((item) => item.title);
+      }
+      if (slug === "about-overview") {
+        existingData.heroTitle = aboutOverviewData.heroTitle.trim();
+        existingData.heroDescription =
+          aboutOverviewData.heroDescription.trim();
+        existingData.sectionEyebrow = aboutOverviewData.sectionEyebrow.trim();
+        existingData.sectionTitle = aboutOverviewData.sectionTitle.trim();
+        existingData.intro = aboutOverviewData.intro.trim();
+        existingData.imageUrl = aboutOverviewData.imageUrl.trim();
+        existingData.links = aboutOverviewData.links
+          .map((link) => ({
+            ...link,
+            title: link.title.trim(),
+            description: link.description.trim(),
+            href: link.href.trim(),
+          }))
+          .filter((link) => link.title && link.href);
       }
       if (slug === "contact") {
         existingData.headline = title;
@@ -355,14 +422,42 @@ export function ContentEditor({
       }
     }
 
+    const syncedTitle =
+      slug === "about-overview"
+        ? aboutOverviewData.heroTitle.trim() || title
+        : title;
+    const syncedExcerpt =
+      slug === "vision-mission"
+        ? visionMissionData.vision.trim()
+        : slug === "about-overview"
+          ? aboutOverviewData.heroDescription.trim()
+          : slug === "about-story"
+            ? aboutStoryData.heroDescription.trim()
+            : excerpt || null;
+    const syncedBody =
+      slug === "vision-mission"
+        ? visionMissionData.mission.trim()
+        : slug === "about-story"
+          ? aboutStoryData.paragraphs
+              .map((paragraph) => paragraph.trim())
+              .filter(Boolean)
+              .join("\n\n")
+          : slug === "about-overview"
+            ? aboutOverviewData.intro.trim()
+            : body || null;
+    const syncedCoverUrl =
+      slug === "about-overview"
+        ? aboutOverviewData.imageUrl.trim() || coverUrl || null
+        : coverUrl || null;
+
     const payload = {
       id: initial?.id,
       collection,
-      title,
+      title: syncedTitle,
       slug: hasSlug ? slug || null : null,
-      excerpt: excerpt || null,
-      body: body || null,
-      coverUrl: coverUrl || null,
+      excerpt: syncedExcerpt,
+      body: syncedBody,
+      coverUrl: syncedCoverUrl,
       status,
       sortOrder,
       data: existingData,
@@ -414,16 +509,14 @@ export function ContentEditor({
                 ? "Description"
                 : collection === "gallery"
                   ? "Album description"
-                  : collection === "pages" && slug === "vision-mission"
-                    ? "Vision"
-                    : collection === "pages" && slug === "contact"
-                      ? "Short intro"
-                      : collection === "pages" &&
-                          (slug === "governance" ||
-                            slug === "roadmap" ||
-                            slug === "impact")
-                        ? "Page hero description"
-                        : "Excerpt";
+                  : collection === "pages" && slug === "contact"
+                    ? "Short intro"
+                    : collection === "pages" &&
+                        (slug === "governance" ||
+                          slug === "roadmap" ||
+                          slug === "impact")
+                      ? "Page hero description"
+                      : "Excerpt";
 
   const bodyLabel =
     collection === "team"
@@ -438,13 +531,25 @@ export function ContentEditor({
               ? "Quote"
               : collection === "philosophy-quotes"
                 ? "Quote"
-                : collection === "pages" && slug === "vision-mission"
-                  ? "Mission"
-                  : collection === "pages" && slug === "about-story"
-                    ? "Story"
-                    : collection === "pages" && slug === "impact"
-                      ? "Impact disclaimer"
-                      : "Body";
+                : collection === "pages" && slug === "impact"
+                  ? "Impact disclaimer"
+                  : "Body";
+
+  const hideExcerptBody =
+    collection === "pages" &&
+    (slug === "governance" ||
+      slug === "roadmap" ||
+      slug === "vision-mission" ||
+      slug === "about-story" ||
+      slug === "about-overview");
+
+  const hideBodyOnly =
+    collection === "pages" &&
+    (slug === "governance" ||
+      slug === "roadmap" ||
+      slug === "vision-mission" ||
+      slug === "about-story" ||
+      slug === "about-overview");
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
@@ -455,8 +560,20 @@ export function ContentEditor({
               <label className="mb-1.5 block text-sm font-medium">Title</label>
               <input
                 className={field}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={
+                  slug === "about-overview"
+                    ? aboutOverviewData.heroTitle
+                    : title
+                }
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  if (slug === "about-overview") {
+                    setAboutOverviewData({
+                      ...aboutOverviewData,
+                      heroTitle: e.target.value,
+                    });
+                  }
+                }}
                 required
               />
             </div>
@@ -471,18 +588,20 @@ export function ContentEditor({
                 />
               </div>
             )}
-            <div>
-              <label className="mb-1.5 block text-sm font-medium">
-                {excerptLabel}
-              </label>
-              <textarea
-                className={field}
-                rows={3}
-                value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
-              />
-            </div>
-            {slug !== "governance" && slug !== "roadmap" && (
+            {!hideExcerptBody && (
+              <div>
+                <label className="mb-1.5 block text-sm font-medium">
+                  {excerptLabel}
+                </label>
+                <textarea
+                  className={field}
+                  rows={3}
+                  value={excerpt}
+                  onChange={(e) => setExcerpt(e.target.value)}
+                />
+              </div>
+            )}
+            {!hideBodyOnly && (
               <div>
                 <label className="mb-1.5 block text-sm font-medium">
                   {bodyLabel}
@@ -503,6 +622,24 @@ export function ContentEditor({
                   }
                 />
               </div>
+            )}
+            {slug === "about-overview" && (
+              <AboutOverviewPageFields
+                value={aboutOverviewData}
+                onChange={setAboutOverviewData}
+              />
+            )}
+            {slug === "vision-mission" && (
+              <VisionMissionPageFields
+                value={visionMissionData}
+                onChange={setVisionMissionData}
+              />
+            )}
+            {slug === "about-story" && (
+              <AboutStoryPageFields
+                value={aboutStoryData}
+                onChange={setAboutStoryData}
+              />
             )}
             {slug === "governance" && (
               <GovernancePageFields

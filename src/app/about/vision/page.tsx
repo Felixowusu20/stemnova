@@ -51,8 +51,8 @@ export default async function AboutVisionPage() {
   return (
     <>
       <PageHero
-        title="Vision & Mission"
-        description="What we exist to build for scientific talent across Africa."
+        title={visionMission.title}
+        description={visionMission.heroDescription}
         backgroundImage={images.hero.about}
         breadcrumbs={[
           { label: "Home", href: "/" },
@@ -65,7 +65,7 @@ export default async function AboutVisionPage() {
         <Container>
           <SectionHeading
             eyebrow="Vision & Mission"
-            title="What We Exist to Build"
+            title={visionMission.sectionTitle}
             align="center"
             className="mb-12"
           />
@@ -100,7 +100,7 @@ export default async function AboutVisionPage() {
           />
           <ul className="grid gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
             {visionMission.coreValues.map((value) => {
-              const Icon = valueIconMap[value.icon];
+              const Icon = valueIconMap[value.icon] || Award;
               return (
                 <li
                   key={value.title}
