@@ -346,22 +346,99 @@ async function seedCollections() {
 
   await upsertContent(
     "pages",
+    "about-overview",
+    "About STEMNova Foundation",
+    {
+      heroTitle: "About STEMNova Foundation",
+      heroDescription:
+        "Building Africa's home for scientific talent discovery and STEM leadership.",
+      sectionEyebrow: "About Us",
+      sectionTitle: "Get to Know STEMNova",
+      intro:
+        "STEMNova Foundation is a pan-African non-profit dedicated to discovering scientific talent, developing research leaders, and advancing STEM education across Africa. Explore each area below to learn more about who we are and where we are going.",
+      imageUrl: images.hero.research,
+      links: [
+        {
+          id: "story",
+          title: "Our Story",
+          description: "Why STEMNova was founded and what we are building.",
+          href: "/about/story",
+        },
+        {
+          id: "vision",
+          title: "Vision & Mission",
+          description: "What we exist to build for African STEM talent.",
+          href: "/about/vision",
+        },
+        {
+          id: "leadership",
+          title: "Leadership",
+          description:
+            "Meet our co-founders and institutional leadership team.",
+          href: "/about/leadership",
+        },
+        {
+          id: "governance",
+          title: "Governance",
+          description: "How we stay accountable through clear oversight.",
+          href: "/about/governance",
+        },
+        {
+          id: "roadmap",
+          title: "Roadmap",
+          description:
+            "Our phased path from a new foundation to lasting impact.",
+          href: "/about/roadmap",
+        },
+      ],
+    },
+    {
+      excerpt:
+        "Building Africa's home for scientific talent discovery and STEM leadership.",
+      body: "STEMNova Foundation is a pan-African non-profit dedicated to discovering scientific talent, developing research leaders, and advancing STEM education across Africa. Explore each area below to learn more about who we are and where we are going.",
+      coverUrl: images.hero.research,
+      sortOrder: 1,
+    }
+  );
+
+  await upsertContent(
+    "pages",
     "vision-mission",
     "Vision & Mission",
     {
       vision: valuesData.vision,
       mission: valuesData.mission,
+      heroDescription:
+        "What we exist to build for scientific talent across Africa.",
+      sectionTitle: "What We Exist to Build",
       coreValues: valuesData.coreValues,
     },
-    { body: valuesData.mission }
+    {
+      excerpt: valuesData.vision,
+      body: valuesData.mission,
+      sortOrder: 2,
+    }
   );
 
   await upsertContent(
     "pages",
     "about-story",
     "Our Story",
-    { paragraphs: valuesData.aboutStory, timeline: valuesData.timeline },
-    { body: valuesData.aboutStory.join("\n\n") }
+    {
+      paragraphs: valuesData.aboutStory,
+      timeline: valuesData.timeline,
+      heroDescription:
+        "Why STEMNova exists and what we are building for African STEM talent.",
+      sectionEyebrow: "Our Story",
+      sectionTitle: "Why STEMNova Exists",
+    },
+    {
+      excerpt:
+        "Why STEMNova exists and what we are building for African STEM talent.",
+      body: valuesData.aboutStory.join("\n\n"),
+      coverUrl: images.hero.research,
+      sortOrder: 3,
+    }
   );
 
   await upsertContent(

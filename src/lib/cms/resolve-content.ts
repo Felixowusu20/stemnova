@@ -482,12 +482,19 @@ export async function resolveVisionMission() {
   if (!item) {
     if (await isCmsActive()) {
       return {
+        title: "Vision & Mission",
+        heroDescription: "",
+        sectionTitle: "What We Exist to Build",
         vision: "",
         mission: "",
         coreValues: [] as CoreValue[],
       };
     }
     return {
+      title: "Vision & Mission",
+      heroDescription:
+        "What we exist to build for scientific talent across Africa.",
+      sectionTitle: "What We Exist to Build",
       vision: valuesData.vision,
       mission: valuesData.mission,
       coreValues: valuesData.coreValues,
@@ -497,12 +504,19 @@ export async function resolveVisionMission() {
   const data = asData<{
     vision?: string;
     mission?: string;
+    heroDescription?: string;
+    sectionTitle?: string;
     coreValues?: CoreValue[];
   }>(item.data);
 
   return {
-    vision: item.excerpt || data.vision || valuesData.vision,
-    mission: item.body || data.mission || valuesData.mission,
+    title: item.title || "Vision & Mission",
+    heroDescription:
+      data.heroDescription ||
+      "What we exist to build for scientific talent across Africa.",
+    sectionTitle: data.sectionTitle || "What We Exist to Build",
+    vision: data.vision || item.excerpt || valuesData.vision,
+    mission: data.mission || item.body || valuesData.mission,
     coreValues: Array.isArray(data.coreValues)
       ? data.coreValues
       : valuesData.coreValues,
@@ -514,12 +528,21 @@ export async function resolveAboutStory() {
   if (!item) {
     if (await isCmsActive()) {
       return {
+        title: "Our Story",
+        heroDescription: "",
+        sectionEyebrow: "Our Story",
+        sectionTitle: "Why STEMNova Exists",
         paragraphs: [] as string[],
         timeline: [] as TimelineMilestone[],
         coverUrl: null as string | null,
       };
     }
     return {
+      title: "Our Story",
+      heroDescription:
+        "Why STEMNova exists and what we are building for African STEM talent.",
+      sectionEyebrow: "Our Story",
+      sectionTitle: "Why STEMNova Exists",
       paragraphs: valuesData.aboutStory,
       timeline: valuesData.timeline,
       coverUrl: null as string | null,
@@ -529,6 +552,9 @@ export async function resolveAboutStory() {
   const data = asData<{
     paragraphs?: string[];
     timeline?: TimelineMilestone[];
+    heroDescription?: string;
+    sectionEyebrow?: string;
+    sectionTitle?: string;
   }>(item.data);
 
   const paragraphs =
@@ -539,11 +565,116 @@ export async function resolveAboutStory() {
     valuesData.aboutStory;
 
   return {
+    title: item.title || "Our Story",
+    heroDescription:
+      data.heroDescription ||
+      item.excerpt ||
+      "Why STEMNova exists and what we are building for African STEM talent.",
+    sectionEyebrow: data.sectionEyebrow || "Our Story",
+    sectionTitle: data.sectionTitle || "Why STEMNova Exists",
     paragraphs,
     timeline: Array.isArray(data.timeline)
       ? data.timeline
       : valuesData.timeline,
     coverUrl: item.coverUrl,
+  };
+}
+
+export async function resolveAboutOverview() {
+  const fallbackLinks = [
+    {
+      id: "story",
+      title: "Our Story",
+      description: "Why STEMNova was founded and what we are building.",
+      href: "/about/story",
+    },
+    {
+      id: "vision",
+      title: "Vision & Mission",
+      description: "What we exist to build for African STEM talent.",
+      href: "/about/vision",
+    },
+    {
+      id: "leadership",
+      title: "Leadership",
+      description: "Meet our co-founders and institutional leadership team.",
+      href: "/about/leadership",
+    },
+    {
+      id: "governance",
+      title: "Governance",
+      description: "How we stay accountable through clear oversight.",
+      href: "/about/governance",
+    },
+    {
+      id: "roadmap",
+      title: "Roadmap",
+      description: "Our phased path from a new foundation to lasting impact.",
+      href: "/about/roadmap",
+    },
+  ];
+
+  const fallback = {
+    heroTitle: "About STEMNova Foundation",
+    heroDescription:
+      "Building Africa's home for scientific talent discovery and STEM leadership.",
+    sectionEyebrow: "About Us",
+    sectionTitle: "Get to Know STEMNova",
+    intro:
+      "STEMNova Foundation is a pan-African non-profit dedicated to discovering scientific talent, developing research leaders, and advancing STEM education across Africa. Explore each area below to learn more about who we are and where we are going.",
+    imageUrl: "",
+    links: fallbackLinks,
+  };
+
+  const item = await getContentBySlug("pages", "about-overview");
+  if (!item) {
+    if (await isCmsActive()) {
+      return {
+        ...fallback,
+        heroTitle: "",
+        heroDescription: "",
+        intro: "",
+        links: [],
+      };
+    }
+    return fallback;
+  }
+
+  const data = asData<{
+    heroTitle?: string;
+    heroDescription?: string;
+    sectionEyebrow?: string;
+    sectionTitle?: string;
+    intro?: string;
+    imageUrl?: string;
+    links?: {
+      id?: string;
+      title?: string;
+      description?: string;
+      href?: string;
+    }[];
+  }>(item.data);
+
+  const links = Array.isArray(data.links)
+    ? data.links
+        .map((link, index) => ({
+          id: link.id || `link-${index}`,
+          title: link.title || "",
+          description: link.description || "",
+          href: link.href || "",
+        }))
+        .filter((link) => link.title && link.href)
+    : fallbackLinks;
+
+  return {
+    heroTitle: data.heroTitle || item.title || fallback.heroTitle,
+    heroDescription:
+      data.heroDescription || item.excerpt || fallback.heroDescription,
+    sectionEyebrow: data.sectionEyebrow || fallback.sectionEyebrow,
+    sectionTitle: data.sectionTitle || fallback.sectionTitle,
+    intro: data.intro || item.body || fallback.intro,
+    imageUrl: data.imageUrl || item.coverUrl || fallback.imageUrl,
+    links: links.length > 0 ? links : fallbackLinks,
   };
 }
 

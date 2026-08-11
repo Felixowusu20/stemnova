@@ -57,6 +57,7 @@ function revalidateCollection(collection: string, slug?: string | null) {
   if (collection === "pages") {
     if (slug === "vision-mission") revalidatePath("/about/vision");
     if (slug === "about-story") revalidatePath("/about/story");
+    if (slug === "about-overview") revalidatePath("/about");
     if (slug === "contact") revalidatePath("/contact");
     if (slug === "governance") revalidatePath("/about/governance");
     if (slug === "roadmap") revalidatePath("/about/roadmap");
