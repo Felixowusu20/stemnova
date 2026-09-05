@@ -5,7 +5,6 @@ import { ArrowRight } from "lucide-react";
 import {
   Container,
   CtaSection,
-  PageHero,
   PhilosophyQuoteSlider,
   SectionHeading,
 } from "@/components";
@@ -18,7 +17,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Learn about STEMNova Foundation — our story, vision, leadership, governance, and roadmap.",
+    "Learn about STEMNova Foundation — our story, vision, and leadership.",
 };
 
 export default async function AboutPage() {
@@ -38,19 +37,9 @@ export default async function AboutPage() {
 
   return (
     <>
-      <PageHero
-        title={about.heroTitle || "About STEMNova Foundation"}
-        description={
-          about.heroDescription ||
-          "Building Africa's home for scientific talent discovery and STEM leadership."
-        }
-        backgroundImage={images.hero.about}
-        breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
-      >
-        <PhilosophyQuoteSlider variant="embedded" quotes={quotes} />
-      </PageHero>
+      <PhilosophyQuoteSlider quotes={quotes} />
 
-      <section className="py-20 sm:py-24">
+      <section className="bg-light py-16 sm:py-20">
         <Container>
           <div className="grid items-stretch gap-5 lg:grid-cols-2 lg:gap-14">
             <div>
@@ -63,13 +52,14 @@ export default async function AboutPage() {
                 {about.intro}
               </p>
             </div>
-            <div className="relative min-h-[180px] overflow-hidden rounded-2xl shadow-sm sm:min-h-[260px] lg:min-h-full">
+            <div className="flex items-center justify-center rounded-2xl border border-navy/10 bg-white p-6 shadow-sm sm:p-8 lg:min-h-full">
               <Image
                 src={sectionImage}
-                alt="Researchers collaborating in a modern laboratory"
-                fill
+                alt="STEMNova Foundation"
+                width={900}
+                height={900}
                 quality={90}
-                className="object-cover object-center"
+                className="h-auto w-full max-h-[28rem] object-contain"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>

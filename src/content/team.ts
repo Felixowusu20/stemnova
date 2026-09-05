@@ -31,6 +31,7 @@ export const teamMembers: TeamMember[] = [
     imageUrl: images.team.founder1,
     email: "dorcas.addo@stemnovafoundation.org",
     linkedin: "https://linkedin.com/in/dorcas-attuabea-addo",
+    leadershipCategory: "co-founder",
     isFounder: true,
     isIllustrative: true,
   },
@@ -59,6 +60,7 @@ export const teamMembers: TeamMember[] = [
     imageUrl: images.team.founder2,
     email: "bernice.danu@stemnovafoundation.org",
     linkedin: "https://linkedin.com/in/bernice-yram-danu",
+    leadershipCategory: "co-founder",
     isFounder: true,
     isIllustrative: true,
   },
@@ -85,6 +87,7 @@ export const teamMembers: TeamMember[] = [
     ],
     imageUrl: images.team.members[0],
     email: "kwame.asante@stemnovafoundation.org",
+    leadershipCategory: "board-trustee",
     isIllustrative: true,
   },
   {
@@ -110,6 +113,7 @@ export const teamMembers: TeamMember[] = [
     ],
     imageUrl: images.team.members[1],
     email: "amara.okafor@stemnovafoundation.org",
+    leadershipCategory: "board-trustee",
     isIllustrative: true,
   },
   {
@@ -135,6 +139,7 @@ export const teamMembers: TeamMember[] = [
     ],
     imageUrl: images.team.members[2],
     email: "kofi.adom@stemnovafoundation.org",
+    leadershipCategory: "director",
     isIllustrative: true,
   },
   {
@@ -160,6 +165,7 @@ export const teamMembers: TeamMember[] = [
     ],
     imageUrl: images.team.members[3],
     email: "ama.serwaa@stemnovafoundation.org",
+    leadershipCategory: "director",
     isIllustrative: true,
   },
 ];

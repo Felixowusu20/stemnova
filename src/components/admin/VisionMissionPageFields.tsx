@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { AdminAccordion } from "@/components/admin/AdminAccordion";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import {
   type VisionMissionPageData,
 } from "@/lib/cms/page-forms";
@@ -47,7 +48,7 @@ export function VisionMissionPageFields({
         <div>
           <p className="text-sm font-semibold text-navy">Vision & Mission</p>
           <p className="text-[11px] text-navy/50">
-            Edit page copy and core values shown on /about/vision.
+            Edit page copy, images, and core values shown on /about/vision.
           </p>
         </div>
         <select
@@ -64,19 +65,6 @@ export function VisionMissionPageFields({
 
       {section === "copy" ? (
         <div className="space-y-3 rounded-xl border border-navy/10 bg-white p-3">
-          <div>
-            <label className="mb-1 block text-xs font-medium text-navy/70">
-              Hero description
-            </label>
-            <textarea
-              className={fieldClass}
-              rows={2}
-              value={value.heroDescription}
-              onChange={(e) =>
-                onChange({ ...value, heroDescription: e.target.value })
-              }
-            />
-          </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-navy/70">
               Section title
@@ -100,6 +88,15 @@ export function VisionMissionPageFields({
               onChange={(e) => onChange({ ...value, vision: e.target.value })}
             />
           </div>
+          <ImageUploadField
+            label="Vision image"
+            value={value.visionImageUrl}
+            onChange={(url) =>
+              onChange({ ...value, visionImageUrl: url || "" })
+            }
+            folder="stemnova/pages"
+            helpText="Shown beside the Vision card on the public page."
+          />
           <div>
             <label className="mb-1 block text-xs font-medium text-navy/70">
               Mission
@@ -111,6 +108,15 @@ export function VisionMissionPageFields({
               onChange={(e) => onChange({ ...value, mission: e.target.value })}
             />
           </div>
+          <ImageUploadField
+            label="Mission image"
+            value={value.missionImageUrl}
+            onChange={(url) =>
+              onChange({ ...value, missionImageUrl: url || "" })
+            }
+            folder="stemnova/pages"
+            helpText="Shown beside the Mission card on the public page."
+          />
         </div>
       ) : (
         <div className="space-y-2">

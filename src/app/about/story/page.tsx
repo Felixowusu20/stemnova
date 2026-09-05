@@ -3,7 +3,6 @@ import Image from "next/image";
 import {
   Container,
   CtaSection,
-  PageHero,
   SectionHeading,
 } from "@/components";
 import { images } from "@/content";
@@ -23,18 +22,7 @@ export default async function AboutStoryPage() {
 
   return (
     <>
-      <PageHero
-        title={story.title}
-        description={story.heroDescription}
-        backgroundImage={images.hero.about}
-        breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: "About", href: "/about" },
-          { label: "Our Story" },
-        ]}
-      />
-
-      <section className="py-20 sm:py-24">
+      <section className="bg-light py-16 sm:py-20">
         <Container>
           <div className="grid items-stretch gap-10 lg:grid-cols-2 lg:gap-14">
             <div>
@@ -62,35 +50,6 @@ export default async function AboutStoryPage() {
           </div>
         </Container>
       </section>
-
-      {story.timeline.length > 0 && (
-        <section className="bg-light py-20 sm:py-24">
-          <Container>
-            <SectionHeading
-              eyebrow="Journey"
-              title="Milestones Along the Way"
-              align="center"
-              className="mb-12"
-            />
-            <ol className="mx-auto max-w-3xl space-y-4">
-              {story.timeline.map((item) => (
-                <li
-                  key={`${item.year}-${item.title}`}
-                  className="rounded-2xl border border-navy/10 bg-white p-5 sm:p-6"
-                >
-                  <p className="text-sm font-semibold text-teal">{item.year}</p>
-                  <h3 className="mt-1 font-display text-lg font-semibold text-navy">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-navy/75">
-                    {item.description}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </Container>
-        </section>
-      )}
 
       <CtaSection />
     </>

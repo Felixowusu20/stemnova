@@ -1,3 +1,14 @@
+import {
+  CONTACT_DETAIL_ICONS,
+  CONTACT_FORM_FIELD_IDS,
+  contactPageContent,
+  type ContactDetail,
+  type ContactDetailIcon,
+  type ContactFormFieldConfig,
+  type ContactFormFieldId,
+  type ContactPageContent,
+} from "@/content/contact";
+import { impactData, IMPACT_DATA_DISCLAIMER } from "@/content/impact";
 import type {
   AnnualReport,
   BeforeAfterStory,
@@ -31,7 +42,18 @@ export type VisionMissionPageData = {
   mission: string;
   heroDescription: string;
   sectionTitle: string;
+  visionImageUrl: string;
+  missionImageUrl: string;
   coreValues: CoreValue[];
+};
+
+export type LeadershipPageData = {
+  foundersEyebrow: string;
+  foundersTitle: string;
+  foundersDescription: string;
+  teamEyebrow: string;
+  teamTitle: string;
+  teamDescription: string;
 };
 
 export type AboutStoryPageData = {
@@ -58,6 +80,8 @@ export type AboutOverviewPageData = {
   imageUrl: string;
   links: AboutOverviewLink[];
 };
+
+export type ContactPageData = ContactPageContent;
 
 const CORE_VALUE_ICONS: CoreValue["icon"][] = [
   "excellence",
@@ -181,7 +205,14 @@ export function parseImpactPageData(data: unknown): ImpactPageData {
         note: item.note || "",
         isIllustrative: true as const,
       }))
-    : [];
+    : impactData.statistics.map((item) => ({
+        label: item.label,
+        value: 0,
+        suffix: item.suffix || "",
+        prefix: item.prefix || "",
+        note: item.note || "",
+        isIllustrative: true as const,
+      }));
 
   const programBreakdown = Array.isArray(record.programBreakdown)
     ? (record.programBreakdown as ProgramBreakdown[]).map((item) => ({
@@ -191,7 +222,13 @@ export function parseImpactPageData(data: unknown): ImpactPageData {
         description: item.description || "",
         isIllustrative: true as const,
       }))
-    : [];
+    : impactData.programBreakdown.map((item) => ({
+        programSlug: item.programSlug,
+        programTitle: item.programTitle,
+        percentage: 0,
+        description: item.description || "",
+        isIllustrative: true as const,
+      }));
 
   const locations = Array.isArray(record.locations)
     ? (record.locations as LocationImpact[]).map((item) => ({
@@ -201,7 +238,13 @@ export function parseImpactPageData(data: unknown): ImpactPageData {
         schoolsPartnered: Number(item.schoolsPartnered) || 0,
         isIllustrative: true as const,
       }))
-    : [];
+    : impactData.locations.map((item) => ({
+        name: item.name,
+        region: item.region,
+        girlsReached: 0,
+        schoolsPartnered: 0,
+        isIllustrative: true as const,
+      }));
 
   const successStories = Array.isArray(record.successStories)
     ? (record.successStories as SuccessStory[]).map((item, index) => ({
@@ -212,7 +255,7 @@ export function parseImpactPageData(data: unknown): ImpactPageData {
         imageUrl: item.imageUrl || "",
         isIllustrative: true as const,
       }))
-    : [];
+    : impactData.successStories;
 
   const beforeAfterStories = Array.isArray(record.beforeAfterStories)
     ? (record.beforeAfterStories as BeforeAfterStory[]).map((item, index) => ({
@@ -223,7 +266,7 @@ export function parseImpactPageData(data: unknown): ImpactPageData {
         programSlug: item.programSlug,
         isIllustrative: true as const,
       }))
-    : [];
+    : impactData.beforeAfterStories;
 
   const annualReports = Array.isArray(record.annualReports)
     ? (record.annualReports as AnnualReport[]).map((item) => ({
@@ -233,7 +276,7 @@ export function parseImpactPageData(data: unknown): ImpactPageData {
         downloadUrl: item.downloadUrl || "#",
         isIllustrative: true as const,
       }))
-    : [];
+    : impactData.annualReports;
 
   const donationUsage = Array.isArray(record.donationUsage)
     ? (record.donationUsage as DonationUsage[]).map((item) => ({
@@ -242,7 +285,12 @@ export function parseImpactPageData(data: unknown): ImpactPageData {
         description: item.description || "",
         isIllustrative: true as const,
       }))
-    : [];
+    : impactData.donationUsage.map((item) => ({
+        category: item.category,
+        percentage: 0,
+        description: item.description || "",
+        isIllustrative: true as const,
+      }));
 
   return {
     statistics,
@@ -253,7 +301,9 @@ export function parseImpactPageData(data: unknown): ImpactPageData {
     annualReports,
     donationUsage,
     disclaimer:
-      typeof record.disclaimer === "string" ? record.disclaimer : undefined,
+      typeof record.disclaimer === "string"
+        ? record.disclaimer
+        : IMPACT_DATA_DISCLAIMER,
   };
 }
 
@@ -296,6 +346,10 @@ export function parseVisionMissionPageData(
       typeof record.sectionTitle === "string"
         ? record.sectionTitle
         : "What We Exist to Build",
+    visionImageUrl:
+      typeof record.visionImageUrl === "string" ? record.visionImageUrl : "",
+    missionImageUrl:
+      typeof record.missionImageUrl === "string" ? record.missionImageUrl : "",
     coreValues:
       coreValues.length > 0
         ? coreValues
@@ -306,6 +360,25 @@ export function parseVisionMissionPageData(
               icon: "excellence",
             },
           ],
+  };
+}
+
+export function parseLeadershipPageData(data: unknown): LeadershipPageData {
+  const record = asRecord(data);
+
+  return {
+    foundersEyebrow: stringField(record.foundersEyebrow, "Leadership"),
+    foundersTitle: stringField(record.foundersTitle, "Meet Our Founder"),
+    foundersDescription: stringField(
+      record.foundersDescription,
+      "Building pathways for African STEM talent."
+    ),
+    teamEyebrow: stringField(record.teamEyebrow, "Secretariat and Board"),
+    teamTitle: stringField(record.teamTitle, "Institutional Leadership"),
+    teamDescription: stringField(
+      record.teamDescription,
+      "Select a leader to read their full profile."
+    ),
   };
 }
 
@@ -417,5 +490,135 @@ export function parseAboutOverviewPageData(
               href: "",
             },
           ],
+  };
+}
+
+export function isContactDetailIcon(
+  value: string
+): value is ContactDetailIcon {
+  return CONTACT_DETAIL_ICONS.includes(value as ContactDetailIcon);
+}
+
+function stringField(value: unknown, fallback: string): string {
+  return typeof value === "string" ? value : fallback;
+}
+
+function parseContactDetails(value: unknown): ContactDetail[] | null {
+  if (!Array.isArray(value)) return null;
+
+  const details: ContactDetail[] = [];
+  value.forEach((item, index) => {
+    if (!item || typeof item !== "object") return;
+    const record = item as Record<string, unknown>;
+    const id =
+      typeof record.id === "string" && record.id.trim()
+        ? record.id
+        : createId(`detail-${index}`);
+    const iconValue = typeof record.icon === "string" ? record.icon : id;
+    const href =
+      typeof record.href === "string" && record.href.trim()
+        ? record.href.trim()
+        : "";
+    const detail: ContactDetail = {
+      id,
+      label: typeof record.label === "string" ? record.label : "",
+      value: typeof record.value === "string" ? record.value : "",
+      icon: isContactDetailIcon(iconValue) ? iconValue : "email",
+    };
+    if (href) detail.href = href;
+    details.push(detail);
+  });
+  return details;
+}
+
+function parseContactFormFields(value: unknown): ContactFormFieldConfig[] {
+  const fromData = new Map<ContactFormFieldId, ContactFormFieldConfig>();
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      if (!item || typeof item !== "object") continue;
+      const record = item as Record<string, unknown>;
+      const id = record.id as ContactFormFieldId;
+      if (!CONTACT_FORM_FIELD_IDS.includes(id)) continue;
+      fromData.set(id, {
+        id,
+        label:
+          typeof record.label === "string" && record.label.trim()
+            ? record.label
+            : contactPageContent.formFields.find((field) => field.id === id)
+                ?.label || id,
+        required: Boolean(record.required),
+      });
+    }
+  }
+
+  return contactPageContent.formFields.map(
+    (field) => fromData.get(field.id) || { ...field }
+  );
+}
+
+export type ProgramFieldsData = {
+  objectives: string[];
+  beneficiaries: string;
+};
+
+export function parseProgramFields(data: unknown): ProgramFieldsData {
+  const record = asRecord(data);
+  const objectives = Array.isArray(record.objectives)
+    ? record.objectives
+        .map((item) => (typeof item === "string" ? item : ""))
+        .filter((item) => item.trim().length > 0)
+    : [];
+
+  return {
+    objectives: objectives.length > 0 ? objectives : [""],
+    beneficiaries:
+      typeof record.beneficiaries === "string" ? record.beneficiaries : "",
+  };
+}
+
+export function parseContactPageData(
+  data: unknown,
+  fallback?: {
+    title?: string | null;
+    excerpt?: string | null;
+  }
+): ContactPageData {
+  const record = asRecord(data);
+  const details = parseContactDetails(record.details);
+
+  return {
+    eyebrow: stringField(record.eyebrow, contactPageContent.eyebrow),
+    headline:
+      (typeof record.headline === "string" && record.headline) ||
+      fallback?.title ||
+      contactPageContent.headline,
+    shortIntro:
+      (typeof record.shortIntro === "string" && record.shortIntro) ||
+      fallback?.excerpt ||
+      contactPageContent.shortIntro,
+    responseNote: stringField(
+      record.responseNote,
+      contactPageContent.responseNote
+    ),
+    followLabel: stringField(
+      record.followLabel,
+      contactPageContent.followLabel
+    ),
+    formTitle: stringField(record.formTitle, contactPageContent.formTitle),
+    submitLabel: stringField(
+      record.submitLabel,
+      contactPageContent.submitLabel
+    ),
+    successTitle: stringField(
+      record.successTitle,
+      contactPageContent.successTitle
+    ),
+    successMessage: stringField(
+      record.successMessage,
+      contactPageContent.successMessage
+    ),
+    details: details ?? contactPageContent.details.map((item) => ({ ...item })),
+    formFields: parseContactFormFields(record.formFields),
   };
 }

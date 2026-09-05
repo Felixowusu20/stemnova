@@ -377,19 +377,6 @@ async function seedCollections() {
             "Meet our co-founders and institutional leadership team.",
           href: "/about/leadership",
         },
-        {
-          id: "governance",
-          title: "Governance",
-          description: "How we stay accountable through clear oversight.",
-          href: "/about/governance",
-        },
-        {
-          id: "roadmap",
-          title: "Roadmap",
-          description:
-            "Our phased path from a new foundation to lasting impact.",
-          href: "/about/roadmap",
-        },
       ],
     },
     {
@@ -411,6 +398,8 @@ async function seedCollections() {
       heroDescription:
         "What we exist to build for scientific talent across Africa.",
       sectionTitle: "What We Exist to Build",
+      visionImageUrl: images.hero.research,
+      missionImageUrl: images.hero.about,
       coreValues: valuesData.coreValues,
     },
     {
@@ -443,10 +432,28 @@ async function seedCollections() {
 
   await upsertContent(
     "pages",
+    "leadership",
+    "Leadership",
+    {
+      foundersEyebrow: "Leadership",
+      foundersTitle: "Meet Our Founder",
+      foundersDescription: "Building pathways for African STEM talent.",
+      teamEyebrow: "Secretariat and Board",
+      teamTitle: "Institutional Leadership",
+      teamDescription: "Select a leader to read their full profile.",
+    },
+    {
+      excerpt: "Meet the founder and team building STEMNova Foundation.",
+      sortOrder: 4,
+    }
+  );
+
+  await upsertContent(
+    "pages",
     "contact",
     "Contact",
     contactPageContent as unknown as Record<string, unknown>,
-    { excerpt: contactPageContent.shortIntro }
+    { excerpt: contactPageContent.shortIntro, sortOrder: 20 }
   );
 
   await upsertContent(
@@ -486,7 +493,7 @@ async function seedCollections() {
     } as unknown as Record<string, unknown>,
     {
       excerpt:
-        "Clear metrics and stories from STEMNova programmes across Africa.",
+        "Impact metrics will appear here once STEMNova programmes launch and results are verified.",
       body: IMPACT_DATA_DISCLAIMER,
       sortOrder: 12,
     }

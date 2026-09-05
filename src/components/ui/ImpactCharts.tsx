@@ -74,7 +74,8 @@ interface ImpactDonutChartProps {
 }
 
 export function ImpactDonutChart({ items, className }: ImpactDonutChartProps) {
-  const total = items.reduce((sum, item) => sum + item.value, 0) || 1;
+  const rawTotal = items.reduce((sum, item) => sum + item.value, 0);
+  const total = rawTotal || 1;
   const radius = 70;
   const stroke = 22;
   const circumference = 2 * Math.PI * radius;
@@ -109,23 +110,27 @@ export function ImpactDonutChart({ items, className }: ImpactDonutChartProps) {
             stroke="rgba(10,37,64,0.08)"
             strokeWidth={stroke}
           />
-          {segments.map((segment) => (
-            <circle
-              key={segment.label}
-              cx="100"
-              cy="100"
-              r={radius}
-              fill="none"
-              stroke={segment.color}
-              strokeWidth={stroke}
-              strokeDasharray={segment.dasharray}
-              strokeDashoffset={segment.dashoffset}
-              strokeLinecap="butt"
-            />
-          ))}
+          {rawTotal > 0
+            ? segments.map((segment) => (
+                <circle
+                  key={segment.label}
+                  cx="100"
+                  cy="100"
+                  r={radius}
+                  fill="none"
+                  stroke={segment.color}
+                  strokeWidth={stroke}
+                  strokeDasharray={segment.dasharray}
+                  strokeDashoffset={segment.dashoffset}
+                  strokeLinecap="butt"
+                />
+              ))
+            : null}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <p className="font-display text-3xl font-bold text-navy">100%</p>
+          <p className="font-display text-3xl font-bold text-navy">
+            {rawTotal}%
+          </p>
           <p className="text-xs font-medium text-navy/60">Allocated</p>
         </div>
       </div>

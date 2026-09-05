@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { AdminProviders } from "@/components/admin/AdminProviders";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { prisma } from "@/lib/db";
 
 export const metadata = {
   title: "Admin | STEMNova CMS",
@@ -18,6 +19,16 @@ export default async function AdminDashboardLayout({
     redirect("/admin/login");
   }
 
+  const pages = await prisma.contentItem.findMany({
+    where: { collection: "pages", slug: { not: null } },
+    select: { id: true, slug: true },
+  });
+
+  const pageIdBySlug: Record<string, string> = {};
+  for (const page of pages) {
+    if (page.slug) pageIdBySlug[page.slug] = page.id;
+  }
+
   return (
     <AdminProviders>
       <AdminShell
@@ -25,6 +36,7 @@ export default async function AdminDashboardLayout({
           name: session.user.name,
           email: session.user.email,
         }}
+        pageIdBySlug={pageIdBySlug}
       >
         {children}
       </AdminShell>

@@ -119,30 +119,38 @@ export default async function ProgramDetailPage({
                   {program.intro}
                 </p>
 
-                <h2 className="mt-8 font-display text-lg font-semibold text-navy">
-                  Goals
-                </h2>
-                <ul className="mt-3 space-y-2.5">
-                  {program.objectives.slice(0, 4).map((objective) => (
-                    <li
-                      key={objective}
-                      className="flex gap-2.5 text-sm leading-relaxed text-navy"
-                    >
-                      <CheckCircle2
-                        className="mt-0.5 h-4 w-4 shrink-0 text-teal"
-                        aria-hidden="true"
-                      />
-                      {objective}
-                    </li>
-                  ))}
-                </ul>
+                {program.objectives.length > 0 ? (
+                  <>
+                    <h2 className="mt-8 font-display text-lg font-semibold text-navy">
+                      Goals
+                    </h2>
+                    <ul className="mt-3 space-y-2.5">
+                      {program.objectives.map((objective, index) => (
+                        <li
+                          key={`${index}-${objective}`}
+                          className="flex gap-2.5 text-sm leading-relaxed text-navy"
+                        >
+                          <CheckCircle2
+                            className="mt-0.5 h-4 w-4 shrink-0 text-teal"
+                            aria-hidden="true"
+                          />
+                          {objective}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : null}
 
-                <h2 className="mt-6 font-display text-lg font-semibold text-navy">
-                  Who it is for
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-navy/80">
-                  {program.beneficiaries}
-                </p>
+                {program.beneficiaries ? (
+                  <>
+                    <h2 className="mt-6 font-display text-lg font-semibold text-navy">
+                      Who it is for
+                    </h2>
+                    <p className="mt-2 text-sm leading-relaxed text-navy/80">
+                      {program.beneficiaries}
+                    </p>
+                  </>
+                ) : null}
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Button href="/get-involved" variant="teal" size="lg">

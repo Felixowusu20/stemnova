@@ -5,26 +5,48 @@ import { useRouter } from "next/navigation";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { AboutOverviewPageFields } from "@/components/admin/AboutOverviewPageFields";
 import { AboutStoryPageFields } from "@/components/admin/AboutStoryPageFields";
+import { ContactPageFields } from "@/components/admin/ContactPageFields";
+import {
+  normalizeFooterContact,
+  normalizeFooterSocial,
+  type FooterContactShape,
+  type FooterSocialLink,
+} from "@/lib/cms/footer-contact";
 import { EventRegistrationFormBuilder } from "@/components/admin/EventRegistrationFormBuilder";
 import { GovernancePageFields } from "@/components/admin/GovernancePageFields";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { ImpactPageFields } from "@/components/admin/ImpactPageFields";
+import { LeadershipPageFields } from "@/components/admin/LeadershipPageFields";
+import { ProgramFields } from "@/components/admin/ProgramFields";
 import { RoadmapPageFields } from "@/components/admin/RoadmapPageFields";
 import { VisionMissionPageFields } from "@/components/admin/VisionMissionPageFields";
 import {
   parseAboutOverviewPageData,
   parseAboutStoryPageData,
+  parseContactPageData,
   parseGovernancePageData,
   parseImpactPageData,
+  parseLeadershipPageData,
+  parseProgramFields,
   parseRoadmapPageData,
   parseVisionMissionPageData,
   type AboutOverviewPageData,
   type AboutStoryPageData,
+  type ContactPageData,
   type GovernancePageData,
   type ImpactPageData,
+  type LeadershipPageData,
+  type ProgramFieldsData,
   type RoadmapPageData,
   type VisionMissionPageData,
 } from "@/lib/cms/page-forms";
+import {
+  LEADERSHIP_CATEGORIES,
+  getLeadershipCategory,
+  isFounderCategory,
+  resolveLeadershipCategory,
+  type LeadershipCategoryId,
+} from "@/lib/cms/leadership-roles";
 import {
   parseRegistrationForm,
   type EventRegistrationFormConfig,
@@ -44,13 +66,20 @@ type ContentItem = {
 
 function readTeamContact(data: unknown) {
   if (!data || typeof data !== "object") {
-    return { email: "", linkedin: "", isFounder: false };
+    return {
+      email: "",
+      linkedin: "",
+      leadershipCategory: "other" as LeadershipCategoryId,
+    };
   }
   const record = data as Record<string, unknown>;
   return {
     email: typeof record.email === "string" ? record.email : "",
     linkedin: typeof record.linkedin === "string" ? record.linkedin : "",
-    isFounder: Boolean(record.isFounder),
+    leadershipCategory: resolveLeadershipCategory({
+      leadershipCategory: record.leadershipCategory,
+      isFounder: record.isFounder,
+    }),
   };
 }
 
@@ -85,10 +114,14 @@ export function ContentEditor({
   collection,
   hasSlug,
   initial,
+  siteContactInitial,
+  siteSocialInitial,
 }: {
   collection: string;
   hasSlug: boolean;
   initial: ContentItem | null;
+  siteContactInitial?: FooterContactShape | null;
+  siteSocialInitial?: FooterSocialLink[] | null;
 }) {
   const router = useRouter();
   const initialContact = readTeamContact(initial?.data);
@@ -99,7 +132,8 @@ export function ContentEditor({
   const [body, setBody] = useState(initial?.body || "");
   const [email, setEmail] = useState(initialContact.email);
   const [linkedin, setLinkedin] = useState(initialContact.linkedin);
-  const [isFounder, setIsFounder] = useState(initialContact.isFounder);
+  const [leadershipCategory, setLeadershipCategory] =
+    useState<LeadershipCategoryId>(initialContact.leadershipCategory);
   const [eventDate, setEventDate] = useState(initialEvent.date);
   const [eventTime, setEventTime] = useState(initialEvent.time);
   const [eventLocation, setEventLocation] = useState(initialEvent.location);
@@ -120,6 +154,12 @@ export function ContentEditor({
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [siteContact, setSiteContact] = useState<FooterContactShape>(() =>
+    normalizeFooterContact(siteContactInitial)
+  );
+  const [siteSocial, setSiteSocial] = useState<FooterSocialLink[]>(() =>
+    normalizeFooterSocial(siteSocialInitial)
+  );
   const [governanceData, setGovernanceData] = useState<GovernancePageData>(() =>
     parseGovernancePageData(initial?.data)
   );
@@ -150,6 +190,18 @@ export function ContentEditor({
         coverUrl: initial?.coverUrl || undefined,
       })
     );
+  const [contactData, setContactData] = useState<ContactPageData>(() =>
+    parseContactPageData(initial?.data, {
+      title: initial?.title || undefined,
+      excerpt: initial?.excerpt || undefined,
+    })
+  );
+  const [leadershipData, setLeadershipData] = useState<LeadershipPageData>(() =>
+    parseLeadershipPageData(initial?.data)
+  );
+  const [programData, setProgramData] = useState<ProgramFieldsData>(() =>
+    parseProgramFields(initial?.data)
+  );
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -181,13 +233,18 @@ export function ContentEditor({
       }
       existingData.email = email.trim();
       existingData.linkedin = linkedin.trim();
-      existingData.isFounder = isFounder;
+      existingData.leadershipCategory = leadershipCategory;
+      existingData.isFounder = isFounderCategory(leadershipCategory);
     }
 
     if (collection === "programs") {
       existingData.title = title;
       if (excerpt) existingData.shortDescription = excerpt;
       if (body) existingData.intro = body;
+      existingData.objectives = programData.objectives
+        .map((goal) => goal.trim())
+        .filter(Boolean);
+      existingData.beneficiaries = programData.beneficiaries.trim();
       if (coverUrl) {
         existingData.heroImageUrl = coverUrl;
         const gallery = Array.isArray(existingData.galleryImageUrls)
@@ -281,6 +338,9 @@ export function ContentEditor({
         existingData.heroDescription =
           visionMissionData.heroDescription.trim();
         existingData.sectionTitle = visionMissionData.sectionTitle.trim();
+        existingData.visionImageUrl = visionMissionData.visionImageUrl.trim();
+        existingData.missionImageUrl =
+          visionMissionData.missionImageUrl.trim();
         existingData.coreValues = visionMissionData.coreValues
           .map((value) => ({
             ...value,
@@ -288,6 +348,15 @@ export function ContentEditor({
             description: value.description.trim(),
           }))
           .filter((value) => value.title);
+      }
+      if (slug === "leadership") {
+        existingData.foundersEyebrow = leadershipData.foundersEyebrow.trim();
+        existingData.foundersTitle = leadershipData.foundersTitle.trim();
+        existingData.foundersDescription =
+          leadershipData.foundersDescription.trim();
+        existingData.teamEyebrow = leadershipData.teamEyebrow.trim();
+        existingData.teamTitle = leadershipData.teamTitle.trim();
+        existingData.teamDescription = leadershipData.teamDescription.trim();
       }
       if (slug === "about-story") {
         existingData.heroDescription = aboutStoryData.heroDescription.trim();
@@ -323,8 +392,67 @@ export function ContentEditor({
           .filter((link) => link.title && link.href);
       }
       if (slug === "contact") {
-        existingData.headline = title;
-        if (excerpt) existingData.shortIntro = excerpt;
+        const addressLine = [
+          siteContact.address.line1,
+          siteContact.address.line2,
+          [siteContact.address.city, siteContact.address.region]
+            .filter(Boolean)
+            .join(", "),
+          siteContact.address.country,
+        ]
+          .filter(Boolean)
+          .join(", ");
+
+        existingData.eyebrow = contactData.eyebrow.trim();
+        existingData.headline = contactData.headline.trim();
+        existingData.shortIntro = contactData.shortIntro.trim();
+        existingData.responseNote = contactData.responseNote.trim();
+        existingData.followLabel = contactData.followLabel.trim();
+        existingData.formTitle = contactData.formTitle.trim();
+        existingData.submitLabel = contactData.submitLabel.trim();
+        existingData.successTitle = contactData.successTitle.trim();
+        existingData.successMessage = contactData.successMessage.trim();
+        // Keep contact-page detail cards aligned with footer contact fields
+        existingData.details = [
+          {
+            id: "email",
+            label: "Email",
+            value: siteContact.email.trim(),
+            href: siteContact.email.trim()
+              ? `mailto:${siteContact.email.trim()}`
+              : undefined,
+            icon: "email",
+          },
+          {
+            id: "phone",
+            label: "Phone",
+            value: siteContact.phone.trim(),
+            href: siteContact.phone.trim()
+              ? `tel:${siteContact.phone.replace(/\s/g, "")}`
+              : undefined,
+            icon: "phone",
+          },
+          {
+            id: "address",
+            label: "Office",
+            value: addressLine,
+            icon: "address",
+          },
+          {
+            id: "hours",
+            label: "Hours",
+            value:
+              siteContact.hours.weekdays.trim() ||
+              contactData.details.find((item) => item.icon === "hours")
+                ?.value ||
+              "",
+            icon: "hours",
+          },
+        ].filter((item) => item.value);
+        existingData.formFields = contactData.formFields.map((field) => ({
+          ...field,
+          label: field.label.trim() || field.id,
+        }));
       }
       if (slug === "governance") {
         existingData.bodies = governanceData.bodies
@@ -425,7 +553,9 @@ export function ContentEditor({
     const syncedTitle =
       slug === "about-overview"
         ? aboutOverviewData.heroTitle.trim() || title
-        : title;
+        : slug === "contact"
+          ? contactData.headline.trim() || title
+          : title;
     const syncedExcerpt =
       slug === "vision-mission"
         ? visionMissionData.vision.trim()
@@ -433,7 +563,9 @@ export function ContentEditor({
           ? aboutOverviewData.heroDescription.trim()
           : slug === "about-story"
             ? aboutStoryData.heroDescription.trim()
-            : excerpt || null;
+            : slug === "contact"
+              ? contactData.shortIntro.trim()
+              : excerpt || null;
     const syncedBody =
       slug === "vision-mission"
         ? visionMissionData.mission.trim()
@@ -469,13 +601,49 @@ export function ContentEditor({
       body: JSON.stringify(payload),
     });
     const result = await res.json();
-    setSaving(false);
 
     if (!res.ok) {
+      setSaving(false);
       setMessage(result.error || "Save failed");
       return;
     }
 
+    if (slug === "contact") {
+      const settingsRes = await fetch("/api/admin/settings");
+      const currentSettings = settingsRes.ok
+        ? await settingsRes.json()
+        : null;
+
+      if (currentSettings) {
+        const settingsSave = await fetch("/api/admin/settings", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: currentSettings.name,
+            shortName: currentSettings.shortName,
+            tagline: currentSettings.tagline,
+            description: currentSettings.description,
+            logoUrl: currentSettings.logoUrl,
+            logoAlt: currentSettings.logoAlt,
+            faviconUrl: currentSettings.faviconUrl,
+            contact: siteContact,
+            social: siteSocial,
+            announcementBar: currentSettings.announcementBar,
+            heroSlides: currentSettings.heroSlides,
+            pageHeroImages: currentSettings.pageHeroImages,
+          }),
+        });
+        if (!settingsSave.ok) {
+          setSaving(false);
+          setMessage(
+            "Contact page saved, but footer contact settings failed to update."
+          );
+          return;
+        }
+      }
+    }
+
+    setSaving(false);
     setMessage("Saved.");
     router.push(`/admin/content/${collection}`);
     router.refresh();
@@ -509,12 +677,10 @@ export function ContentEditor({
                 ? "Description"
                 : collection === "gallery"
                   ? "Album description"
-                  : collection === "pages" && slug === "contact"
-                    ? "Short intro"
-                    : collection === "pages" &&
-                        (slug === "governance" ||
-                          slug === "roadmap" ||
-                          slug === "impact")
+                  : collection === "pages" &&
+                      (slug === "governance" ||
+                        slug === "roadmap" ||
+                        slug === "impact")
                       ? "Page hero description"
                       : "Excerpt";
 
@@ -540,30 +706,44 @@ export function ContentEditor({
     (slug === "governance" ||
       slug === "roadmap" ||
       slug === "vision-mission" ||
+      slug === "leadership" ||
       slug === "about-story" ||
-      slug === "about-overview");
+      slug === "about-overview" ||
+      slug === "contact");
 
   const hideBodyOnly =
     collection === "pages" &&
     (slug === "governance" ||
       slug === "roadmap" ||
       slug === "vision-mission" ||
+      slug === "leadership" ||
       slug === "about-story" ||
-      slug === "about-overview");
+      slug === "about-overview" ||
+      slug === "contact");
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
-      <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
+      <div
+        className={
+          slug === "contact"
+            ? "grid gap-5"
+            : "grid gap-5 lg:grid-cols-[1fr_320px]"
+        }
+      >
         <div className="rounded-2xl border border-navy/8 bg-white p-6 shadow-sm">
           <div className="grid gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium">Title</label>
+              <label className="mb-1.5 block text-sm font-medium">
+                {slug === "contact" ? "Headline" : "Title"}
+              </label>
               <input
                 className={field}
                 value={
                   slug === "about-overview"
                     ? aboutOverviewData.heroTitle
-                    : title
+                    : slug === "contact"
+                      ? contactData.headline
+                      : title
                 }
                 onChange={(e) => {
                   setTitle(e.target.value);
@@ -571,6 +751,12 @@ export function ContentEditor({
                     setAboutOverviewData({
                       ...aboutOverviewData,
                       heroTitle: e.target.value,
+                    });
+                  }
+                  if (slug === "contact") {
+                    setContactData({
+                      ...contactData,
+                      headline: e.target.value,
                     });
                   }
                 }}
@@ -629,10 +815,26 @@ export function ContentEditor({
                 onChange={setAboutOverviewData}
               />
             )}
+            {slug === "contact" && (
+              <ContactPageFields
+                value={contactData}
+                onChange={setContactData}
+                siteContact={siteContact}
+                siteSocial={siteSocial}
+                onSiteContactChange={setSiteContact}
+                onSiteSocialChange={setSiteSocial}
+              />
+            )}
             {slug === "vision-mission" && (
               <VisionMissionPageFields
                 value={visionMissionData}
                 onChange={setVisionMissionData}
+              />
+            )}
+            {slug === "leadership" && (
+              <LeadershipPageFields
+                value={leadershipData}
+                onChange={setLeadershipData}
               />
             )}
             {slug === "about-story" && (
@@ -655,6 +857,9 @@ export function ContentEditor({
             )}
             {slug === "impact" && (
               <ImpactPageFields value={impactData} onChange={setImpactData} />
+            )}
+            {collection === "programs" && (
+              <ProgramFields value={programData} onChange={setProgramData} />
             )}
             {collection === "events" && (
               <div className="grid gap-4 rounded-xl border border-navy/10 bg-light/60 p-4 sm:grid-cols-2">
@@ -752,22 +957,37 @@ export function ContentEditor({
               <div className="space-y-4">
                 <div>
                   <label className="mb-1.5 block text-sm font-medium">
-                    Leadership category
+                    Leadership role
                   </label>
                   <select
                     className={field}
-                    value={isFounder ? "co-founder" : "leadership"}
-                    onChange={(e) =>
-                      setIsFounder(e.target.value === "co-founder")
-                    }
+                    value={leadershipCategory}
+                    onChange={(e) => {
+                      const next = e.target
+                        .value as LeadershipCategoryId;
+                      const previous =
+                        getLeadershipCategory(leadershipCategory);
+                      setLeadershipCategory(next);
+                      const nextCategory = getLeadershipCategory(next);
+                      // Prefill Role title when empty or still the previous default
+                      if (
+                        !excerpt.trim() ||
+                        excerpt.trim() === previous.defaultRole
+                      ) {
+                        setExcerpt(nextCategory.defaultRole);
+                      }
+                    }}
                   >
-                    <option value="co-founder">Co-Founder</option>
-                    <option value="leadership">Other leadership</option>
+                    {LEADERSHIP_CATEGORIES.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.label}
+                      </option>
+                    ))}
                   </select>
                   <p className="mt-1.5 text-xs text-navy/55">
-                    Co-Founders appear in the top co-founder slots on the
-                    Leadership page. Other leadership appears in the
-                    institutional team grid below.
+                    Co-Founders appear in the top section on the Leadership
+                    page. Board and other roles appear in the institutional
+                    team grid below.
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -828,15 +1048,17 @@ export function ContentEditor({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-navy/8 bg-white p-6 shadow-sm">
-          <ImageUploadField
-            label="Featured image"
-            value={coverUrl}
-            onChange={(url) => setCoverUrl(url || "")}
-            folder={`stemnova/${collection}`}
-            helpText="Upload or replace the image shown on the public site for this item."
-          />
-        </div>
+        {slug !== "contact" ? (
+          <div className="rounded-2xl border border-navy/8 bg-white p-6 shadow-sm">
+            <ImageUploadField
+              label="Featured image"
+              value={coverUrl}
+              onChange={(url) => setCoverUrl(url || "")}
+              folder={`stemnova/${collection}`}
+              helpText="Upload or replace the image shown on the public site for this item."
+            />
+          </div>
+        ) : null}
       </div>
 
       {message && (

@@ -13,14 +13,15 @@ export const CMS_COLLECTIONS = [
   },
   {
     id: "blog",
-    label: "News & Blog",
+    label: "News",
     description: "Articles, announcements, and publications",
     hasSlug: true,
   },
   {
     id: "team",
-    label: "Leadership",
-    description: "Founders, directors, and team profiles",
+    label: "Leadership Team",
+    description:
+      "Add co-founders and board members. Choose their role from the dropdown when creating or editing a profile.",
     hasSlug: true,
   },
   {
@@ -49,7 +50,7 @@ export const CMS_COLLECTIONS = [
   },
   {
     id: "philosophy-quotes",
-    label: "Philosophy quotes",
+    label: "Philosophy Quotes",
     description: "Leadership philosophy slider quotes",
     hasSlug: false,
   },
@@ -57,7 +58,7 @@ export const CMS_COLLECTIONS = [
     id: "pages",
     label: "Pages",
     description:
-      "About, vision, governance, roadmap, impact, contact, and other page copy",
+      "About, vision, leadership, impact, contact, and other page copy",
     hasSlug: true,
   },
 ] as const;

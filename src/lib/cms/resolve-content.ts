@@ -1,11 +1,11 @@
 import {
   getContentByCollection,
   getContentBySlug,
+  getResolvedSiteConfig,
   isCmsActive,
 } from "@/lib/cms/queries";
 import {
   blogPosts,
-  contactPageContent,
   events,
   galleryAlbums,
   impactData,
@@ -19,6 +19,11 @@ import {
   valuesData,
 } from "@/content";
 import { parseRegistrationForm } from "@/lib/event-registration-form";
+import { parseContactPageData } from "@/lib/cms/page-forms";
+import {
+  isFounderCategory,
+  resolveLeadershipCategory,
+} from "@/lib/cms/leadership-roles";
 import type {
   BlogPost,
   CoreValue,
@@ -89,6 +94,13 @@ export async function resolvePrograms(): Promise<Program[]> {
             : [item.coverUrl];
       }
 
+      const cmsObjectives = Array.isArray(data.objectives)
+        ? data.objectives.filter(
+            (goal): goal is string =>
+              typeof goal === "string" && goal.trim().length > 0
+          )
+        : [];
+
       return {
         ...(program || {
           objectives: [],
@@ -112,13 +124,18 @@ export async function resolvePrograms(): Promise<Program[]> {
         intro: item.body || data.intro || program?.intro || "",
         heroImageUrl,
         galleryImageUrls,
-        objectives: Array.isArray(data.objectives)
-          ? data.objectives
-          : program?.objectives || [],
+        objectives:
+          cmsObjectives.length > 0
+            ? cmsObjectives
+            : program?.objectives || [],
         activities: Array.isArray(data.activities)
           ? data.activities
           : program?.activities || [],
-        beneficiaries: data.beneficiaries || program?.beneficiaries || "",
+        beneficiaries:
+          (typeof data.beneficiaries === "string" &&
+            data.beneficiaries.trim()) ||
+          program?.beneficiaries ||
+          "",
         approach: data.approach || program?.approach || "",
         impactStatement:
           data.impactStatement || program?.impactStatement || "",
@@ -304,6 +321,15 @@ export async function resolveTeam(): Promise<TeamMember[]> {
       const member = staticBySlug.get(item.slug as string);
       const data = asData<TeamMember>(item.data);
       const bodyParagraphs = item.body ? splitParagraphs(item.body) : null;
+      const leadershipCategory = resolveLeadershipCategory({
+        leadershipCategory:
+          data.leadershipCategory ?? member?.leadershipCategory,
+        isFounder:
+          typeof data.isFounder === "boolean"
+            ? data.isFounder
+            : member?.isFounder,
+        role: item.excerpt || data.role || member?.role,
+      });
 
       return {
         ...(member || {
@@ -339,10 +365,8 @@ export async function resolveTeam(): Promise<TeamMember[]> {
               ? data.linkedin.trim()
               : undefined
             : member?.linkedin,
-        isFounder:
-          typeof data.isFounder === "boolean"
-            ? data.isFounder
-            : (member?.isFounder ?? false),
+        leadershipCategory,
+        isFounder: isFounderCategory(leadershipCategory),
         isIllustrative: true as const,
       };
     });
@@ -361,6 +385,35 @@ export async function resolveFounders() {
 export async function resolveNonFounderTeam() {
   const leaders = await resolveTeam();
   return leaders.filter((leader) => !leader.isFounder);
+}
+
+export async function resolveLeadershipPage() {
+  const defaults = {
+    foundersEyebrow: "Leadership",
+    foundersTitle: "Meet Our Founder",
+    foundersDescription: "Building pathways for African STEM talent.",
+    teamEyebrow: "Secretariat and Board",
+    teamTitle: "Institutional Leadership",
+    teamDescription: "Select a leader to read their full profile.",
+  };
+
+  const item = await getContentBySlug("pages", "leadership");
+  if (!item) {
+    if (await isCmsActive()) return defaults;
+    return defaults;
+  }
+
+  const data = asData<typeof defaults>(item.data);
+
+  return {
+    foundersEyebrow: data.foundersEyebrow || defaults.foundersEyebrow,
+    foundersTitle: data.foundersTitle || defaults.foundersTitle,
+    foundersDescription:
+      data.foundersDescription || defaults.foundersDescription,
+    teamEyebrow: data.teamEyebrow || defaults.teamEyebrow,
+    teamTitle: data.teamTitle || defaults.teamTitle,
+    teamDescription: data.teamDescription || defaults.teamDescription,
+  };
 }
 
 export async function resolveTestimonials(): Promise<Testimonial[]> {
@@ -487,6 +540,8 @@ export async function resolveVisionMission() {
         sectionTitle: "What We Exist to Build",
         vision: "",
         mission: "",
+        visionImageUrl: "",
+        missionImageUrl: "",
         coreValues: [] as CoreValue[],
       };
     }
@@ -497,6 +552,8 @@ export async function resolveVisionMission() {
       sectionTitle: "What We Exist to Build",
       vision: valuesData.vision,
       mission: valuesData.mission,
+      visionImageUrl: "",
+      missionImageUrl: "",
       coreValues: valuesData.coreValues,
     };
   }
@@ -506,6 +563,8 @@ export async function resolveVisionMission() {
     mission?: string;
     heroDescription?: string;
     sectionTitle?: string;
+    visionImageUrl?: string;
+    missionImageUrl?: string;
     coreValues?: CoreValue[];
   }>(item.data);
 
@@ -517,6 +576,10 @@ export async function resolveVisionMission() {
     sectionTitle: data.sectionTitle || "What We Exist to Build",
     vision: data.vision || item.excerpt || valuesData.vision,
     mission: data.mission || item.body || valuesData.mission,
+    visionImageUrl:
+      (typeof data.visionImageUrl === "string" && data.visionImageUrl) || "",
+    missionImageUrl:
+      (typeof data.missionImageUrl === "string" && data.missionImageUrl) || "",
     coreValues: Array.isArray(data.coreValues)
       ? data.coreValues
       : valuesData.coreValues,
@@ -600,18 +663,6 @@ export async function resolveAboutOverview() {
       description: "Meet our co-founders and institutional leadership team.",
       href: "/about/leadership",
     },
-    {
-      id: "governance",
-      title: "Governance",
-      description: "How we stay accountable through clear oversight.",
-      href: "/about/governance",
-    },
-    {
-      id: "roadmap",
-      title: "Roadmap",
-      description: "Our phased path from a new foundation to lasting impact.",
-      href: "/about/roadmap",
-    },
   ];
 
   const fallback = {
@@ -663,7 +714,15 @@ export async function resolveAboutOverview() {
           description: link.description || "",
           href: link.href || "",
         }))
-        .filter((link) => link.title && link.href)
+        .filter(
+          (link) =>
+            link.title &&
+            link.href &&
+            link.href !== "/about/governance" &&
+            link.href !== "/about/roadmap" &&
+            link.id !== "governance" &&
+            link.id !== "roadmap"
+        )
     : fallbackLinks;
 
   return {
@@ -679,32 +738,75 @@ export async function resolveAboutOverview() {
 }
 
 export async function resolveContactPage() {
-  const item = await getContentBySlug("pages", "contact");
+  const fallback = parseContactPageData({});
+  const [item, site] = await Promise.all([
+    getContentBySlug("pages", "contact"),
+    getResolvedSiteConfig(),
+  ]);
+
+  const addressLine = [
+    site.contact.address.line1,
+    site.contact.address.line2,
+    [site.contact.address.city, site.contact.address.region]
+      .filter(Boolean)
+      .join(", "),
+    site.contact.address.country,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  const syncedDetails = [
+    {
+      id: "email",
+      label: "Email",
+      value: site.contact.email,
+      href: site.contact.email ? `mailto:${site.contact.email}` : undefined,
+      icon: "email" as const,
+    },
+    {
+      id: "phone",
+      label: "Phone",
+      value: site.contact.phone,
+      href: site.contact.phone
+        ? `tel:${site.contact.phone.replace(/\s/g, "")}`
+        : undefined,
+      icon: "phone" as const,
+    },
+    {
+      id: "address",
+      label: "Office",
+      value: addressLine,
+      icon: "address" as const,
+    },
+    {
+      id: "hours",
+      label: "Hours",
+      value: site.contact.hours.weekdays || "",
+      icon: "hours" as const,
+    },
+  ].filter((detail) => detail.value);
+
   if (!item) {
     if (await isCmsActive()) {
       return {
-        ...contactPageContent,
+        ...fallback,
         headline: "",
         shortIntro: "",
-        details: [],
+        responseNote: "",
+        details: syncedDetails,
       };
     }
-    return contactPageContent;
+    return { ...fallback, details: syncedDetails };
   }
 
-  const data = asData<typeof contactPageContent>(item.data);
+  const parsed = parseContactPageData(item.data, {
+    title: item.title,
+    excerpt: item.excerpt,
+  });
 
   return {
-    ...contactPageContent,
-    ...data,
-    eyebrow: data.eyebrow || contactPageContent.eyebrow,
-    headline: item.title || data.headline || contactPageContent.headline,
-    shortIntro:
-      item.excerpt || data.shortIntro || contactPageContent.shortIntro,
-    responseNote: data.responseNote || contactPageContent.responseNote,
-    details: Array.isArray(data.details)
-      ? data.details
-      : contactPageContent.details,
+    ...parsed,
+    details: syncedDetails.length > 0 ? syncedDetails : parsed.details,
   };
 }
 
@@ -781,7 +883,7 @@ export async function resolveImpact(): Promise<
     ...impactData,
     title: "Our Impact",
     description:
-      "Clear metrics and stories from STEMNova programmes across Africa.",
+      "Impact metrics will appear here once STEMNova programmes launch and results are verified.",
     disclaimer: IMPACT_DATA_DISCLAIMER,
   };
 
@@ -790,20 +892,14 @@ export async function resolveImpact(): Promise<
 
   const data = asData<ImpactData & { disclaimer?: string }>(item.data);
 
+  // Prefer zeroed static metrics until programmes launch; CMS copy still applies
   return {
     title: item.title || fallback.title,
     description: item.excerpt || fallback.description,
-    disclaimer:
-      item.body || data.disclaimer || fallback.disclaimer,
-    statistics: Array.isArray(data.statistics)
-      ? data.statistics
-      : fallback.statistics,
-    programBreakdown: Array.isArray(data.programBreakdown)
-      ? data.programBreakdown
-      : fallback.programBreakdown,
-    locations: Array.isArray(data.locations)
-      ? data.locations
-      : fallback.locations,
+    disclaimer: item.body || data.disclaimer || fallback.disclaimer,
+    statistics: impactData.statistics,
+    programBreakdown: impactData.programBreakdown,
+    locations: impactData.locations,
     successStories: Array.isArray(data.successStories)
       ? data.successStories
       : fallback.successStories,
@@ -813,8 +909,6 @@ export async function resolveImpact(): Promise<
     annualReports: Array.isArray(data.annualReports)
       ? data.annualReports
       : fallback.annualReports,
-    donationUsage: Array.isArray(data.donationUsage)
-      ? data.donationUsage
-      : fallback.donationUsage,
+    donationUsage: impactData.donationUsage,
   };
 }

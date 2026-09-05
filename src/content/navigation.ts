@@ -15,8 +15,6 @@ export const navigation: NavItem[] = [
       { label: "Our Story", href: "/about/story" },
       { label: "Vision & Mission", href: "/about/vision" },
       { label: "Leadership", href: "/about/leadership" },
-      { label: "Governance", href: "/about/governance" },
-      { label: "Roadmap", href: "/about/roadmap" },
       { label: "Research & Innovation", href: "/research" },
       { label: "Impact", href: "/impact" },
     ],
