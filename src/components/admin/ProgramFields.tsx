@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
+import { Check, Plus, Trash2 } from "lucide-react";
 import { type ProgramFieldsData } from "@/lib/cms/page-forms";
 
 const fieldClass =
@@ -27,8 +27,8 @@ export function ProgramFields({
       <div>
         <p className="text-sm font-semibold text-navy">Programme page</p>
         <p className="text-[11px] text-navy/50">
-          Goals and who it is for appear on the public programme page in the
-          same layout as existing programmes.
+          Each goal you add is shown on the public programme page with a teal
+          checkmark automatically — no extra formatting needed.
         </p>
       </div>
 
@@ -54,6 +54,13 @@ export function ProgramFields({
         <div className="space-y-2">
           {value.objectives.map((goal, index) => (
             <div key={`goal-${index}`} className="flex items-start gap-2">
+              <span
+                className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/40 bg-teal/15 text-teal"
+                aria-hidden="true"
+                title="Shown with this mark on the programme page"
+              >
+                <Check className="h-3 w-3 stroke-[2.5]" />
+              </span>
               <input
                 className={fieldClass}
                 value={goal}

@@ -1,21 +1,58 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Plus_Jakarta_Sans } from "next/font/google";
+import {
+  IBM_Plex_Sans,
+  Inter,
+  Lato,
+  Lora,
+  Montserrat,
+  Plus_Jakarta_Sans,
+} from "next/font/google";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PublicChrome } from "@/components/layout/PublicChrome";
 import { siteConfig } from "@/content";
 import { getOrganizationSchema } from "@/lib/seo-schemas";
 import { getSiteUrl } from "@/lib/site-url";
+import { ACTIVE_TYPOGRAPHY } from "@/lib/typography";
 import "./globals.css";
 
-const manrope = Manrope({
+/* ── Option 1: Warm & Trustworthy ── */
+const lora = Lora({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-lora",
   display: "swap",
 });
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+/* ── Option 2: Bold & Action-Oriented ── */
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  display: "swap",
+});
+
+const lato = Lato({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-lato",
+  display: "swap",
+});
+
+/* ── Option 3: Solid & Structural ── */
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-jakarta",
+  display: "swap",
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-ibm-plex",
   display: "swap",
 });
 
@@ -76,14 +113,27 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const fontVariables = [
+  lora.variable,
+  inter.variable,
+  montserrat.variable,
+  lato.variable,
+  jakarta.variable,
+  ibmPlexSans.variable,
+].join(" ");
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${jakarta.variable}`}>
-      <body className="flex min-h-screen flex-col">
+    <html
+      lang="en"
+      data-typography={ACTIVE_TYPOGRAPHY}
+      className={fontVariables}
+    >
+      <body className="flex min-h-screen flex-col font-sans antialiased">
         <JsonLd data={getOrganizationSchema()} />
         <a
           href="#main-content"
