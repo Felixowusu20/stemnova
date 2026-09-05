@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import {
   Atom,
   Award,
-  CheckCircle2,
   FlaskConical,
   GraduationCap,
   Leaf,
@@ -15,6 +14,7 @@ import {
   Venus,
 } from "lucide-react";
 import { Button, Container } from "@/components";
+import { MarkedGoalList } from "@/components/ui/MarkedGoalList";
 import { programs } from "@/content";
 import { resolveProgramBySlug } from "@/lib/cms/resolve-content";
 import type { ProgramIcon } from "@/types";
@@ -124,20 +124,7 @@ export default async function ProgramDetailPage({
                     <h2 className="mt-8 font-display text-lg font-semibold text-navy">
                       Goals
                     </h2>
-                    <ul className="mt-3 space-y-2.5">
-                      {program.objectives.map((objective, index) => (
-                        <li
-                          key={`${index}-${objective}`}
-                          className="flex gap-2.5 text-sm leading-relaxed text-navy"
-                        >
-                          <CheckCircle2
-                            className="mt-0.5 h-4 w-4 shrink-0 text-teal"
-                            aria-hidden="true"
-                          />
-                          {objective}
-                        </li>
-                      ))}
-                    </ul>
+                    <MarkedGoalList items={program.objectives} />
                   </>
                 ) : null}
 

@@ -7,8 +7,59 @@
   --color-green: #22c55e;
   --color-light: #f8fafc;
   --color-dark: #08121f;
-  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  /* Resolved by [data-typography] themes below */
+  --font-sans: var(--type-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--type-heading), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ═══════════════════════════════════════════════
+   Typography themes (Google Fonts via next/font)
+   Switch active theme with data-typography on <html>
+   or ACTIVE_TYPOGRAPHY in src/lib/typography.ts
+   ═══════════════════════════════════════════════ */
+
+/* Option 1 — Warm & Trustworthy (non-profits) */
+:root,
+[data-typography="option-1"] {
+  --type-heading: var(--font-lora);
+  --type-body: var(--font-inter);
+  --heading-weight: 600;
+  --heading-transform: none;
+  --heading-tracking: -0.02em;
+  --heading-leading: 1.2;
+  --body-weight: 400;
+  --body-leading: 1.65;
+  --body-size: 1rem;
+  --body-size-sm: 0.9375rem;
+}
+
+/* Option 2 — Bold & Action-Oriented (global causes) */
+[data-typography="option-2"] {
+  --type-heading: var(--font-montserrat);
+  --type-body: var(--font-lato);
+  --heading-weight: 700;
+  --heading-transform: uppercase;
+  --heading-tracking: 0.04em;
+  --heading-leading: 1.15;
+  --body-weight: 400;
+  --body-leading: 1.7;
+  --body-size: 1.0625rem;
+  --body-size-sm: 1rem;
+}
+
+/* Option 3 — Solid & Structural (tech / corporate) */
+[data-typography="option-3"] {
+  --type-heading: var(--font-jakarta);
+  --type-body: var(--font-ibm-plex);
+  --heading-weight: 700;
+  --heading-transform: none;
+  --heading-tracking: -0.025em;
+  --heading-leading: 1.18;
+  --body-weight: 400;
+  --body-leading: 1.65;
+  --body-size: 1rem;
+  --body-size-sm: 0.9375rem;
 }
 
 @layer base {
@@ -33,14 +84,31 @@
   body {
     @apply bg-white text-navy antialiased;
     font-family: var(--font-sans);
+    font-weight: var(--body-weight);
+    font-size: var(--body-size-sm);
+    line-height: var(--body-leading);
+  }
+
+  @media (min-width: 640px) {
+    body {
+      font-size: var(--body-size);
+    }
   }
 
   h1,
   h2,
   h3,
-  h4 {
+  h4,
+  .font-display {
     font-family: var(--font-display);
-    @apply tracking-tight;
+    font-weight: var(--heading-weight);
+    letter-spacing: var(--heading-tracking);
+    line-height: var(--heading-leading);
+    text-transform: var(--heading-transform);
+  }
+
+  p {
+    line-height: var(--body-leading);
   }
 
   a {
@@ -55,6 +123,54 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Explicit theme utility classes (preview / partial overrides) */
+  .type-option-1 {
+    --type-heading: var(--font-lora);
+    --type-body: var(--font-inter);
+    --heading-weight: 600;
+    --heading-transform: none;
+    --heading-tracking: -0.02em;
+    --heading-leading: 1.2;
+    --body-weight: 400;
+    --body-leading: 1.65;
+  }
+
+  .type-option-2 {
+    --type-heading: var(--font-montserrat);
+    --type-body: var(--font-lato);
+    --heading-weight: 700;
+    --heading-transform: uppercase;
+    --heading-tracking: 0.04em;
+    --heading-leading: 1.15;
+    --body-weight: 400;
+    --body-leading: 1.7;
+  }
+
+  .type-option-3 {
+    --type-heading: var(--font-jakarta);
+    --type-body: var(--font-ibm-plex);
+    --heading-weight: 700;
+    --heading-transform: none;
+    --heading-tracking: -0.025em;
+    --heading-leading: 1.18;
+    --body-weight: 400;
+    --body-leading: 1.65;
+  }
+
+  .font-heading {
+    font-family: var(--font-display);
+    font-weight: var(--heading-weight);
+    letter-spacing: var(--heading-tracking);
+    line-height: var(--heading-leading);
+    text-transform: var(--heading-transform);
+  }
+
+  .font-body {
+    font-family: var(--font-sans);
+    font-weight: var(--body-weight);
+    line-height: var(--body-leading);
   }
 
   .gradient-hero {
