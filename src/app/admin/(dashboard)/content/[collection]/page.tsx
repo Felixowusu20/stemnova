@@ -2,7 +2,22 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CollectionItemsTable } from "@/components/admin/CollectionItemsTable";
 import { getCollectionMeta } from "@/lib/cms/collections";
+import {
+  leadershipCategoryLabel,
+  resolveLeadershipCategory,
+} from "@/lib/cms/leadership-roles";
 import { prisma } from "@/lib/db";
+
+const PAGE_DISPLAY_NAMES: Record<string, string> = {
+  "about-overview": "Overview",
+  "about-story": "Our Story",
+  "vision-mission": "Vision & Mission",
+  leadership: "Leadership",
+  impact: "Impact",
+  contact: "Contact",
+  governance: "Governance",
+  roadmap: "Roadmap",
+};
 
 export default async function AdminCollectionPage({
   params,
@@ -18,12 +33,14 @@ export default async function AdminCollectionPage({
     orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }],
   });
 
+  const canAdd = collection !== "pages";
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal">
-            Collection
+            {collection === "pages" ? "Website pages" : "Collection"}
           </p>
           <h1 className="mt-2 font-display text-3xl font-bold text-navy">
             {meta.label}
@@ -32,12 +49,14 @@ export default async function AdminCollectionPage({
             {meta.description}
           </p>
         </div>
-        <Link
-          href={`/admin/content/${collection}/new`}
-          className="rounded-xl bg-navy px-4 py-2.5 text-sm font-semibold text-white"
-        >
-          Add item
-        </Link>
+        {canAdd ? (
+          <Link
+            href={`/admin/content/${collection}/new`}
+            className="rounded-xl bg-navy px-4 py-2.5 text-sm font-semibold text-white"
+          >
+            Add item
+          </Link>
+        ) : null}
       </header>
 
       <CollectionItemsTable
@@ -48,15 +67,23 @@ export default async function AdminCollectionPage({
               ? (item.data as Record<string, unknown>)
               : null;
           const badge =
-            collection === "team"
-              ? data?.isFounder
-                ? "Co-Founder"
-                : "Leadership"
+            collection === "team" && data
+              ? leadershipCategoryLabel(
+                  resolveLeadershipCategory({
+                    leadershipCategory: data.leadershipCategory,
+                    isFounder: data.isFounder,
+                  })
+                )
               : null;
+
+          const displayTitle =
+            collection === "pages" && item.slug && PAGE_DISPLAY_NAMES[item.slug]
+              ? PAGE_DISPLAY_NAMES[item.slug]
+              : item.title;
 
           return {
             id: item.id,
-            title: item.title,
+            title: displayTitle,
             slug: item.slug,
             status: item.status,
             updatedAt: item.updatedAt.toISOString(),

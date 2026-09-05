@@ -3,6 +3,11 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { FooterContactFields } from "@/components/admin/FooterContactFields";
+import {
+  normalizeFooterContact,
+  normalizeFooterSocial,
+} from "@/lib/cms/footer-contact";
 
 type SettingsShape = {
   name: string;
@@ -62,33 +67,29 @@ export function SettingsForm({
   featuredAnnouncement?: string | null;
 }) {
   const router = useRouter();
-  const [form, setForm] = useState<SettingsShape>(
-    initial ?? {
-      name: "",
-      shortName: "",
-      tagline: "",
-      description: "",
-      logoUrl: "",
-      logoAlt: "",
-      contact: {
-        email: "",
-        phone: "",
-        whatsapp: "",
-        whatsappLink: "",
-        address: {
-          line1: "",
-          city: "",
-          region: "",
-          country: "",
-        },
-        hours: { weekdays: "" },
-      },
-      social: [],
-      announcementBar: { text: "", dismissible: true },
-      heroSlides: [],
-      pageHeroImages: {},
+  const [form, setForm] = useState<SettingsShape>(() => {
+    if (!initial) {
+      return {
+        name: "",
+        shortName: "",
+        tagline: "",
+        description: "",
+        logoUrl: "",
+        logoAlt: "",
+        contact: normalizeFooterContact(null),
+        social: [],
+        announcementBar: { text: "", dismissible: true },
+        heroSlides: [],
+        pageHeroImages: {},
+      };
     }
-  );
+
+    return {
+      ...initial,
+      contact: normalizeFooterContact(initial.contact),
+      social: normalizeFooterSocial(initial.social),
+    };
+  });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -340,65 +341,19 @@ export function SettingsForm({
       </section>
 
       <section className="rounded-2xl border border-navy/8 bg-white p-6 shadow-sm">
-        <h2 className="font-display text-lg font-semibold text-navy">Contact</h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          {(
-            [
-              ["email", "Email"],
-              ["phone", "Phone"],
-              ["whatsapp", "WhatsApp"],
-              ["whatsappLink", "WhatsApp link"],
-            ] as const
-          ).map(([key, label]) => (
-            <div key={key}>
-              <label className={labelClass} htmlFor={key}>
-                {label}
-              </label>
-              <input
-                id={key}
-                className={fieldClass}
-                value={form.contact[key]}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    contact: { ...form.contact, [key]: e.target.value },
-                  })
-                }
-              />
-            </div>
-          ))}
-          {(
-            [
-              ["line1", "Address line 1"],
-              ["line2", "Address line 2"],
-              ["city", "City"],
-              ["region", "Region"],
-              ["country", "Country"],
-            ] as const
-          ).map(([key, label]) => (
-            <div key={key}>
-              <label className={labelClass} htmlFor={`address-${key}`}>
-                {label}
-              </label>
-              <input
-                id={`address-${key}`}
-                className={fieldClass}
-                value={form.contact.address[key] || ""}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    contact: {
-                      ...form.contact,
-                      address: {
-                        ...form.contact.address,
-                        [key]: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
-            </div>
-          ))}
+        <h2 className="font-display text-lg font-semibold text-navy">
+          Footer & site contact
+        </h2>
+        <p className="mt-1 text-sm text-navy/55">
+          Email, phone, address, and social links shown in the website footer.
+        </p>
+        <div className="mt-4">
+          <FooterContactFields
+            contact={form.contact}
+            social={form.social}
+            onContactChange={(contact) => setForm({ ...form, contact })}
+            onSocialChange={(social) => setForm({ ...form, social })}
+          />
         </div>
       </section>
 

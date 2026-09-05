@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   Button,
   Container,
@@ -23,41 +22,39 @@ export const metadata: Metadata = {
 export default function ResearchPage() {
   return (
     <>
-      <section className="bg-light pt-4 pb-2 sm:pt-6">
+      <section className="bg-light py-14 sm:py-16 lg:py-20">
         <Container>
-          <nav className="mb-3 text-sm text-navy/55" aria-label="Breadcrumb">
-            <ol className="flex flex-wrap items-center gap-1.5">
-              <li>
-                <Link href="/" className="hover:text-navy">
-                  Home
-                </Link>
-              </li>
-              <li aria-hidden="true">/</li>
-              <li className="font-medium text-navy">Research</li>
-            </ol>
-          </nav>
-          <h1 className="font-display text-2xl font-bold text-navy sm:text-3xl">
-            Research and Innovation
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm text-navy/70 sm:text-base">
-            Frontier science niches for African researchers.
-          </p>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-teal">
+              Research & Innovation
+            </p>
+            <h1 className="mt-3 font-display text-3xl font-bold text-navy sm:text-4xl lg:text-[2.75rem]">
+              Frontier science niches for African researchers
+            </h1>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-navy/70 sm:text-lg">
+              STEMNova advances capacity across quantum science, AI,
+              computational science, materials, robotics, sustainability, and
+              collaborative research networks.
+            </p>
+          </div>
+
+          <div className="mt-12 lg:mt-14">
+            <ResearchNichesMap />
+          </div>
         </Container>
       </section>
 
-      <section className="bg-light pb-10 pt-6 sm:pb-14 sm:pt-8">
+      <section className="border-t border-navy/10 bg-white py-14 sm:py-16">
         <Container>
-          <ResearchNichesMap />
-        </Container>
-      </section>
-
-      <section className="py-12 sm:py-14">
-        <Container>
-          <div className="mx-auto max-w-xl text-center">
-            <h2 className="font-display text-xl font-bold text-navy sm:text-2xl">
-              Join a Research Project
+          <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+            <h2 className="font-display text-2xl font-bold text-navy sm:text-3xl">
+              Join a research project
             </h2>
-            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-navy/70 sm:text-base">
+              Apply for a fellowship or partner with STEMNova to grow research
+              capacity across Africa.
+            </p>
+            <div className="mt-8 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:items-center">
               <Button
                 href="/programs/young-african-researchers-fellowship"
                 variant="secondary"

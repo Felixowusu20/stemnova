@@ -228,6 +228,15 @@ export interface ImpactData {
   donationUsage: DonationUsage[];
 }
 
+export type LeadershipCategoryId =
+  | "co-founder"
+  | "board-chair"
+  | "board-trustee"
+  | "board-member"
+  | "director"
+  | "advisor"
+  | "other";
+
 export interface TeamMember {
   id: string;
   slug: string;
@@ -240,6 +249,8 @@ export interface TeamMember {
   imageUrl: string;
   email?: string;
   linkedin?: string;
+  /** Where the person appears on the Leadership page */
+  leadershipCategory?: LeadershipCategoryId;
   isFounder?: boolean;
   isIllustrative: true;
 }

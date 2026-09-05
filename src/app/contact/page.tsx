@@ -17,6 +17,7 @@ import { images } from "@/content/images";
 import { getResolvedSiteConfig } from "@/lib/cms/queries";
 import { resolveContactPage } from "@/lib/cms/resolve-content";
 import { getSiteUrl } from "@/lib/site-url";
+import type { ContactDetailIcon } from "@/content/contact";
 import type { SocialPlatform } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -32,27 +33,34 @@ const socialIcons: Record<SocialPlatform, typeof Facebook> = {
   tiktok: Mail,
 };
 
-const detailIcons = {
+const detailIcons: Record<ContactDetailIcon, typeof Mail> = {
   email: Mail,
   phone: Phone,
   address: MapPin,
   hours: Clock,
-} as const;
-
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description:
-    "Contact STEMNova Foundation in Accra for programmes, fellowships, volunteering, and partnerships.",
-  openGraph: {
-    title: "Contact Us | STEMNova Foundation",
-    description: "Reach the STEMNova team in Accra.",
-    url: `${siteUrl}/contact`,
-    images: [{ url: images.hero.contact, width: 1200, height: 630 }],
-  },
-  alternates: {
-    canonical: `${siteUrl}/contact`,
-  },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await resolveContactPage();
+  const title = content.headline || "Contact Us";
+  const description =
+    content.shortIntro ||
+    "Contact STEMNova Foundation in Accra for programmes, fellowships, volunteering, and partnerships.";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} | STEMNova Foundation`,
+      description: content.responseNote || description,
+      url: `${siteUrl}/contact`,
+      images: [{ url: images.hero.contact, width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: `${siteUrl}/contact`,
+    },
+  };
+}
 
 export default async function ContactPage() {
   const [settings, content] = await Promise.all([
@@ -78,86 +86,103 @@ export default async function ContactPage() {
 
         <div className="overflow-hidden rounded-2xl border border-navy/8 bg-white shadow-sm sm:rounded-3xl">
           <div className="grid lg:grid-cols-2">
-            {/* Form first on mobile */}
             <div className="order-1 flex flex-col justify-center p-4 sm:p-6 lg:order-2 lg:p-8">
               <h1 className="mb-4 font-display text-2xl font-bold text-navy sm:mb-5 sm:text-3xl">
-                Send a Message
+                {content.formTitle}
               </h1>
-              <ContactForm className="border-0 bg-transparent p-0 shadow-none sm:p-0 lg:p-0" />
+              <ContactForm
+                className="border-0 bg-transparent p-0 shadow-none sm:p-0 lg:p-0"
+                fields={content.formFields}
+                submitLabel={content.submitLabel}
+                successTitle={content.successTitle}
+                successMessage={content.successMessage}
+              />
             </div>
 
-            {/* Left panel: mock admin managed contact details */}
             <div className="order-2 bg-navy p-5 text-white sm:p-8 lg:order-1 lg:p-10">
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal">
-                {content.eyebrow}
-              </p>
-              <h2 className="mt-2 font-display text-2xl font-bold sm:text-3xl">
-                {content.headline}
-              </h2>
-              <p className="mt-2 text-sm text-white/75 sm:text-base">
-                {content.shortIntro}
-              </p>
-              <p className="mt-1 text-sm text-white/55">{content.responseNote}</p>
-
-              <ul className="mt-8 space-y-4">
-                {content.details.map((item) => {
-                  const Icon =
-                    detailIcons[item.id as keyof typeof detailIcons] ?? Mail;
-                  const body = (
-                    <>
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-teal">
-                        <Icon className="h-5 w-5" aria-hidden="true" />
-                      </span>
-                      <span>
-                        <span className="block text-xs font-medium uppercase tracking-wider text-white/55">
-                          {item.label}
-                        </span>
-                        <span className="mt-0.5 block text-sm font-medium leading-relaxed text-white">
-                          {item.value}
-                        </span>
-                      </span>
-                    </>
-                  );
-
-                  return (
-                    <li key={item.id}>
-                      {item.href ? (
-                        <a
-                          href={item.href}
-                          className="flex items-start gap-3 rounded-xl p-2 transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
-                        >
-                          {body}
-                        </a>
-                      ) : (
-                        <div className="flex items-start gap-3 p-2">{body}</div>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-
-              <div className="mt-8 border-t border-white/15 pt-6">
-                <p className="text-xs font-semibold uppercase tracking-wider text-white/55">
-                  Follow us
+              {content.eyebrow ? (
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal">
+                  {content.eyebrow}
                 </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {social.map((link) => {
-                    const Icon = socialIcons[link.platform];
+              ) : null}
+              {content.headline ? (
+                <h2 className="mt-2 font-display text-2xl font-bold sm:text-3xl">
+                  {content.headline}
+                </h2>
+              ) : null}
+              {content.shortIntro ? (
+                <p className="mt-2 text-sm text-white/75 sm:text-base">
+                  {content.shortIntro}
+                </p>
+              ) : null}
+              {content.responseNote ? (
+                <p className="mt-1 text-sm text-white/55">
+                  {content.responseNote}
+                </p>
+              ) : null}
+
+              {content.details.length > 0 ? (
+                <ul className="mt-8 space-y-4">
+                  {content.details.map((item) => {
+                    const Icon = detailIcons[item.icon] ?? Mail;
+                    const body = (
+                      <>
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-teal">
+                          <Icon className="h-5 w-5" aria-hidden="true" />
+                        </span>
+                        <span>
+                          <span className="block text-xs font-medium uppercase tracking-wider text-white/55">
+                            {item.label}
+                          </span>
+                          <span className="mt-0.5 block text-sm font-medium leading-relaxed text-white">
+                            {item.value}
+                          </span>
+                        </span>
+                      </>
+                    );
+
                     return (
-                      <a
-                        key={link.platform}
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={link.label}
-                        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-teal hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
-                      >
-                        <Icon className="h-4 w-4" aria-hidden="true" />
-                      </a>
+                      <li key={item.id}>
+                        {item.href ? (
+                          <a
+                            href={item.href}
+                            className="flex items-start gap-3 rounded-xl p-2 transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
+                          >
+                            {body}
+                          </a>
+                        ) : (
+                          <div className="flex items-start gap-3 p-2">{body}</div>
+                        )}
+                      </li>
                     );
                   })}
+                </ul>
+              ) : null}
+
+              {social.length > 0 ? (
+                <div className="mt-8 border-t border-white/15 pt-6">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-white/55">
+                    {content.followLabel}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {social.map((link) => {
+                      const Icon = socialIcons[link.platform];
+                      return (
+                        <a
+                          key={link.platform}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={link.label}
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-teal hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
+                        >
+                          <Icon className="h-4 w-4" aria-hidden="true" />
+                        </a>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              ) : null}
             </div>
           </div>
         </div>

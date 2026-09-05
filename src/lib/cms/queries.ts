@@ -116,7 +116,22 @@ export async function getResolvedNavigation(): Promise<NavItem[]> {
                 : undefined,
           }));
 
-    return withCmsProgrammeChildren(base);
+    // Keep About dropdown free of Governance/Roadmap even if older CMS nav still has them
+    const cleaned = base.map((item) => {
+      if (item.href !== "/about" || !item.children?.length) return item;
+      return {
+        ...item,
+        children: item.children.filter(
+          (child) =>
+            child.href !== "/about/governance" &&
+            child.href !== "/about/roadmap" &&
+            child.label.toLowerCase() !== "governance" &&
+            child.label.toLowerCase() !== "roadmap"
+        ),
+      };
+    });
+
+    return withCmsProgrammeChildren(cleaned);
   } catch {
     const { navigation: staticNavigation } = await import("@/content");
     return withCmsProgrammeChildren(staticNavigation);
