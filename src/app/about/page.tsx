@@ -72,13 +72,13 @@ export default async function AboutPage() {
                   href={item.href}
                   className="group flex h-full flex-col rounded-2xl border border-navy/10 bg-white p-4 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:p-6"
                 >
-                  <h2 className="font-display text-base font-semibold text-blue sm:text-xl">
+                  <h2 className="font-display text-base font-semibold text-teal sm:text-xl">
                     {item.title}
                   </h2>
                   <p className="mt-1.5 flex-1 text-xs leading-relaxed text-navy sm:mt-2 sm:text-sm">
                     {item.description}
                   </p>
-                  <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-blue group-hover:text-navy sm:mt-4 sm:text-sm">
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-teal group-hover:text-navy sm:mt-4 sm:text-sm">
                     Learn more
                     <ArrowRight
                       className="h-3.5 w-3.5 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 sm:h-4 sm:w-4"

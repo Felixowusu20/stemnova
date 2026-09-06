@@ -9,6 +9,7 @@ import {
   type ContactPageContent,
 } from "@/content/contact";
 import { impactData, IMPACT_DATA_DISCLAIMER } from "@/content/impact";
+import { strategicPillars } from "@/content/pillars";
 import type {
   AnnualReport,
   BeforeAfterStory,
@@ -20,6 +21,7 @@ import type {
   ProgramBreakdown,
   RoadmapPhase,
   StatItem,
+  StrategicPillar,
   SuccessStory,
   TimelineMilestone,
 } from "@/types";
@@ -83,6 +85,26 @@ export type AboutOverviewPageData = {
 
 export type ContactPageData = ContactPageContent;
 
+export type HomeFocusAreasPageData = {
+  eyebrow: string;
+  sectionTitle: string;
+  pillars: StrategicPillar[];
+};
+
+export const FOCUS_AREA_ICONS: StrategicPillar["icon"][] = [
+  "sparkles",
+  "award",
+  "microscope",
+  "venus",
+  "atom",
+  "policy",
+  "globe",
+  "users",
+  "flask",
+  "graduation",
+  "leaf",
+];
+
 const CORE_VALUE_ICONS: CoreValue["icon"][] = [
   "excellence",
   "equity",
@@ -115,6 +137,50 @@ export function listToLines(value: string[] | undefined): string {
 
 export function isCoreValueIcon(value: string): value is CoreValue["icon"] {
   return CORE_VALUE_ICONS.includes(value as CoreValue["icon"]);
+}
+
+export function isFocusAreaIcon(
+  value: string
+): value is StrategicPillar["icon"] {
+  return FOCUS_AREA_ICONS.includes(value as StrategicPillar["icon"]);
+}
+
+export function defaultHomeFocusAreasPageData(): HomeFocusAreasPageData {
+  return {
+    eyebrow: "Our Strategic Pillars",
+    sectionTitle: "Seven Focus Areas Driving Africa's STEM Future",
+    pillars: strategicPillars.map((pillar) => ({ ...pillar })),
+  };
+}
+
+export function parseHomeFocusAreasPageData(
+  data: unknown
+): HomeFocusAreasPageData {
+  const defaults = defaultHomeFocusAreasPageData();
+  const record = asRecord(data);
+  const pillars = Array.isArray(record.pillars)
+    ? (record.pillars as StrategicPillar[]).map((pillar, index) => {
+        const fallback = defaults.pillars[index];
+        return {
+          id: pillar.id || createId(`pillar-${index}`),
+          title: pillar.title || "",
+          description: pillar.description || "",
+          icon: isFocusAreaIcon(String(pillar.icon || ""))
+            ? pillar.icon
+            : ("sparkles" as const),
+          imageUrl:
+            (typeof pillar.imageUrl === "string" && pillar.imageUrl.trim()) ||
+            fallback?.imageUrl ||
+            "",
+        };
+      })
+    : [];
+
+  return {
+    eyebrow: stringField(record.eyebrow, defaults.eyebrow),
+    sectionTitle: stringField(record.sectionTitle, defaults.sectionTitle),
+    pillars: pillars.length > 0 ? pillars : defaults.pillars,
+  };
 }
 
 export function parseGovernancePageData(data: unknown): GovernancePageData {

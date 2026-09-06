@@ -142,6 +142,8 @@ export interface StrategicPillar {
   title: string;
   description: string;
   icon: ProgramIcon | "globe" | "policy";
+  /** Optional card background image — editable in admin CMS. */
+  imageUrl?: string;
 }
 
 export interface ResearchArea {
@@ -265,10 +267,15 @@ export type PartnerCategory =
 
 export interface Partner {
   id: string;
+  slug: string;
   name: string;
   logoUrl: string;
+  /** Optional external website. Shown on the partner detail page when set. */
   website?: string;
+  /** Short summary for cards and the homepage carousel. */
   description: string;
+  /** Longer about copy for the individual partner page. */
+  body?: string;
   category: PartnerCategory;
   isPlaceholder: true;
 }

@@ -38,7 +38,7 @@ export default function NotFound() {
               href="/blog"
               className="font-medium text-[#0A2540] underline-offset-2 hover:underline"
             >
-              blog
+              news
             </Link>
             , or{" "}
             <Link

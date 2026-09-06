@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { ImpactCounter } from "@/components/ui/ImpactCounter";
 import { IMPACT_DATA_DISCLAIMER } from "@/content";
+import { images } from "@/content/images";
 import type { StatItem } from "@/types";
 
 interface ImpactHighlightsProps {
@@ -15,15 +17,28 @@ export function ImpactHighlights({ stats }: ImpactHighlightsProps) {
   const supporting = rest.slice(0, 5);
 
   return (
-    <section className="relative overflow-hidden bg-navy py-20 sm:py-24">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        aria-hidden="true"
-        style={{
-          backgroundImage:
-            "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(20,184,166,0.18), transparent), radial-gradient(ellipse 40% 40% at 100% 100%, rgba(37,99,235,0.12), transparent)",
-        }}
-      />
+    <section className="relative overflow-hidden py-20 sm:py-24">
+      <div className="absolute inset-0">
+        <Image
+          src={images.home.impact}
+          alt=""
+          fill
+          className="object-cover object-center"
+          sizes="100vw"
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-navy/90 via-navy/88 to-[#062a2f]/95"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute inset-0 opacity-70"
+          aria-hidden="true"
+          style={{
+            backgroundImage:
+              "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(20,184,166,0.28), transparent), radial-gradient(ellipse 40% 40% at 100% 100%, rgba(34,197,94,0.16), transparent)",
+          }}
+        />
+      </div>
 
       <Container className="relative">
         <div className="mx-auto max-w-2xl text-center">

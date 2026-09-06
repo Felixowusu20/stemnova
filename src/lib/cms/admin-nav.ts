@@ -34,6 +34,11 @@ export const ADMIN_PRIMARY_NAV = [
 
 export const ADMIN_SITE_NAV: AdminSiteNavItem[] = [
   {
+    kind: "link",
+    label: "Home · Focus Areas",
+    pageSlug: "home-focus-areas",
+  },
+  {
     kind: "group",
     id: "about",
     label: "About",
@@ -72,12 +77,16 @@ export const ADMIN_SITE_NAV: AdminSiteNavItem[] = [
     href: "/admin/content/resources",
   },
   {
+    kind: "link",
+    label: "Partners",
+    href: "/admin/content/partners",
+  },
+  {
     kind: "group",
     id: "get-involved",
     label: "Get Involved",
     children: [
       { label: "Testimonials", href: "/admin/content/testimonials" },
-      { label: "Partners", href: "/admin/content/partners" },
       { label: "Philosophy Quotes", href: "/admin/content/philosophy-quotes" },
     ],
   },

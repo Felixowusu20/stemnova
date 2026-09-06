@@ -85,12 +85,20 @@ export function HeroCarousel({
       ))}
 
       <div
-        className="absolute inset-0 bg-gradient-to-r from-navy/75 via-navy/45 to-navy/25"
+        className="absolute inset-0 bg-gradient-to-r from-navy/80 via-navy/50 to-navy/30"
         aria-hidden="true"
       />
       <div
-        className="absolute inset-0 bg-gradient-to-t from-navy/55 via-transparent to-navy/20"
+        className="absolute inset-0 bg-gradient-to-t from-navy/65 via-transparent to-navy/25"
         aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0 opacity-70"
+        aria-hidden="true"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 18% 35%, rgba(20,184,166,0.28), transparent 42%), radial-gradient(circle at 82% 70%, rgba(34,197,94,0.14), transparent 40%)",
+        }}
       />
 
       <Container className="relative flex h-full flex-col justify-end pb-16 pt-28 sm:pb-20 sm:pt-32">

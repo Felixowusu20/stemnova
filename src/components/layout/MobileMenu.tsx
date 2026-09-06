@@ -58,10 +58,10 @@ function MobileAccordionSection({
           prefetch
           onClick={onClose}
           className={cn(
-            "flex min-w-0 flex-1 items-center px-4 py-3.5 text-[15px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue",
+            "flex min-w-0 flex-1 items-center px-4 py-3.5 text-[15px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal",
             sectionActive || childActive
-              ? "text-blue"
-              : "text-navy hover:bg-navy/[0.03]"
+              ? "text-teal"
+              : "text-navy hover:bg-teal/5 hover:text-teal"
           )}
           aria-current={pathname === item.href ? "page" : undefined}
         >
@@ -71,8 +71,8 @@ function MobileAccordionSection({
           type="button"
           onClick={() => setOpen((prev) => !prev)}
           className={cn(
-            "flex w-12 shrink-0 items-center justify-center border-l border-navy/8 text-navy/55 transition-colors hover:bg-navy/[0.03] hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue",
-            open && "bg-navy/[0.03] text-navy"
+            "flex w-12 shrink-0 items-center justify-center border-l border-navy/8 text-navy/55 transition-colors hover:bg-teal/5 hover:text-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal",
+            open && "bg-teal/5 text-teal"
           )}
           aria-expanded={open}
           aria-controls={panelId}
@@ -102,17 +102,17 @@ function MobileAccordionSection({
                   prefetch
                   onClick={onClose}
                   className={cn(
-                    "flex items-center rounded-xl px-3 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue",
+                    "flex items-center rounded-xl px-3 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal",
                     active
-                      ? "bg-blue/10 font-semibold text-blue"
-                      : "text-navy/75 hover:bg-white hover:text-navy"
+                      ? "bg-teal/10 font-semibold text-teal"
+                      : "text-navy/75 hover:bg-white hover:text-teal"
                   )}
                   aria-current={active ? "page" : undefined}
                 >
                   <span
                     className={cn(
                       "mr-2.5 h-1.5 w-1.5 shrink-0 rounded-full",
-                      active ? "bg-blue" : "bg-navy/25"
+                      active ? "bg-teal" : "bg-navy/25"
                     )}
                     aria-hidden="true"
                   />
@@ -144,10 +144,10 @@ function MobileSimpleLink({
         prefetch
         onClick={onClose}
         className={cn(
-          "flex items-center rounded-2xl border px-4 py-3.5 text-[15px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2",
+          "flex items-center rounded-2xl border px-4 py-3.5 text-[15px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2",
           active
-            ? "border-blue/20 bg-blue/10 text-blue"
-            : "border-navy/8 bg-white text-navy hover:border-navy/15 hover:bg-navy/[0.02]"
+            ? "border-teal/25 bg-teal/10 text-teal"
+            : "border-navy/8 bg-white text-navy hover:border-teal/25 hover:bg-teal/5 hover:text-teal"
         )}
         aria-current={active ? "page" : undefined}
       >

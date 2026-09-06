@@ -9,6 +9,7 @@ import {
 import { prisma } from "@/lib/db";
 
 const PAGE_DISPLAY_NAMES: Record<string, string> = {
+  "home-focus-areas": "Home · Focus Areas",
   "about-overview": "Overview",
   "about-story": "Our Story",
   "vision-mission": "Vision & Mission",

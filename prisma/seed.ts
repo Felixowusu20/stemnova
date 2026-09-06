@@ -17,7 +17,7 @@ import { resources } from "../src/content/resources";
 import { valuesData } from "../src/content/values";
 import { contactPageContent } from "../src/content/contact";
 import { impactData, IMPACT_DATA_DISCLAIMER } from "../src/content/impact";
-import { roadmapPhases } from "../src/content/pillars";
+import { roadmapPhases, strategicPillars } from "../src/content/pillars";
 
 loadEnv({ path: ".env.local" });
 loadEnv();
@@ -294,10 +294,12 @@ async function seedCollections() {
   for (const partner of partners) {
     await upsertContent(
       "partners",
-      null,
+      partner.slug,
       partner.name,
       partner as unknown as Record<string, unknown>,
       {
+        excerpt: partner.description,
+        body: partner.body,
         coverUrl: partner.logoUrl,
         sortOrder: i++,
       }
@@ -343,6 +345,21 @@ async function seedCollections() {
       { body: quote, sortOrder: i++ }
     );
   }
+
+  await upsertContent(
+    "pages",
+    "home-focus-areas",
+    "Seven Focus Areas Driving Africa's STEM Future",
+    {
+      eyebrow: "Our Strategic Pillars",
+      sectionTitle: "Seven Focus Areas Driving Africa's STEM Future",
+      pillars: strategicPillars,
+    },
+    {
+      excerpt: "Our Strategic Pillars",
+      sortOrder: 0,
+    }
+  );
 
   await upsertContent(
     "pages",

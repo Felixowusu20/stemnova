@@ -41,6 +41,10 @@ export const navigation: NavItem[] = [
     href: "/resources",
   },
   {
+    label: "Partners",
+    href: "/partners",
+  },
+  {
     label: "Get Involved",
     href: "/get-involved",
     children: [
