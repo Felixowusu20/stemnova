@@ -13,13 +13,19 @@ import {
   programs,
   resources,
   roadmapPhases,
+  strategicPillars,
   teamMembers,
   testimonials,
   partners,
   valuesData,
 } from "@/content";
+import { toPartnerSlug } from "@/content/partners";
 import { parseRegistrationForm } from "@/lib/event-registration-form";
-import { parseContactPageData } from "@/lib/cms/page-forms";
+import {
+  defaultHomeFocusAreasPageData,
+  parseContactPageData,
+  parseHomeFocusAreasPageData,
+} from "@/lib/cms/page-forms";
 import {
   isFounderCategory,
   resolveLeadershipCategory,
@@ -35,6 +41,7 @@ import type {
   Program,
   Resource,
   RoadmapPhase,
+  StrategicPillar,
   TeamMember,
   Testimonial,
   Partner,
@@ -440,20 +447,39 @@ export async function resolvePartners(): Promise<Partner[]> {
   const items = await getContentByCollection("partners");
   if (!(await isCmsActive())) return partners;
 
+  if (items.length === 0) return partners;
+
   return items.map((item) => {
     const data = asData<Partner>(item.data);
+    const name = item.title || data.name || "Partner";
+    const slug =
+      item.slug ||
+      data.slug ||
+      toPartnerSlug(name);
 
     return {
       id: item.id,
-      name: item.title || data.name || "Partner",
+      slug,
+      name,
       logoUrl: item.coverUrl || data.logoUrl || "",
-      website: data.website,
+      website:
+        typeof data.website === "string" && data.website !== "#"
+          ? data.website.trim()
+          : undefined,
       description:
-        item.excerpt || item.body || data.description || "",
+        item.excerpt || data.description || "",
+      body: item.body || data.body || undefined,
       category: data.category || "ngo",
       isPlaceholder: true as const,
     };
   });
+}
+
+export async function resolvePartnerBySlug(
+  slug: string
+): Promise<Partner | null> {
+  const all = await resolvePartners();
+  return all.find((partner) => partner.slug === slug) || null;
 }
 
 export async function resolveGalleryAlbums(): Promise<GalleryAlbum[]> {
@@ -910,5 +936,44 @@ export async function resolveImpact(): Promise<
       ? data.annualReports
       : fallback.annualReports,
     donationUsage: impactData.donationUsage,
+  };
+}
+
+export async function resolveHomeFocusAreas(): Promise<{
+  eyebrow: string;
+  title: string;
+  pillars: StrategicPillar[];
+}> {
+  const defaults = defaultHomeFocusAreasPageData();
+  const fallback = {
+    eyebrow: defaults.eyebrow,
+    title: defaults.sectionTitle,
+    pillars: strategicPillars,
+  };
+
+  const item = await getContentBySlug("pages", "home-focus-areas");
+  if (!item) return fallback;
+
+  const data = parseHomeFocusAreasPageData(item.data);
+  const defaultsById = new Map(
+    strategicPillars.map((pillar) => [pillar.id, pillar])
+  );
+  const pillars =
+    data.pillars.length > 0
+      ? data.pillars
+          .filter((pillar) => pillar.title.trim())
+          .map((pillar) => ({
+            ...pillar,
+            imageUrl:
+              pillar.imageUrl?.trim() ||
+              defaultsById.get(pillar.id)?.imageUrl ||
+              "",
+          }))
+      : fallback.pillars;
+
+  return {
+    eyebrow: data.eyebrow || item.excerpt || fallback.eyebrow,
+    title: data.sectionTitle || item.title || fallback.title,
+    pillars: pillars.length > 0 ? pillars : fallback.pillars,
   };
 }

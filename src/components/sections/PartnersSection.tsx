@@ -17,53 +17,24 @@ interface PartnersSectionProps {
 }
 
 function PartnerMarqueeItem({ partner }: { partner: Partner }) {
-  const href =
-    partner.website && partner.website !== "#"
-      ? partner.website
-      : "/partner";
-  const isExternal = href.startsWith("http");
-
-  const content = (
-    <>
-      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-navy/5">
+  return (
+    <Link
+      href={`/partners/${partner.slug}`}
+      aria-label={`Read about ${partner.name}`}
+      className="inline-flex min-w-[230px] items-center gap-3 rounded-2xl border border-teal/20 bg-white/95 px-4 py-3 shadow-[0_10px_30px_-18px_rgba(20,184,166,0.55)] transition hover:border-teal/50 hover:shadow-[0_14px_34px_-16px_rgba(20,184,166,0.65)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+    >
+      <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-navy to-[#0d3d4a] ring-2 ring-teal/25">
         <Image
           src={partner.logoUrl}
           alt=""
           fill
-          className="object-contain p-1"
-          sizes="40px"
+          className="object-contain p-1.5"
+          sizes="44px"
         />
       </div>
       <span className="max-w-[160px] truncate text-sm font-semibold text-navy">
         {partner.name}
       </span>
-    </>
-  );
-
-  const itemClass =
-    "inline-flex min-w-[220px] items-center gap-3 rounded-xl border border-navy/10 bg-white px-4 py-3 shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2";
-
-  if (isExternal) {
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Visit ${partner.name}`}
-        className={itemClass}
-      >
-        {content}
-      </a>
-    );
-  }
-
-  return (
-    <Link
-      href={href}
-      aria-label={`Learn about partnering with ${partner.name}`}
-      className={itemClass}
-    >
-      {content}
     </Link>
   );
 }
@@ -78,9 +49,19 @@ export function PartnersSection({
   const loop = [...partners, ...partners];
 
   return (
-    <section className={cn("overflow-hidden py-16 sm:py-20", className)}>
-      <Container>
+    <section
+      className={cn(
+        "relative overflow-hidden bg-gradient-to-b from-[#eefbf8] via-white to-[#f0faf7] py-16 sm:py-20",
+        className
+      )}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 gradient-mesh opacity-70"
+        aria-hidden="true"
+      />
+      <Container className="relative">
         <SectionHeading
+          eyebrow="Partnerships"
           title={title}
           description={description}
           align="center"
@@ -90,11 +71,11 @@ export function PartnersSection({
 
       <div className="relative">
         <div
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent sm:w-24"
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[#eefbf8] to-transparent sm:w-24"
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent sm:w-24"
+          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#f0faf7] to-transparent sm:w-24"
           aria-hidden="true"
         />
 
@@ -110,13 +91,19 @@ export function PartnersSection({
         </div>
       </div>
 
-      {showDisclaimer && (
-        <Container>
-          <p className="mt-8 text-center text-xs text-navy/50">
-            {PARTNERS_DISCLAIMER}
-          </p>
-        </Container>
-      )}
+      <Container className="relative">
+        <div className="mt-8 flex flex-col items-center gap-3 text-center">
+          <Link
+            href="/partners"
+            className="rounded-full border border-teal/30 bg-teal/10 px-4 py-2 text-sm font-semibold text-teal transition hover:bg-teal hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+          >
+            View all partners
+          </Link>
+          {showDisclaimer && (
+            <p className="text-xs text-navy/50">{PARTNERS_DISCLAIMER}</p>
+          )}
+        </div>
+      </Container>
     </section>
   );
 }

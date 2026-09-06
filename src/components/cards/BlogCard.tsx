@@ -55,10 +55,10 @@ export function BlogCard({ post, className }: BlogCardProps) {
             <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
           </div>
 
-          <h3 className="mt-1.5 font-display text-sm font-semibold leading-snug text-navy line-clamp-2 sm:mt-2 sm:text-xl sm:leading-tight">
+          <h3 className="mt-1.5 font-display text-sm font-semibold leading-snug text-teal line-clamp-2 sm:mt-2 sm:text-xl sm:leading-tight">
             <Link
               href={`/blog/${post.slug}`}
-              className="rounded hover:text-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
+              className="rounded hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
             >
               {post.title}
             </Link>
@@ -71,7 +71,7 @@ export function BlogCard({ post, className }: BlogCardProps) {
 
         <Link
           href={`/blog/${post.slug}`}
-          className="inline-flex items-center gap-1 rounded text-xs font-semibold text-navy transition-colors hover:text-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:mt-4 sm:gap-1.5 sm:text-sm"
+          className="inline-flex items-center gap-1 rounded text-xs font-semibold text-teal transition-colors hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 sm:mt-4 sm:gap-1.5 sm:text-sm"
         >
           Read article
           <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />

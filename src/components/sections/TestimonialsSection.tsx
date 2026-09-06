@@ -21,9 +21,19 @@ export function TestimonialsSection({
   className,
 }: TestimonialsSectionProps) {
   return (
-    <section className={cn("bg-light py-16 sm:py-20", className)}>
-      <Container>
+    <section
+      className={cn(
+        "relative overflow-hidden bg-gradient-to-b from-[#eefbf8] via-light to-white py-16 sm:py-20",
+        className
+      )}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 gradient-mesh opacity-70"
+        aria-hidden="true"
+      />
+      <Container className="relative">
         <SectionHeading
+          eyebrow="Community"
           title={title}
           description={description}
           align="center"

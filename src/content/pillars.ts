@@ -1,3 +1,4 @@
+import { images } from "@/content/images";
 import type {
   Challenge,
   GetInvolvedOption,
@@ -45,42 +46,49 @@ export const strategicPillars: StrategicPillar[] = [
     title: "Discovering STEM Talent",
     description: "Find exceptional scientific potential in schools and universities.",
     icon: "sparkles",
+    imageUrl: images.programmes.youngScholars,
   },
   {
     id: "scientific-leadership",
     title: "Building Scientific Leadership",
     description: "Grow talent into research leaders through fellowships and mentorship.",
     icon: "award",
+    imageUrl: images.programmes.fellows,
   },
   {
     id: "world-class-researchers",
     title: "Producing World-Class Researchers",
     description: "Equip scholars with skills, networks, and resources for global science.",
     icon: "microscope",
+    imageUrl: images.programmes.researchers,
   },
   {
     id: "women-in-stem",
     title: "Increasing Women in STEM",
     description: "Expand opportunities for girls and women across STEM pathways.",
     icon: "venus",
+    imageUrl: images.programmes.girlsScience,
   },
   {
     id: "quantum-education",
     title: "Advancing Quantum Education",
     description: "Build clear pathways into quantum science education and research.",
     icon: "atom",
+    imageUrl: images.programmes.quantum,
   },
   {
     id: "stem-policy",
     title: "Influencing STEM Policy",
     description: "Shape STEM education policy through evidence and partnerships.",
     icon: "policy",
+    imageUrl: images.partners.categories.government,
   },
   {
     id: "global-networks",
     title: "Connecting Researchers Globally",
     description: "Link African researchers to international labs and collaborators.",
     icon: "globe",
+    imageUrl: images.partners.network,
   },
 ];
 

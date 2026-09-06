@@ -14,6 +14,7 @@ import {
 } from "@/lib/cms/footer-contact";
 import { EventRegistrationFormBuilder } from "@/components/admin/EventRegistrationFormBuilder";
 import { GovernancePageFields } from "@/components/admin/GovernancePageFields";
+import { HomeFocusAreasFields } from "@/components/admin/HomeFocusAreasFields";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { ImpactPageFields } from "@/components/admin/ImpactPageFields";
 import { LeadershipPageFields } from "@/components/admin/LeadershipPageFields";
@@ -25,6 +26,7 @@ import {
   parseAboutStoryPageData,
   parseContactPageData,
   parseGovernancePageData,
+  parseHomeFocusAreasPageData,
   parseImpactPageData,
   parseLeadershipPageData,
   parseProgramFields,
@@ -34,6 +36,7 @@ import {
   type AboutStoryPageData,
   type ContactPageData,
   type GovernancePageData,
+  type HomeFocusAreasPageData,
   type ImpactPageData,
   type LeadershipPageData,
   type ProgramFieldsData,
@@ -47,6 +50,8 @@ import {
   resolveLeadershipCategory,
   type LeadershipCategoryId,
 } from "@/lib/cms/leadership-roles";
+import { PARTNER_CATEGORIES, toPartnerSlug } from "@/content/partners";
+import type { PartnerCategory } from "@/types";
 import {
   parseRegistrationForm,
   type EventRegistrationFormConfig,
@@ -110,6 +115,28 @@ function readEventFields(data: unknown) {
   };
 }
 
+function readPartnerFields(data: unknown) {
+  if (!data || typeof data !== "object") {
+    return {
+      website: "",
+      category: "university" as PartnerCategory,
+    };
+  }
+  const record = data as Record<string, unknown>;
+  const category = String(record.category || "university");
+  const validCategory = PARTNER_CATEGORIES.some((item) => item.id === category)
+    ? (category as PartnerCategory)
+    : ("university" as PartnerCategory);
+
+  return {
+    website:
+      typeof record.website === "string" && record.website !== "#"
+        ? record.website
+        : "",
+    category: validCategory,
+  };
+}
+
 export function ContentEditor({
   collection,
   hasSlug,
@@ -126,6 +153,7 @@ export function ContentEditor({
   const router = useRouter();
   const initialContact = readTeamContact(initial?.data);
   const initialEvent = readEventFields(initial?.data);
+  const initialPartner = readPartnerFields(initial?.data);
   const [title, setTitle] = useState(initial?.title || "");
   const [slug, setSlug] = useState(initial?.slug || "");
   const [excerpt, setExcerpt] = useState(initial?.excerpt || "");
@@ -134,6 +162,10 @@ export function ContentEditor({
   const [linkedin, setLinkedin] = useState(initialContact.linkedin);
   const [leadershipCategory, setLeadershipCategory] =
     useState<LeadershipCategoryId>(initialContact.leadershipCategory);
+  const [partnerWebsite, setPartnerWebsite] = useState(initialPartner.website);
+  const [partnerCategory, setPartnerCategory] = useState(
+    initialPartner.category
+  );
   const [eventDate, setEventDate] = useState(initialEvent.date);
   const [eventTime, setEventTime] = useState(initialEvent.time);
   const [eventLocation, setEventLocation] = useState(initialEvent.location);
@@ -199,6 +231,10 @@ export function ContentEditor({
   const [leadershipData, setLeadershipData] = useState<LeadershipPageData>(() =>
     parseLeadershipPageData(initial?.data)
   );
+  const [homeFocusAreasData, setHomeFocusAreasData] =
+    useState<HomeFocusAreasPageData>(() =>
+      parseHomeFocusAreasPageData(initial?.data)
+    );
   const [programData, setProgramData] = useState<ProgramFieldsData>(() =>
     parseProgramFields(initial?.data)
   );
@@ -315,10 +351,15 @@ export function ContentEditor({
     }
 
     if (collection === "partners") {
+      const partnerSlug = slug.trim() || toPartnerSlug(title);
       existingData.name = title;
+      existingData.slug = partnerSlug;
+      existingData.website = partnerWebsite.trim();
+      existingData.category = partnerCategory;
       if (excerpt) existingData.description = excerpt;
-      if (body) existingData.description = body || existingData.description;
+      if (body) existingData.body = body;
       if (coverUrl) existingData.logoUrl = coverUrl;
+      if (!slug.trim()) setSlug(partnerSlug);
     }
 
     if (collection === "resources") {
@@ -485,6 +526,18 @@ export function ContentEditor({
           }))
           .filter((phase) => phase.title);
       }
+      if (slug === "home-focus-areas") {
+        existingData.eyebrow = homeFocusAreasData.eyebrow.trim();
+        existingData.sectionTitle = homeFocusAreasData.sectionTitle.trim();
+        existingData.pillars = homeFocusAreasData.pillars
+          .map((pillar) => ({
+            ...pillar,
+            title: pillar.title.trim(),
+            description: pillar.description.trim(),
+            imageUrl: pillar.imageUrl?.trim() || "",
+          }))
+          .filter((pillar) => pillar.title);
+      }
       if (slug === "impact") {
         existingData.statistics = impactData.statistics
           .map((item) => ({
@@ -555,7 +608,9 @@ export function ContentEditor({
         ? aboutOverviewData.heroTitle.trim() || title
         : slug === "contact"
           ? contactData.headline.trim() || title
-          : title;
+          : slug === "home-focus-areas"
+            ? homeFocusAreasData.sectionTitle.trim() || title
+            : title;
     const syncedExcerpt =
       slug === "vision-mission"
         ? visionMissionData.vision.trim()
@@ -565,7 +620,9 @@ export function ContentEditor({
             ? aboutStoryData.heroDescription.trim()
             : slug === "contact"
               ? contactData.shortIntro.trim()
-              : excerpt || null;
+              : slug === "home-focus-areas"
+                ? homeFocusAreasData.eyebrow.trim()
+                : excerpt || null;
     const syncedBody =
       slug === "vision-mission"
         ? visionMissionData.mission.trim()
@@ -586,7 +643,11 @@ export function ContentEditor({
       id: initial?.id,
       collection,
       title: syncedTitle,
-      slug: hasSlug ? slug || null : null,
+      slug: hasSlug
+        ? collection === "partners"
+          ? slug.trim() || toPartnerSlug(syncedTitle) || null
+          : slug || null
+        : null,
       excerpt: syncedExcerpt,
       body: syncedBody,
       coverUrl: syncedCoverUrl,
@@ -672,7 +733,7 @@ export function ContentEditor({
           : collection === "testimonials"
             ? "Role"
             : collection === "partners"
-              ? "Short description"
+              ? "Short summary"
               : collection === "resources"
                 ? "Description"
                 : collection === "gallery"
@@ -697,7 +758,9 @@ export function ContentEditor({
               ? "Quote"
               : collection === "philosophy-quotes"
                 ? "Quote"
-                : collection === "pages" && slug === "impact"
+                : collection === "partners"
+                  ? "About this partner"
+                  : collection === "pages" && slug === "impact"
                   ? "Impact disclaimer"
                   : "Body";
 
@@ -709,7 +772,8 @@ export function ContentEditor({
       slug === "leadership" ||
       slug === "about-story" ||
       slug === "about-overview" ||
-      slug === "contact");
+      slug === "contact" ||
+      slug === "home-focus-areas");
 
   const hideBodyOnly =
     collection === "pages" &&
@@ -719,7 +783,8 @@ export function ContentEditor({
       slug === "leadership" ||
       slug === "about-story" ||
       slug === "about-overview" ||
-      slug === "contact");
+      slug === "contact" ||
+      slug === "home-focus-areas");
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
@@ -743,14 +808,28 @@ export function ContentEditor({
                     ? aboutOverviewData.heroTitle
                     : slug === "contact"
                       ? contactData.headline
-                      : title
+                      : slug === "home-focus-areas"
+                        ? homeFocusAreasData.sectionTitle
+                        : title
                 }
                 onChange={(e) => {
                   setTitle(e.target.value);
+                  if (
+                    collection === "partners" &&
+                    (!initial?.slug || !slug.trim())
+                  ) {
+                    setSlug(toPartnerSlug(e.target.value));
+                  }
                   if (slug === "about-overview") {
                     setAboutOverviewData({
                       ...aboutOverviewData,
                       heroTitle: e.target.value,
+                    });
+                  }
+                  if (slug === "home-focus-areas") {
+                    setHomeFocusAreasData({
+                      ...homeFocusAreasData,
+                      sectionTitle: e.target.value,
                     });
                   }
                   if (slug === "contact") {
@@ -765,13 +844,24 @@ export function ContentEditor({
             </div>
             {hasSlug && (
               <div>
-                <label className="mb-1.5 block text-sm font-medium">Slug</label>
+                <label className="mb-1.5 block text-sm font-medium">
+                  {collection === "partners" ? "URL slug" : "Slug"}
+                </label>
                 <input
                   className={field}
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
-                  placeholder="my-content-slug"
+                  placeholder={
+                    collection === "partners"
+                      ? "university-of-ghana"
+                      : "my-content-slug"
+                  }
                 />
+                {collection === "partners" && (
+                  <p className="mt-1 text-xs text-navy/50">
+                    Public page: /partners/{slug || "your-slug"}
+                  </p>
+                )}
               </div>
             )}
             {!hideExcerptBody && (
@@ -800,11 +890,13 @@ export function ContentEditor({
                   placeholder={
                     slug === "impact"
                       ? "Shown under Impact at a Glance"
-                      : collection === "blog" ||
-                          collection === "team" ||
-                          collection === "pages"
-                        ? "Separate paragraphs with a blank line."
-                        : undefined
+                      : collection === "partners"
+                        ? "Write about this partner. Separate paragraphs with a blank line."
+                        : collection === "blog" ||
+                            collection === "team" ||
+                            collection === "pages"
+                          ? "Separate paragraphs with a blank line."
+                          : undefined
                   }
                 />
               </div>
@@ -858,8 +950,52 @@ export function ContentEditor({
             {slug === "impact" && (
               <ImpactPageFields value={impactData} onChange={setImpactData} />
             )}
+            {slug === "home-focus-areas" && (
+              <HomeFocusAreasFields
+                value={homeFocusAreasData}
+                onChange={setHomeFocusAreasData}
+              />
+            )}
             {collection === "programs" && (
               <ProgramFields value={programData} onChange={setProgramData} />
+            )}
+            {collection === "partners" && (
+              <div className="grid gap-4 rounded-xl border border-navy/10 bg-light/60 p-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">
+                    Category
+                  </label>
+                  <select
+                    className={field}
+                    value={partnerCategory}
+                    onChange={(e) =>
+                      setPartnerCategory(e.target.value as PartnerCategory)
+                    }
+                  >
+                    {PARTNER_CATEGORIES.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">
+                    Website (optional)
+                  </label>
+                  <input
+                    className={field}
+                    type="url"
+                    value={partnerWebsite}
+                    onChange={(e) => setPartnerWebsite(e.target.value)}
+                    placeholder="https://example.org"
+                  />
+                  <p className="mt-1 text-xs text-navy/50">
+                    Leave blank if there is no public website. Visitors can still
+                    read about the partner on STEMNova.
+                  </p>
+                </div>
+              </div>
             )}
             {collection === "events" && (
               <div className="grid gap-4 rounded-xl border border-navy/10 bg-light/60 p-4 sm:grid-cols-2">
@@ -1051,11 +1187,17 @@ export function ContentEditor({
         {slug !== "contact" ? (
           <div className="rounded-2xl border border-navy/8 bg-white p-6 shadow-sm">
             <ImageUploadField
-              label="Featured image"
+              label={
+                collection === "partners" ? "Partner logo" : "Featured image"
+              }
               value={coverUrl}
               onChange={(url) => setCoverUrl(url || "")}
               folder={`stemnova/${collection}`}
-              helpText="Upload or replace the image shown on the public site for this item."
+              helpText={
+                collection === "partners"
+                  ? "Logo shown on the partners page, carousel, and partner profile."
+                  : "Upload or replace the image shown on the public site for this item."
+              }
             />
           </div>
         ) : null}

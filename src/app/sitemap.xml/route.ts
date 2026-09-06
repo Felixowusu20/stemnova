@@ -1,4 +1,4 @@
-import { blogPosts, events, getAllLeaders, programs } from "@/content";
+import { blogPosts, events, getAllLeaders, partners, programs } from "@/content";
 import { getSiteUrl } from "@/lib/site-url";
 
 type ChangeFrequency =
@@ -30,6 +30,7 @@ const staticRoutes: {
   { path: "/mentor", priority: 0.7, changeFrequency: "monthly" },
   { path: "/volunteer", priority: 0.8, changeFrequency: "monthly" },
   { path: "/partner", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/partners", priority: 0.8, changeFrequency: "monthly" },
   { path: "/sponsor", priority: 0.7, changeFrequency: "monthly" },
   { path: "/donate", priority: 0.9, changeFrequency: "monthly" },
   { path: "/fellowships", priority: 0.8, changeFrequency: "monthly" },
@@ -96,6 +97,12 @@ export async function GET() {
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.7,
+    })),
+    ...partners.map((partner) => ({
+      url: `${baseUrl}/partners/${partner.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
     })),
   ];
 

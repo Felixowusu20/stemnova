@@ -50,6 +50,10 @@ function revalidateCollection(collection: string, slug?: string | null) {
   if (collection === "testimonials" || collection === "partners") {
     revalidatePath("/");
   }
+  if (collection === "partners") {
+    revalidatePath("/partners");
+    if (slug) revalidatePath(`/partners/${slug}`);
+  }
   if (collection === "philosophy-quotes") {
     revalidatePath("/about");
     revalidatePath("/about/vision");

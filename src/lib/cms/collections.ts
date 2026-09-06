@@ -33,8 +33,9 @@ export const CMS_COLLECTIONS = [
   {
     id: "partners",
     label: "Partners",
-    description: "Partner organisations and logos",
-    hasSlug: false,
+    description:
+      "Partner organisations — name, logo, about text, optional website, and public profile page",
+    hasSlug: true,
   },
   {
     id: "gallery",

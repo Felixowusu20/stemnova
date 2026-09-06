@@ -43,8 +43,8 @@ function NavDropdown({ item }: { item: NavItem }) {
       <button
         type="button"
         className={cn(
-          "flex items-center gap-0.5 rounded-lg px-2 py-2 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 xl:px-2.5 xl:text-sm",
-          isActive ? "text-blue" : "text-navy/80 hover:text-blue"
+          "flex items-center gap-0.5 rounded-lg px-2 py-2 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 xl:px-2.5 xl:text-sm",
+          isActive ? "text-teal" : "text-navy/80 hover:text-teal"
         )}
         aria-expanded={open}
         aria-haspopup="true"
@@ -74,10 +74,10 @@ function NavDropdown({ item }: { item: NavItem }) {
                   role="menuitem"
                   prefetch
                   className={cn(
-                    "block px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue",
+                    "block px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal",
                     childActive
-                      ? "bg-blue/5 font-semibold text-blue"
-                      : "text-navy hover:bg-blue/5 hover:text-blue"
+                      ? "bg-teal/10 font-semibold text-teal"
+                      : "text-navy hover:bg-teal/10 hover:text-teal"
                   )}
                   aria-current={childActive ? "page" : undefined}
                   onClick={() => setOpen(false)}
@@ -106,8 +106,8 @@ function NavLink({ item }: { item: NavItem }) {
         href={item.href}
         prefetch
         className={cn(
-          "rounded-lg px-2 py-2 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 xl:px-2.5 xl:text-sm",
-          isActive ? "text-blue" : "text-navy/80 hover:text-blue"
+          "rounded-lg px-2 py-2 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 xl:px-2.5 xl:text-sm",
+          isActive ? "text-teal" : "text-navy/80 hover:text-teal"
         )}
         aria-current={isActive ? "page" : undefined}
       >

@@ -69,7 +69,7 @@ export function Footer() {
     { label: "Resources", href: "/resources" },
     { label: "Research & Innovation", href: "/research" },
     { label: "Impact", href: "/impact" },
-    { label: "Partners", href: "/partner" },
+    { label: "Partners", href: "/partners" },
   ];
 
   const involvedLinks = [

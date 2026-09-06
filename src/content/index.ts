@@ -25,7 +25,11 @@ export {
 export {
   partners,
   PARTNERS_DISCLAIMER,
+  PARTNER_CATEGORIES,
   getPartnersByCategory,
+  getPartnerBySlug,
+  partnerCategoryLabel,
+  toPartnerSlug,
 } from "@/content/partners";
 export {
   events,
