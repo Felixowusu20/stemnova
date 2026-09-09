@@ -102,7 +102,7 @@ export const programs: Program[] = [
     galleryImageUrls: [
       images.programmes.mentorship,
       images.gallery[3],
-      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=80",
+      "https://lh3.googleusercontent.com/sitesv/AG8ngQV_0ei3rDtMauq-Br366IJnigQmL_31zxFzs0A2teOXccelux5aTBaOqXp19YdghIt8PzjaPIzs7vQwHuLeIPTZNDO7BotOq3emBzJ-HMe0YBMzKzdT5wEgNB4diHjz6VYLoYM9wbTp-a3M-fK_MhKqhvh2RAmMx3Cpwac59z54GJMsgXVtRMEGXAiXpxpEKorl6hK9ZrVRsCXBZNhImECETNH2G-b0Y69TimZP3E0=w1280",
     ],
     resources: [
       {
