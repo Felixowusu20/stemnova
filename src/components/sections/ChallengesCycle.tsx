@@ -95,6 +95,7 @@ export function ChallengesCycle() {
                 className="object-cover"
                 sizes="(max-width: 1024px) 0px, 40vw"
               />
+              
               <div
                 className="absolute inset-0 bg-gradient-to-tr from-navy/80 via-navy/35 to-teal/30"
                 aria-hidden="true"
