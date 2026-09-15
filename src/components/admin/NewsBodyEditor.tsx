@@ -474,7 +474,8 @@ export function NewsImageEditPanel({
     );
   }
 
-  const width = clampImageWidth(block.width);
+  const selectedImage = block;
+  const width = clampImageWidth(selectedImage.width);
 
   async function handleFile(file: File) {
     setUploading(true);
@@ -490,7 +491,7 @@ export function NewsImageEditPanel({
       if (!res.ok) throw new Error(data.error || "Upload failed");
       onChange(
         blocks.map((item) =>
-          item.id === block.id && item.type === "image"
+          item.id === selectedImage.id && item.type === "image"
             ? { ...item, url: data.secureUrl as string }
             : item
         )
