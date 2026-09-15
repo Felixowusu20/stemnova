@@ -88,8 +88,16 @@ export type ContactPageData = ContactPageContent;
 export type HomeFocusAreasPageData = {
   eyebrow: string;
   sectionTitle: string;
+  visibleOnHomepage: boolean;
   pillars: StrategicPillar[];
 };
+
+export {
+  parseHomePageData,
+  serializeHomePageData,
+  defaultHomePageData,
+  type HomePageData,
+} from "@/lib/cms/home-sections";
 
 export const FOCUS_AREA_ICONS: StrategicPillar["icon"][] = [
   "sparkles",
@@ -149,6 +157,7 @@ export function defaultHomeFocusAreasPageData(): HomeFocusAreasPageData {
   return {
     eyebrow: "Our Strategic Pillars",
     sectionTitle: "Seven Focus Areas Driving Africa's STEM Future",
+    visibleOnHomepage: true,
     pillars: strategicPillars.map((pillar) => ({ ...pillar })),
   };
 }
@@ -179,6 +188,10 @@ export function parseHomeFocusAreasPageData(
   return {
     eyebrow: stringField(record.eyebrow, defaults.eyebrow),
     sectionTitle: stringField(record.sectionTitle, defaults.sectionTitle),
+    visibleOnHomepage:
+      typeof record.visibleOnHomepage === "boolean"
+        ? record.visibleOnHomepage
+        : defaults.visibleOnHomepage,
     pillars: pillars.length > 0 ? pillars : defaults.pillars,
   };
 }

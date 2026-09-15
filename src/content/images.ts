@@ -84,7 +84,7 @@ export const images = {
   },
 
   blog: {
-    default: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80",
+    default: "/images/news-placeholder.png",
   },
 
   home: {

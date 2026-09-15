@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { AboutOverviewPageFields } from "@/components/admin/AboutOverviewPageFields";
 import { AboutStoryPageFields } from "@/components/admin/AboutStoryPageFields";
@@ -15,6 +15,11 @@ import {
 import { EventRegistrationFormBuilder } from "@/components/admin/EventRegistrationFormBuilder";
 import { GovernancePageFields } from "@/components/admin/GovernancePageFields";
 import { HomeFocusAreasFields } from "@/components/admin/HomeFocusAreasFields";
+import { HomePageFields } from "@/components/admin/HomePageFields";
+import {
+  NewsBodyEditor,
+  NewsImageEditPanel,
+} from "@/components/admin/NewsBodyEditor";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { ImpactPageFields } from "@/components/admin/ImpactPageFields";
 import { LeadershipPageFields } from "@/components/admin/LeadershipPageFields";
@@ -27,6 +32,8 @@ import {
   parseContactPageData,
   parseGovernancePageData,
   parseHomeFocusAreasPageData,
+  parseHomePageData,
+  serializeHomePageData,
   parseImpactPageData,
   parseLeadershipPageData,
   parseProgramFields,
@@ -37,6 +44,7 @@ import {
   type ContactPageData,
   type GovernancePageData,
   type HomeFocusAreasPageData,
+  type HomePageData,
   type ImpactPageData,
   type LeadershipPageData,
   type ProgramFieldsData,
@@ -56,6 +64,12 @@ import {
   parseRegistrationForm,
   type EventRegistrationFormConfig,
 } from "@/lib/event-registration-form";
+import {
+  newsBlocksToPlainBody,
+  parseNewsEditorBlocks,
+  stripBlockIds,
+  type NewsEditorBlock,
+} from "@/lib/cms/news-body";
 
 type ContentItem = {
   id: string;
@@ -66,8 +80,51 @@ type ContentItem = {
   coverUrl?: string | null;
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   sortOrder: number;
+  publishedAt?: string | Date | null;
   data?: unknown;
 };
+
+const BLOG_CATEGORIES = [
+  "news",
+  "research",
+  "impact",
+  "events",
+  "thought-leadership",
+  "publications",
+] as const;
+
+function toDateInputValue(value: string | Date | null | undefined) {
+  if (!value) return "";
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(0, 10);
+  }
+  const text = String(value);
+  if (/^\d{4}-\d{2}-\d{2}/.test(text)) return text.slice(0, 10);
+  const parsed = new Date(text);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10);
+}
+
+function readBlogFields(data: unknown, publishedAt?: string | Date | null) {
+  const record =
+    data && typeof data === "object" ? (data as Record<string, unknown>) : {};
+  const category = String(record.category || "news");
+  return {
+    author:
+      typeof record.author === "string" && record.author.trim()
+        ? record.author
+        : "",
+    publishedAt:
+      (typeof record.publishedAt === "string" && record.publishedAt.slice(0, 10)) ||
+      toDateInputValue(publishedAt) ||
+      new Date().toISOString().slice(0, 10),
+    category: BLOG_CATEGORIES.includes(
+      category as (typeof BLOG_CATEGORIES)[number]
+    )
+      ? category
+      : "news",
+    featured: Boolean(record.featured),
+  };
+}
 
 function readTeamContact(data: unknown) {
   if (!data || typeof data !== "object") {
@@ -151,7 +208,9 @@ export function ContentEditor({
   siteSocialInitial?: FooterSocialLink[] | null;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const initialContact = readTeamContact(initial?.data);
+  const initialBlog = readBlogFields(initial?.data, initial?.publishedAt);
   const initialEvent = readEventFields(initial?.data);
   const initialPartner = readPartnerFields(initial?.data);
   const [title, setTitle] = useState(initial?.title || "");
@@ -235,6 +294,26 @@ export function ContentEditor({
     useState<HomeFocusAreasPageData>(() =>
       parseHomeFocusAreasPageData(initial?.data)
     );
+  const [homePageData, setHomePageData] = useState<HomePageData>(() =>
+    parseHomePageData(initial?.data)
+  );
+  const [newsBlocks, setNewsBlocks] = useState<NewsEditorBlock[]>(() =>
+    parseNewsEditorBlocks(
+      initial?.data && typeof initial.data === "object"
+        ? (initial.data as { content?: unknown }).content
+        : null,
+      initial?.body
+    )
+  );
+  const [selectedNewsImageId, setSelectedNewsImageId] = useState<string | null>(
+    null
+  );
+  const [blogAuthor, setBlogAuthor] = useState(initialBlog.author);
+  const [blogPublishedAt, setBlogPublishedAt] = useState(
+    initialBlog.publishedAt
+  );
+  const [blogCategory, setBlogCategory] = useState(initialBlog.category);
+  const [blogFeatured, setBlogFeatured] = useState(initialBlog.featured);
   const [programData, setProgramData] = useState<ProgramFieldsData>(() =>
     parseProgramFields(initial?.data)
   );
@@ -326,15 +405,16 @@ export function ContentEditor({
     }
 
     if (collection === "blog") {
+      const blocks = stripBlockIds(newsBlocks);
       existingData.title = title;
       if (excerpt) existingData.excerpt = excerpt;
-      if (body) {
-        existingData.content = body
-          .split(/\n\s*\n/)
-          .map((part) => part.trim())
-          .filter(Boolean);
-      }
+      existingData.content = blocks;
       if (coverUrl) existingData.imageUrl = coverUrl;
+      existingData.author = blogAuthor.trim() || "STEMNova Foundation";
+      existingData.publishedAt = blogPublishedAt.trim();
+      existingData.category = blogCategory;
+      existingData.featured = blogFeatured;
+      existingData.isIllustrative = false;
     }
 
     if (collection === "gallery") {
@@ -529,6 +609,7 @@ export function ContentEditor({
       if (slug === "home-focus-areas") {
         existingData.eyebrow = homeFocusAreasData.eyebrow.trim();
         existingData.sectionTitle = homeFocusAreasData.sectionTitle.trim();
+        existingData.visibleOnHomepage = homeFocusAreasData.visibleOnHomepage;
         existingData.pillars = homeFocusAreasData.pillars
           .map((pillar) => ({
             ...pillar,
@@ -537,6 +618,17 @@ export function ContentEditor({
             imageUrl: pillar.imageUrl?.trim() || "",
           }))
           .filter((pillar) => pillar.title);
+      }
+      if (slug === "home") {
+        const nextHome = serializeHomePageData(homePageData);
+        existingData.visible = nextHome.visible;
+        existingData.challenges = nextHome.challenges;
+        existingData.mission = nextHome.mission;
+        existingData.programmes = nextHome.programmes;
+        existingData.research = nextHome.research;
+        existingData.news = nextHome.news;
+        existingData.newsletter = nextHome.newsletter;
+        existingData.cta = nextHome.cta;
       }
       if (slug === "impact") {
         existingData.statistics = impactData.statistics
@@ -633,7 +725,9 @@ export function ContentEditor({
               .join("\n\n")
           : slug === "about-overview"
             ? aboutOverviewData.intro.trim()
-            : body || null;
+            : collection === "blog"
+              ? newsBlocksToPlainBody(stripBlockIds(newsBlocks))
+              : body || null;
     const syncedCoverUrl =
       slug === "about-overview"
         ? aboutOverviewData.imageUrl.trim() || coverUrl || null
@@ -642,7 +736,7 @@ export function ContentEditor({
     const payload = {
       id: initial?.id,
       collection,
-      title: syncedTitle,
+      title: slug === "home" ? "Home page" : syncedTitle,
       slug: hasSlug
         ? collection === "partners"
           ? slug.trim() || toPartnerSlug(syncedTitle) || null
@@ -653,6 +747,10 @@ export function ContentEditor({
       coverUrl: syncedCoverUrl,
       status,
       sortOrder,
+      publishedAt:
+        collection === "blog" && blogPublishedAt.trim()
+          ? `${blogPublishedAt.trim()}T12:00:00.000Z`
+          : undefined,
       data: existingData,
     };
 
@@ -706,7 +804,17 @@ export function ContentEditor({
 
     setSaving(false);
     setMessage("Saved.");
-    router.push(`/admin/content/${collection}`);
+    if (slug === "home") {
+      const section = searchParams.get("section");
+      const nextId = result.id || initial?.id;
+      router.replace(
+        `/admin/content/pages/${nextId}${
+          section ? `?section=${encodeURIComponent(section)}` : ""
+        }`
+      );
+    } else {
+      router.push(`/admin/content/${collection}`);
+    }
     router.refresh();
   }
 
@@ -773,30 +881,36 @@ export function ContentEditor({
       slug === "about-story" ||
       slug === "about-overview" ||
       slug === "contact" ||
-      slug === "home-focus-areas");
+      slug === "home-focus-areas" ||
+      slug === "home");
 
   const hideBodyOnly =
-    collection === "pages" &&
-    (slug === "governance" ||
-      slug === "roadmap" ||
-      slug === "vision-mission" ||
-      slug === "leadership" ||
-      slug === "about-story" ||
-      slug === "about-overview" ||
-      slug === "contact" ||
-      slug === "home-focus-areas");
+    collection === "blog" ||
+    (collection === "pages" &&
+      (slug === "governance" ||
+        slug === "roadmap" ||
+        slug === "vision-mission" ||
+        slug === "leadership" ||
+        slug === "about-story" ||
+        slug === "about-overview" ||
+        slug === "contact" ||
+        slug === "home-focus-areas" ||
+        slug === "home"));
+
+  const hideTitleSlug = slug === "home";
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
       <div
         className={
-          slug === "contact"
+          slug === "contact" || slug === "home"
             ? "grid gap-5"
-            : "grid gap-5 lg:grid-cols-[1fr_320px]"
+            : "grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]"
         }
       >
-        <div className="rounded-2xl border border-navy/8 bg-white p-6 shadow-sm">
+        <div className="min-w-0 overflow-hidden rounded-2xl border border-navy/8 bg-white p-6 shadow-sm">
           <div className="grid gap-4">
+            {!hideTitleSlug && (
             <div>
               <label className="mb-1.5 block text-sm font-medium">
                 {slug === "contact" ? "Headline" : "Title"}
@@ -842,7 +956,8 @@ export function ContentEditor({
                 required
               />
             </div>
-            {hasSlug && (
+            )}
+            {hasSlug && !hideTitleSlug && (
               <div>
                 <label className="mb-1.5 block text-sm font-medium">
                   {collection === "partners" ? "URL slug" : "Slug"}
@@ -955,6 +1070,79 @@ export function ContentEditor({
                 value={homeFocusAreasData}
                 onChange={setHomeFocusAreasData}
               />
+            )}
+            {slug === "home" && (
+              <HomePageFields
+                value={homePageData}
+                onChange={setHomePageData}
+              />
+            )}
+            {collection === "blog" && (
+              <>
+              <div className="grid gap-4 rounded-xl border border-navy/10 bg-light/60 p-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">
+                    News date
+                  </label>
+                  <input
+                    type="date"
+                    className={field}
+                    value={blogPublishedAt}
+                    onChange={(e) => setBlogPublishedAt(e.target.value)}
+                    required
+                  />
+                  <p className="mt-1 text-xs text-navy/50">
+                    The date this news happened or should display on the site.
+                  </p>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">
+                    Author
+                  </label>
+                  <input
+                    className={field}
+                    value={blogAuthor}
+                    onChange={(e) => setBlogAuthor(e.target.value)}
+                    placeholder="STEMNova Foundation"
+                  />
+                  <p className="mt-1 text-xs text-navy/50">
+                    The person or team who wrote this post.
+                  </p>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">
+                    Category
+                  </label>
+                  <select
+                    className={field}
+                    value={blogCategory}
+                    onChange={(e) => setBlogCategory(e.target.value)}
+                  >
+                    <option value="news">News</option>
+                    <option value="research">Research</option>
+                    <option value="impact">Impact</option>
+                    <option value="events">Events</option>
+                    <option value="thought-leadership">Thought Leadership</option>
+                    <option value="publications">Publications</option>
+                  </select>
+                </div>
+                <label className="flex items-center gap-2 text-sm text-navy sm:mt-7">
+                  <input
+                    type="checkbox"
+                    checked={blogFeatured}
+                    onChange={(e) => setBlogFeatured(e.target.checked)}
+                    className="h-4 w-4 rounded border-navy/30"
+                  />
+                  Feature this article on the news page
+                </label>
+              </div>
+              <NewsBodyEditor
+                value={newsBlocks}
+                onChange={setNewsBlocks}
+                selectedImageId={selectedNewsImageId}
+                onSelectImage={setSelectedNewsImageId}
+              />
+              </>
             )}
             {collection === "programs" && (
               <ProgramFields value={programData} onChange={setProgramData} />
@@ -1184,21 +1372,35 @@ export function ContentEditor({
           </div>
         </div>
 
-        {slug !== "contact" ? (
-          <div className="rounded-2xl border border-navy/8 bg-white p-6 shadow-sm">
-            <ImageUploadField
-              label={
-                collection === "partners" ? "Partner logo" : "Featured image"
-              }
-              value={coverUrl}
-              onChange={(url) => setCoverUrl(url || "")}
-              folder={`stemnova/${collection}`}
-              helpText={
-                collection === "partners"
-                  ? "Logo shown on the partners page, carousel, and partner profile."
-                  : "Upload or replace the image shown on the public site for this item."
-              }
-            />
+        {slug !== "contact" && slug !== "home" ? (
+          <div className="space-y-5">
+            <div className="rounded-2xl border border-navy/8 bg-white p-6 shadow-sm">
+              <ImageUploadField
+                label={
+                  collection === "partners" ? "Partner logo" : "Featured image"
+                }
+                value={coverUrl}
+                onChange={(url) => setCoverUrl(url || "")}
+                folder={`stemnova/${collection}`}
+                emptySrc={
+                  collection === "blog"
+                    ? "/images/news-placeholder.png"
+                    : undefined
+                }
+                helpText={
+                  collection === "partners"
+                    ? "Logo shown on the partners page, carousel, and partner profile."
+                    : "Upload or replace the image shown on the public site for this item."
+                }
+              />
+            </div>
+            {collection === "blog" ? (
+              <NewsImageEditPanel
+                blocks={newsBlocks}
+                selectedId={selectedNewsImageId}
+                onChange={setNewsBlocks}
+              />
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -1213,15 +1415,15 @@ export function ContentEditor({
         <button
           type="submit"
           disabled={saving}
-          className="rounded-xl bg-navy px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+          className="cursor-pointer rounded-xl bg-navy px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save item"}
         </button>
-        {initial && (
+        {initial && slug !== "home" && (
           <button
             type="button"
             onClick={() => setConfirmDelete(true)}
-            className="rounded-xl border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-700"
+            className="cursor-pointer rounded-xl border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-700"
           >
             Delete
           </button>

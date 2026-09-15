@@ -12,6 +12,7 @@ type ImageUploadFieldProps = {
   folder?: string;
   helpText?: string;
   className?: string;
+  emptySrc?: string;
 };
 
 export function ImageUploadField({
@@ -21,6 +22,7 @@ export function ImageUploadField({
   folder = "stemnova/content",
   helpText = "Upload an image to replace the current one.",
   className,
+  emptySrc,
 }: ImageUploadFieldProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -58,6 +60,14 @@ export function ImageUploadField({
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 480px"
             />
+          ) : emptySrc ? (
+            <Image
+              src={emptySrc}
+              alt=""
+              fill
+              className="object-contain object-center p-2"
+              sizes="(max-width: 768px) 100vw, 480px"
+            />
           ) : (
             <div className="flex flex-col items-center gap-2 text-navy/40">
               <ImagePlus className="h-8 w-8" aria-hidden="true" />
@@ -77,7 +87,8 @@ export function ImageUploadField({
             <input
               type="file"
               accept="image/*"
-              className="sr-only"
+              tabIndex={-1}
+              className="pointer-events-none fixed left-0 top-0 h-px w-px opacity-0"
               disabled={uploading}
               onChange={(e) => {
                 const file = e.target.files?.[0];
@@ -90,7 +101,7 @@ export function ImageUploadField({
             <button
               type="button"
               onClick={() => onChange(null)}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-navy/15 px-3 py-2 text-xs font-semibold text-navy/70 hover:bg-navy/5"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-navy/15 px-3 py-2 text-xs font-semibold text-navy/70 hover:bg-navy/5"
             >
               <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
               Remove

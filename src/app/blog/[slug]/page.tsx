@@ -1,23 +1,28 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, User } from "lucide-react";
+import { Calendar, Folder, User } from "lucide-react";
+import { ArticleBody } from "@/components/blog/ArticleBody";
+import { NewsImage } from "@/components/blog/NewsImage";
+import { RecentNewsList } from "@/components/blog/RecentNewsList";
 import { ShareButtons } from "@/components/blog/ShareButtons";
-import { BlogCard } from "@/components/cards/BlogCard";
 import { NewsletterSection } from "@/components/sections/NewsletterSection";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
   blogPosts,
 } from "@/content";
 import {
   resolveBlogPostBySlug,
-  resolveRelatedPosts,
+  resolveLatestPosts,
 } from "@/lib/cms/resolve-content";
-import { getArticleSchema } from "@/lib/seo-schemas";
+import { newsHeroImage } from "@/lib/cms/news-image";
+import {
+  getArticleSchema,
+  getBreadcrumbSchema,
+} from "@/lib/seo-schemas";
+import { buildPageMetadata } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/site-url";
 import type { BlogCategory } from "@/types";
 
@@ -44,16 +49,6 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function renderParagraph(text: string) {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, index) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return <strong key={index}>{part.slice(2, -2)}</strong>;
-    }
-    return part;
-  });
-}
-
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
 }
@@ -68,32 +63,15 @@ export async function generateMetadata({
     return { title: "Article Not Found" };
   }
 
-  const siteUrl = getSiteUrl();
-  const url = `${siteUrl}/blog/${post.slug}`;
-
-  return {
+  return buildPageMetadata({
     title: post.title,
     description: post.excerpt,
-    authors: [{ name: post.author }],
-    openGraph: {
-      type: "article",
-      title: post.title,
-      description: post.excerpt,
-      url,
-      publishedTime: post.publishedAt,
-      authors: [post.author],
-      images: [{ url: post.imageUrl, width: 1200, height: 630 }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
-      images: [post.imageUrl],
-    },
-    alternates: {
-      canonical: url,
-    },
-  };
+    path: `/blog/${post.slug}`,
+    image: newsHeroImage(post.imageUrl),
+    type: "article",
+    publishedTime: post.publishedAt,
+    authors: [post.author],
+  });
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
@@ -106,109 +84,100 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const siteUrl = getSiteUrl();
   const url = `${siteUrl}/blog/${post.slug}`;
-  const relatedPosts = await resolveRelatedPosts(post.slug, 3);
+  const latestPosts = await resolveLatestPosts(9);
+  const recentPosts = latestPosts.filter((item) => item.slug !== post.slug).slice(0, 8);
 
   return (
     <>
-      <JsonLd data={getArticleSchema(post, url)} />
+      <JsonLd
+        data={[
+          getArticleSchema(post, url),
+          getBreadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "News", path: "/blog" },
+            { name: post.title, path: `/blog/${post.slug}` },
+          ]),
+        ]}
+      />
 
-      <article className="bg-light py-10 sm:py-14">
+      <article className="bg-white py-10 sm:py-14">
         <Container>
-          <div className="mx-auto max-w-3xl">
-            <nav className="mb-5 text-sm text-navy/55" aria-label="Breadcrumb">
-              <ol className="flex flex-wrap items-center gap-1.5">
-                <li>
-                  <Link href="/" className="hover:text-teal">
-                    Home
-                  </Link>
-                </li>
-                <li aria-hidden="true">/</li>
-                <li>
-                  <Link href="/blog" className="hover:text-teal">
-                    News
-                  </Link>
-                </li>
-                <li aria-hidden="true">/</li>
-                <li className="font-medium text-navy line-clamp-1">
-                  {post.title}
-                </li>
-              </ol>
-            </nav>
+          <nav className="mb-6 text-sm text-navy/55" aria-label="Breadcrumb">
+            <ol className="flex flex-wrap items-center gap-1.5">
+              <li>
+                <Link href="/" className="hover:text-teal">
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li>
+                <Link href="/blog" className="hover:text-teal">
+                  News
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li className="font-medium text-navy line-clamp-1">
+                {post.title}
+              </li>
+            </ol>
+          </nav>
 
-            <h1 className="font-display text-3xl font-bold tracking-tight text-teal sm:text-4xl">
-              {post.title}
-            </h1>
+          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-12">
+            <div className="min-w-0 overflow-hidden">
+              <h1 className="text-center font-display text-2xl font-bold tracking-tight text-navy sm:text-3xl lg:text-4xl">
+                {post.title}
+              </h1>
 
-            <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-navy/70">
-              <span className="rounded-full bg-teal px-3 py-1 text-xs font-semibold text-white">
-                {categoryLabels[post.category]}
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Calendar className="h-4 w-4 text-teal" aria-hidden="true" />
-                <time dateTime={post.publishedAt}>
-                  {formatDate(post.publishedAt)}
-                </time>
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <User className="h-4 w-4 text-teal" aria-hidden="true" />
-                {post.author}
-              </span>
+              <div className="relative mt-6 aspect-[16/10] overflow-hidden bg-navy/5">
+                <NewsImage
+                  src={post.imageUrl}
+                  alt={post.title}
+                  variant="hero"
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 70vw"
+                />
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-navy/10 pb-3 text-xs text-navy/65 sm:text-sm">
+                <span className="inline-flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
+                  Published:{" "}
+                  <time dateTime={post.publishedAt}>
+                    {formatDate(post.publishedAt)}
+                  </time>
+                </span>
+                {post.author ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <User className="h-3.5 w-3.5" aria-hidden="true" />
+                    Source: {post.author}
+                  </span>
+                ) : null}
+                <span className="inline-flex items-center gap-1.5 text-teal">
+                  <Folder className="h-3.5 w-3.5" aria-hidden="true" />
+                  {categoryLabels[post.category]}
+                </span>
+              </div>
+
+              <ArticleBody blocks={post.content} />
+
+              <div className="mt-10 border-t border-navy/10 pt-8">
+                <ShareButtons url={url} title={post.title} />
+              </div>
+
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <Button href="/blog" variant="outline">
+                  Back to all articles
+                </Button>
+                <Button href="/donate" variant="teal">
+                  Support our work
+                </Button>
+              </div>
             </div>
 
-            {post.isIllustrative && (
-              <p className="mt-6 rounded-xl bg-[#F4B942]/15 px-4 py-3 text-sm text-navy/80">
-                This article contains illustrative placeholder content for
-                website development. Verified facts and figures will be published
-                before public launch.
-              </p>
-            )}
-
-            <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-2xl">
-              <Image
-                src={post.imageUrl}
-                alt=""
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 768px"
-              />
-            </div>
-
-            <div className="prose-custom mt-10 space-y-6 text-base leading-relaxed text-navy/85">
-              {post.content.map((paragraph, index) => (
-                <p key={index}>{renderParagraph(paragraph)}</p>
-              ))}
-            </div>
-
-            <div className="mt-10 border-t border-navy/10 pt-10">
-              <ShareButtons url={url} title={post.title} />
-            </div>
-
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <Button href="/blog" variant="outline">
-                Back to all articles
-              </Button>
-              <Button href="/donate" variant="teal">
-                Support our work
-              </Button>
+            <div className="lg:sticky lg:top-24">
+              <RecentNewsList posts={recentPosts} />
             </div>
           </div>
-
-          {relatedPosts.length > 0 && (
-            <div className="mt-16 border-t border-navy/10 pt-16">
-              <SectionHeading
-                title="Related Articles"
-                description="More stories from the same topic area."
-              />
-              <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {relatedPosts.map((related) => (
-                  <li key={related.slug}>
-                    <BlogCard post={related} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </Container>
       </article>
 
