@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { CheckCircle2 } from "lucide-react";
 import {
   Container,
@@ -8,14 +7,17 @@ import {
 } from "@/components";
 import { images } from "@/content";
 import { resolveGovernance } from "@/lib/cms/resolve-content";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Governance",
   description:
     "How STEMNova Foundation stays accountable through the Board, advisory committees, and Secretariat.",
-};
+  path: "/about/governance",
+  image: images.hero.about,
+});
 
 export default async function AboutGovernancePage() {
   const governance = await resolveGovernance();

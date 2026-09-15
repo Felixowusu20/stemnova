@@ -1,14 +1,16 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Container, CtaSection, DonationForm } from "@/components";
 import { images } from "@/content";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Donate",
   description:
     "Support STEMNova Foundation with a gift that fuels scholarships, research fellowships, teacher training, and talent discovery across Africa.",
-};
+  path: "/donate",
+  image: images.hero.impact,
+});
 
 export default function DonatePage() {
   return (

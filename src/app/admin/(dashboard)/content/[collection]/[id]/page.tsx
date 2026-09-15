@@ -38,9 +38,18 @@ export default async function AdminContentEditPage({
           {meta.label}
         </p>
         <h1 className="mt-2 font-display text-3xl font-bold text-navy">
-          {item ? `Edit: ${item.title}` : "Create item"}
+          {item?.slug === "home"
+            ? "Home page"
+            : item
+              ? `Edit: ${item.title}`
+              : "Create item"}
         </h1>
-        {isContactPage ? (
+        {item?.slug === "home" ? (
+          <p className="mt-2 max-w-2xl text-sm text-navy/60">
+            Use the tabs below — or the Home page dropdown in the sidebar — to
+            edit each homepage block and hide or show it on the public site.
+          </p>
+        ) : isContactPage ? (
           <p className="mt-2 max-w-2xl text-sm text-navy/60">
             Update footer email, phone, address, and social links here — they
             appear site-wide.

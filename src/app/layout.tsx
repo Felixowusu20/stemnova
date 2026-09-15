@@ -10,7 +10,7 @@ import {
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PublicChrome } from "@/components/layout/PublicChrome";
 import { siteConfig } from "@/content";
-import { getOrganizationSchema } from "@/lib/seo-schemas";
+import { getOrganizationSchema, getWebSiteSchema } from "@/lib/seo-schemas";
 import { getSiteUrl } from "@/lib/site-url";
 import { ACTIVE_TYPOGRAPHY } from "@/lib/typography";
 import "./globals.css";
@@ -57,9 +57,16 @@ const ibmPlexSans = IBM_Plex_Sans({
 });
 
 const siteUrl = getSiteUrl();
+const googleVerification = process.env.GOOGLE_SITE_VERIFICATION;
+const bingVerification = process.env.BING_SITE_VERIFICATION;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: siteConfig.name,
+  authors: [{ name: siteConfig.name, url: siteUrl }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  category: "education",
   title: {
     default: `${siteConfig.name} | ${siteConfig.tagline}`,
     template: `%s | ${siteConfig.name}`,
@@ -68,19 +75,21 @@ export const metadata: Metadata = {
   keywords: [
     "STEMNova Foundation",
     "Africa STEM",
-    "scientific talent",
-    "research leadership",
-    "women in STEM",
-    "quantum education",
-    "African researchers",
-    "STEM education Africa",
+    "African STEM education",
+    "scientific talent Africa",
+    "research fellowships Africa",
+    "women in STEM Africa",
+    "quantum education Ghana",
+    "STEM camps Africa",
+    "teacher development STEM",
+    "pan-African STEM NGO",
+    "Accra Ghana education",
   ],
   openGraph: {
     type: "website",
     locale: "en_GH",
-    url: siteUrl,
     siteName: siteConfig.name,
-    title: siteConfig.name,
+    title: `${siteConfig.name} | ${siteConfig.tagline}`,
     description: siteConfig.description,
     images: [
       {
@@ -93,17 +102,43 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.name,
+    site: "@stemnovafdn",
+    creator: "@stemnovafdn",
+    title: `${siteConfig.name} | ${siteConfig.tagline}`,
     description: siteConfig.description,
     images: ["/images/stemnova-logo.jpg"],
   },
   icons: {
     icon: "/images/stemnova-logo.jpg",
     apple: "/images/stemnova-logo.jpg",
+    shortcut: "/images/stemnova-logo.jpg",
   },
+  manifest: "/manifest.webmanifest",
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  ...(googleVerification || bingVerification
+    ? {
+        verification: {
+          ...(googleVerification ? { google: googleVerification } : {}),
+          ...(bingVerification
+            ? { other: { "msvalidate.01": bingVerification } }
+            : {}),
+        },
+      }
+    : {}),
+  formatDetection: {
+    email: false,
+    telephone: false,
+    address: false,
   },
 };
 
@@ -129,12 +164,12 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="en-GH"
       data-typography={ACTIVE_TYPOGRAPHY}
       className={fontVariables}
     >
       <body className="flex min-h-screen flex-col font-sans antialiased">
-        <JsonLd data={getOrganizationSchema()} />
+        <JsonLd data={[getOrganizationSchema(), getWebSiteSchema()]} />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:shadow-lg"

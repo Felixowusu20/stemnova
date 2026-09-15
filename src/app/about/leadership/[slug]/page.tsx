@@ -14,6 +14,9 @@ import {
   resolveLeaderBySlug,
   resolveTeam,
 } from "@/lib/cms/resolve-content";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { getBreadcrumbSchema, getPersonSchema } from "@/lib/seo-schemas";
+import { absoluteUrl, buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -35,10 +38,12 @@ export async function generateMetadata({
     return { title: "Leader Not Found" };
   }
 
-  return {
+  return buildPageMetadata({
     title: leader.name,
     description: leader.bio,
-  };
+    path: `/about/leadership/${leader.slug}`,
+    image: leader.imageUrl,
+  });
 }
 
 export default async function LeaderProfilePage({ params }: LeaderPageProps) {
@@ -58,11 +63,23 @@ export default async function LeaderProfilePage({ params }: LeaderPageProps) {
 
   const bioParagraphs =
     leader.fullBio?.length > 0 ? leader.fullBio : [leader.bio];
+  const profileSchema = [
+    getPersonSchema(
+      leader,
+      absoluteUrl(`/about/leadership/${leader.slug}`)
+    ),
+    getBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Leadership", path: "/about/leadership" },
+      { name: leader.name, path: `/about/leadership/${leader.slug}` },
+    ]),
+  ];
 
   // Founder gets the wider split profile; other leaders keep the original layout.
   if (leader.isFounder) {
     return (
       <>
+        <JsonLd data={profileSchema} />
         <section className="bg-white">
           <div className="grid lg:grid-cols-2 lg:items-stretch">
             <div className="order-2 flex flex-col justify-center px-6 py-12 sm:px-10 sm:py-16 lg:order-1 lg:px-14 xl:px-20">
@@ -200,6 +217,7 @@ export default async function LeaderProfilePage({ params }: LeaderPageProps) {
 
   return (
     <>
+      <JsonLd data={profileSchema} />
       <section className="bg-light py-16 sm:py-20">
         <Container>
           <Link

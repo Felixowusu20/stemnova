@@ -17,15 +17,19 @@ import {
   teamMembers,
   testimonials,
   partners,
+  toPartnerSlug,
   valuesData,
 } from "@/content";
-import { toPartnerSlug } from "@/content/partners";
+import { parseNewsContent } from "@/lib/cms/news-body";
+import { newsHeroImage } from "@/lib/cms/news-image";
 import { parseRegistrationForm } from "@/lib/event-registration-form";
 import {
   defaultHomeFocusAreasPageData,
   parseContactPageData,
   parseHomeFocusAreasPageData,
+  parseHomePageData,
 } from "@/lib/cms/page-forms";
+import { defaultHomePageData, type HomePageData } from "@/lib/cms/home-sections";
 import {
   isFounderCategory,
   resolveLeadershipCategory,
@@ -247,7 +251,14 @@ export async function resolveAnnouncementEvent(): Promise<{
 
 export async function resolveBlogPosts(): Promise<BlogPost[]> {
   const items = await getContentByCollection("blog");
-  if (!(await isCmsActive())) return blogPosts;
+  if (!(await isCmsActive())) {
+    return blogPosts.map((post) => ({
+      ...post,
+      content: parseNewsContent(post.content),
+      imageUrl: newsHeroImage(post.imageUrl),
+      isIllustrative: false,
+    }));
+  }
 
   const staticBySlug = new Map(blogPosts.map((item) => [item.slug, item]));
 
@@ -256,13 +267,9 @@ export async function resolveBlogPosts(): Promise<BlogPost[]> {
     .map((item) => {
       const post = staticBySlug.get(item.slug as string);
       const data = asData<BlogPost>(item.data);
+      const parsed = parseNewsContent(data.content, item.body);
       const content =
-        (item.body ? splitParagraphs(item.body) : null) ||
-        (Array.isArray(data.content) && data.content.length > 0
-          ? data.content
-          : null) ||
-        post?.content ||
-        [];
+        parsed.length > 0 ? parsed : parseNewsContent(post?.content);
 
       return {
         ...(post || {
@@ -276,7 +283,9 @@ export async function resolveBlogPosts(): Promise<BlogPost[]> {
         title: item.title || data.title || post?.title || "",
         excerpt: item.excerpt || data.excerpt || post?.excerpt || "",
         content,
-        imageUrl: item.coverUrl || data.imageUrl || post?.imageUrl || "",
+        imageUrl: newsHeroImage(
+          item.coverUrl || data.imageUrl || post?.imageUrl
+        ),
         category: data.category || post?.category || "news",
         publishedAt:
           data.publishedAt ||
@@ -285,7 +294,7 @@ export async function resolveBlogPosts(): Promise<BlogPost[]> {
           new Date().toISOString().slice(0, 10),
         author: data.author || post?.author || "STEMNova Foundation",
         featured: data.featured ?? post?.featured ?? false,
-        isIllustrative: true as const,
+        isIllustrative: Boolean(data.isIllustrative),
       };
     });
 }
@@ -943,12 +952,14 @@ export async function resolveHomeFocusAreas(): Promise<{
   eyebrow: string;
   title: string;
   pillars: StrategicPillar[];
+  visibleOnHomepage: boolean;
 }> {
   const defaults = defaultHomeFocusAreasPageData();
   const fallback = {
     eyebrow: defaults.eyebrow,
     title: defaults.sectionTitle,
     pillars: strategicPillars,
+    visibleOnHomepage: defaults.visibleOnHomepage,
   };
 
   const item = await getContentBySlug("pages", "home-focus-areas");
@@ -975,5 +986,17 @@ export async function resolveHomeFocusAreas(): Promise<{
     eyebrow: data.eyebrow || item.excerpt || fallback.eyebrow,
     title: data.sectionTitle || item.title || fallback.title,
     pillars: pillars.length > 0 ? pillars : fallback.pillars,
+    visibleOnHomepage: data.visibleOnHomepage,
   };
+}
+
+export async function resolveHomePage(): Promise<HomePageData> {
+  const defaults = defaultHomePageData();
+  try {
+    const item = await getContentBySlug("pages", "home");
+    if (!item) return defaults;
+    return parseHomePageData(item.data);
+  } catch {
+    return defaults;
+  }
 }

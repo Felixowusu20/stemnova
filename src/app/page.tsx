@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -27,25 +26,30 @@ import {
   SectionHeading,
   TestimonialsSection,
 } from "@/components";
-import { researchAreas, siteConfig } from "@/content";
+import { siteConfig } from "@/content";
 import { images } from "@/content/images";
 import { getResolvedSiteConfig } from "@/lib/cms/queries";
 import {
   resolveHomeFocusAreas,
+  resolveHomePage,
   resolveImpact,
   resolveLatestPosts,
   resolvePartners,
   resolvePrograms,
   resolveTestimonials,
 } from "@/lib/cms/resolve-content";
+import { buildPageMetadata } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Home",
+export const metadata = buildPageMetadata({
+  title: `${siteConfig.name} | ${siteConfig.tagline}`,
   description: siteConfig.description,
-};
+  path: "/",
+  image: images.hero.home,
+  imageAlt: "STEM researchers collaborating in a laboratory",
+});
 
 const researchIcons = {
   atom: Atom,
@@ -69,6 +73,7 @@ export default async function HomePage() {
     partners,
     impact,
     focusAreas,
+    home,
   ] = await Promise.all([
     getResolvedSiteConfig(),
     resolvePrograms(),
@@ -77,7 +82,12 @@ export default async function HomePage() {
     resolvePartners(),
     resolveImpact(),
     resolveHomeFocusAreas(),
+    resolveHomePage(),
   ]);
+  const show = {
+    ...home.visible,
+    focusAreas: home.visible.focusAreas && focusAreas.visibleOnHomepage,
+  };
   const featuredProgrammes = programs.slice(0, 6);
   const featuredStory = impact.successStories[0];
   const highlightStats = impact.statistics.slice(0, 6);
@@ -87,21 +97,32 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroCarousel slides={settings.heroSlides} />
+      {show.hero ? <HeroCarousel slides={settings.heroSlides} /> : null}
 
-      <ChallengesCycle />
+      {show.challenges ? (
+        <ChallengesCycle
+          eyebrow={home.challenges.eyebrow}
+          title={home.challenges.title}
+          highlight={home.challenges.highlight}
+          imageUrl={home.challenges.imageUrl}
+          imageCaption={home.challenges.imageCaption}
+          items={home.challenges.items}
+        />
+      ) : null}
 
-      <PillarsTree
-        eyebrow={focusAreas.eyebrow}
-        title={focusAreas.title}
-        pillars={focusAreas.pillars}
-      />
+      {show.focusAreas ? (
+        <PillarsTree
+          eyebrow={focusAreas.eyebrow}
+          title={focusAreas.title}
+          pillars={focusAreas.pillars}
+        />
+      ) : null}
 
-      {/* Mission visual band */}
+      {show.mission ? (
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src={images.home.mission}
+            src={home.mission.imageUrl || images.home.mission}
             alt=""
             fill
             className="object-cover"
@@ -115,33 +136,34 @@ export default async function HomePage() {
         <Container className="relative grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-2 lg:gap-14">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-teal">
-              Our mission
+              {home.mission.eyebrow}
             </p>
             <h2 className="mt-3 font-display text-3xl font-bold text-white sm:text-4xl">
-              Discover talent. Develop leaders. Advance STEM across Africa.
+              {home.mission.title}
             </h2>
             <p className="mt-4 text-base leading-relaxed text-white/85">
-              STEMNova builds clear pathways from schools and universities into
-              research, teaching excellence, and scientific leadership 
-              through programmes designed for lasting continental impact.
+              {home.mission.body}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button href="/about" variant="teal" size="lg">
-                About STEMNova
+              <Button href={home.mission.primaryHref} variant="teal" size="lg">
+                {home.mission.primaryLabel}
               </Button>
               <Button
-                href="/programs"
+                href={home.mission.secondaryHref}
                 variant="outline"
                 size="lg"
                 className="border-white/40 text-white hover:bg-white/10"
               >
-                Explore programmes
+                {home.mission.secondaryLabel}
               </Button>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            {images.home.mosaic.map((src, index) => (
+            {(home.mission.mosaic.length > 0
+              ? home.mission.mosaic
+              : images.home.mosaic
+            ).map((src, index) => (
               <div
                 key={src}
                 className={cn(
@@ -167,8 +189,9 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
+      ) : null}
 
-      {/* Flagship Programmes */}
+      {show.programmes ? (
       <section className="relative overflow-hidden bg-gradient-to-b from-light via-[#f0faf7] to-white py-20 sm:py-24">
         <div
           className="pointer-events-none absolute inset-0 gradient-mesh opacity-70"
@@ -177,13 +200,13 @@ export default async function HomePage() {
         <Container className="relative">
           <div className="mb-12 grid items-end gap-8 lg:mb-14 lg:grid-cols-[1.1fr_0.9fr]">
             <SectionHeading
-              eyebrow="Flagship Programmes"
-              title="Nine Programmes. Clear Pathways."
+              eyebrow={home.programmes.eyebrow}
+              title={home.programmes.title}
             />
             <div className="relative hidden overflow-hidden rounded-3xl border border-teal/20 shadow-lg lg:block">
               <div className="relative aspect-[16/10]">
                 <Image
-                  src={images.home.programmes}
+                  src={home.programmes.imageUrl || images.home.programmes}
                   alt="STEM learners collaborating"
                   fill
                   className="object-cover"
@@ -195,7 +218,7 @@ export default async function HomePage() {
                 />
                 <div className="absolute inset-x-0 bottom-0 p-5">
                   <p className="font-display text-lg font-semibold text-white">
-                    Connected pathways for African STEM talent
+                    {home.programmes.imageCaption}
                   </p>
                 </div>
               </div>
@@ -217,8 +240,9 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
+      ) : null}
 
-      {/* Research Preview */}
+      {show.research ? (
       <section className="relative overflow-hidden py-20 sm:py-24">
         <div className="absolute inset-0">
           <Image
@@ -235,15 +259,15 @@ export default async function HomePage() {
         </div>
         <Container className="relative">
           <SectionHeading
-            eyebrow="Research and Innovation"
-            title="Committed to Frontier Science"
-            description="We strengthen African capacity across quantum science, AI, materials, robotics, and collaborative research networks."
+            eyebrow={home.research.eyebrow}
+            title={home.research.title}
+            description={home.research.description}
             align="center"
             className="mb-14"
           />
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {researchAreas.map((area) => {
-              const Icon = researchIcons[area.icon];
+            {home.research.items.map((area) => {
+              const Icon = researchIcons[area.icon] || FileText;
               const imageSrc =
                 researchImages[area.id as keyof typeof researchImages] ||
                 images.home.research;
@@ -287,10 +311,11 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
+      ) : null}
 
-      <ImpactHighlights stats={highlightStats} />
+      {show.impact ? <ImpactHighlights stats={highlightStats} /> : null}
 
-      {/* Success Story */}
+      {show.successStory ? (
       <section className="relative overflow-hidden bg-gradient-to-b from-[#eefbf8] to-white py-20 sm:py-24">
         <Container>
           <div className="overflow-hidden rounded-3xl border border-teal/15 bg-white shadow-[0_20px_50px_-28px_rgba(10,37,64,0.45)]">
@@ -335,11 +360,14 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
+      ) : null}
 
-      <TestimonialsSection testimonials={featuredTestimonials} />
-      <PartnersSection partners={partners} />
+      {show.testimonials ? (
+        <TestimonialsSection testimonials={featuredTestimonials} />
+      ) : null}
+      {show.partners ? <PartnersSection partners={partners} /> : null}
 
-      {/* Latest News */}
+      {show.news ? (
       <section className="relative overflow-hidden py-20 sm:py-24">
         <div className="absolute inset-0">
           <Image
@@ -356,9 +384,9 @@ export default async function HomePage() {
         </div>
         <Container className="relative">
           <SectionHeading
-            eyebrow="News & Publications"
-            title="Insights from the Foundation"
-            description="Foundation news, research updates, and thought leadership on Africa's STEM future."
+            eyebrow={home.news.eyebrow}
+            title={home.news.title}
+            description={home.news.description}
             align="center"
             className="mb-12"
           />
@@ -376,9 +404,17 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
+      ) : null}
 
-      <NewsletterSection />
-      <CtaSection />
+      {show.newsletter ? (
+        <NewsletterSection
+          title={home.newsletter.title}
+          description={home.newsletter.description}
+        />
+      ) : null}
+      {show.cta ? (
+        <CtaSection title={home.cta.title} description={home.cta.description} />
+      ) : null}
     </>
   );
 }

@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -11,14 +10,17 @@ import {
 import { images, valuesData } from "@/content";
 import { getPhilosophyQuotes, isCmsActive } from "@/lib/cms/queries";
 import { resolveAboutOverview } from "@/lib/cms/resolve-content";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "About",
   description:
     "Learn about STEMNova Foundation — our story, vision, and leadership.",
-};
+  path: "/about",
+  image: images.hero.about,
+});
 
 export default async function AboutPage() {
   const [cmsQuotes, cmsActive, about] = await Promise.all([

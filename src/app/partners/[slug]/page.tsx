@@ -19,6 +19,7 @@ import {
   resolvePartnerBySlug,
   resolvePartners,
 } from "@/lib/cms/resolve-content";
+import { buildPageMetadata } from "@/lib/seo";
 import type { PartnerCategory } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -45,21 +46,12 @@ export async function generateMetadata({
     return { title: "Partner Not Found" };
   }
 
-  return {
+  return buildPageMetadata({
     title: partner.name,
     description: partner.description,
-    openGraph: {
-      title: `${partner.name} | STEMNova Partners`,
-      description: partner.description,
-      images: [
-        {
-          url: categoryCover(partner.category),
-          width: 1200,
-          height: 630,
-        },
-      ],
-    },
-  };
+    path: `/partners/${partner.slug}`,
+    image: categoryCover(partner.category),
+  });
 }
 
 export default async function PartnerDetailPage({ params }: PartnerPageProps) {

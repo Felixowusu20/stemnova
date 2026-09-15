@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Container,
@@ -7,20 +6,17 @@ import {
 } from "@/components";
 import { images } from "@/content";
 import { resolvePrograms } from "@/lib/cms/resolve-content";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Flagship Programmes",
   description:
     "Explore STEMNova Foundation flagship programmes from Young Scholars STEM Discovery and African STEM Fellows to Quantum Education Leaders and Girls Discover Science.",
-  openGraph: {
-    title: "Flagship Programmes | STEMNova Foundation",
-    description:
-      "Discover STEMNova programmes across talent discovery, fellowships, teaching, and research.",
-    images: [{ url: images.hero.programs, width: 1200, height: 630 }],
-  },
-};
+  path: "/programs",
+  image: images.hero.programs,
+});
 
 export default async function ProgramsPage() {
   const programs = await resolvePrograms();

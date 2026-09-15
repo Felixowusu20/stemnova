@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { MapPin } from "lucide-react";
 import {
   Container,
@@ -11,14 +10,18 @@ import {
   ImpactDonutChart,
 } from "@/components/ui/ImpactCharts";
 import { resolveImpact } from "@/lib/cms/resolve-content";
+import { buildPageMetadata } from "@/lib/seo";
+import { images } from "@/content";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Our Impact",
   description:
     "See STEMNova Foundation impact across students, researchers, teachers, women in STEM, and partners across Africa.",
-};
+  path: "/impact",
+  image: images.hero.impact,
+});
 
 export default async function ImpactPage() {
   const impact = await resolveImpact();

@@ -1,6 +1,9 @@
 import type {
   EventRegistrationFormConfig,
 } from "@/lib/event-registration-form";
+import type { NewsContentBlock } from "@/lib/cms/news-body";
+
+export type { NewsContentBlock };
 
 export type SocialPlatform =
   | "facebook"
@@ -368,13 +371,13 @@ export interface BlogPost {
   slug: string;
   title: string;
   excerpt: string;
-  content: string[];
+  content: string[] | NewsContentBlock[];
   category: BlogCategory;
   publishedAt: string;
   author: string;
   imageUrl: string;
   featured: boolean;
-  isIllustrative: true;
+  isIllustrative?: boolean;
 }
 
 export interface CoreValue {

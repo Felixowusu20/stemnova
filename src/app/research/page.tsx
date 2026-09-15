@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import {
   Button,
   Container,
@@ -6,18 +5,15 @@ import {
 } from "@/components";
 import { ResearchNichesMap } from "@/components/sections/ResearchNichesMap";
 import { images } from "@/content";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Research and Innovation",
   description:
     "STEMNova Foundation advances frontier science across quantum science, AI, computational science, materials science, robotics, sustainable development, and collaborative research networks.",
-  openGraph: {
-    title: "Research and Innovation | STEMNova Foundation",
-    description:
-      "Explore STEMNova research niches across frontier science in Africa.",
-    images: [{ url: images.hero.research, width: 1200, height: 630 }],
-  },
-};
+  path: "/research",
+  image: images.hero.research,
+});
 
 export default function ResearchPage() {
   return (

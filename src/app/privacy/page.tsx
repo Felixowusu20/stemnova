@@ -1,32 +1,18 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { PageHero } from "@/components/ui/PageHero";
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/content";
-import { getSiteUrl } from "@/lib/site-url";
+import { buildPageMetadata } from "@/lib/seo";
 
-const siteUrl = getSiteUrl();
 const lastUpdated = "July 20, 2026";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Privacy Policy",
   description:
     "Privacy Policy for STEMNova Foundation — how we collect, use, and protect personal information for visitors, donors, volunteers, and program participants in Ghana.",
-  openGraph: {
-    title: "Privacy Policy | STEMNova Foundation",
-    description:
-      "Learn how STEMNova Foundation handles your personal data in accordance with applicable privacy standards in Ghana.",
-    url: `${siteUrl}/privacy`,
-  },
-  alternates: {
-    canonical: `${siteUrl}/privacy`,
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+  path: "/privacy",
+});
 
 function PolicySection({
   title,

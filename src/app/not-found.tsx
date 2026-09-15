@@ -1,6 +1,14 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+
+export const metadata: Metadata = {
+  title: "Page not found",
+  description:
+    "This STEMNova Foundation page could not be found. Return home or browse programmes, news, and ways to get involved.",
+  robots: { index: false, follow: false },
+};
 
 export default function NotFound() {
   return (

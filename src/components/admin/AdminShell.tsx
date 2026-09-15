@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   ChevronDown,
   FileText,
@@ -52,7 +52,8 @@ function NavLink({
   nested?: boolean;
 }) {
   const pathname = usePathname();
-  const active = isAdminHrefActive(pathname, href);
+  const searchParams = useSearchParams();
+  const active = isAdminHrefActive(pathname, href, searchParams.toString());
 
   return (
     <Link
@@ -92,7 +93,13 @@ function CollapsibleGroup({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
-  const active = isGroupActive(group, pathname, pageIdBySlug);
+  const searchParams = useSearchParams();
+  const active = isGroupActive(
+    group,
+    pathname,
+    pageIdBySlug,
+    searchParams.toString()
+  );
   const [open, setOpen] = useState(active);
 
   useEffect(() => {

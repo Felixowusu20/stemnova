@@ -1,15 +1,17 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Container, CtaSection } from "@/components";
 import { MentorForm } from "@/components/forms/MentorForm";
 import { images } from "@/content";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Become a Mentor",
   description:
     "Join the STEMNova Mentorship Network and guide emerging African STEM talent across research, academia, and industry.",
-};
+  path: "/mentor",
+  image: images.programmes.mentorship,
+});
 
 export default function MentorPage() {
   return (

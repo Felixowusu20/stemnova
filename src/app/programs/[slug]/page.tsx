@@ -17,6 +17,9 @@ import { Button, Container } from "@/components";
 import { MarkedGoalList } from "@/components/ui/MarkedGoalList";
 import { programs } from "@/content";
 import { resolveProgramBySlug } from "@/lib/cms/resolve-content";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { getBreadcrumbSchema, getCourseSchema } from "@/lib/seo-schemas";
+import { buildPageMetadata, absoluteUrl } from "@/lib/seo";
 import type { ProgramIcon } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -51,15 +54,12 @@ export async function generateMetadata({
     return { title: "Programme Not Found" };
   }
 
-  return {
+  return buildPageMetadata({
     title: program.title,
     description: program.shortDescription,
-    openGraph: {
-      title: `${program.title} | STEMNova Foundation`,
-      description: program.shortDescription,
-      images: [{ url: program.heroImageUrl, width: 1200, height: 630 }],
-    },
-  };
+    path: `/programs/${program.slug}`,
+    image: program.heroImageUrl,
+  });
 }
 
 export default async function ProgramDetailPage({
@@ -77,6 +77,16 @@ export default async function ProgramDetailPage({
 
   return (
     <>
+      <JsonLd
+        data={[
+          getCourseSchema(program, absoluteUrl(`/programs/${program.slug}`)),
+          getBreadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Programmes", path: "/programs" },
+            { name: program.title, path: `/programs/${program.slug}` },
+          ]),
+        ]}
+      />
       <section className="bg-light pt-4 pb-2 sm:pt-6">
         <Container>
           <nav className="mb-3 text-sm text-navy/55" aria-label="Breadcrumb">

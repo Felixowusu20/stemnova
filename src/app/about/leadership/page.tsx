@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Linkedin, Mail } from "lucide-react";
@@ -17,14 +16,16 @@ import {
   resolveNonFounderTeam,
 } from "@/lib/cms/resolve-content";
 import type { TeamMember } from "@/types";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Leadership",
   description:
     "Meet STEMNova Foundation founders and institutional leadership team.",
-};
+  path: "/about/leadership",
+});
 
 function memberTitle(member: TeamMember) {
   const category = resolveLeadershipCategory({

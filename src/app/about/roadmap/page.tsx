@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Sparkles } from "lucide-react";
 import {
   Container,
@@ -8,14 +7,17 @@ import {
 } from "@/components";
 import { images } from "@/content";
 import { resolveRoadmap } from "@/lib/cms/resolve-content";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Roadmap",
   description:
     "STEMNova Foundation's phased roadmap from early foundation work to long-term institutional strength.",
-};
+  path: "/about/roadmap",
+  image: images.hero.about,
+});
 
 export default async function AboutRoadmapPage() {
   const roadmap = await resolveRoadmap();

@@ -1,32 +1,18 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { PageHero } from "@/components/ui/PageHero";
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/content";
-import { getSiteUrl } from "@/lib/site-url";
+import { buildPageMetadata } from "@/lib/seo";
 
-const siteUrl = getSiteUrl();
 const lastUpdated = "July 20, 2026";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Terms & Conditions",
   description:
     "Terms and Conditions for using the STEMNova Foundation website — donations, volunteering, content use, and legal terms governed by the laws of Ghana.",
-  openGraph: {
-    title: "Terms & Conditions | STEMNova Foundation",
-    description:
-      "Read the terms governing use of the STEMNova Foundation website and online services.",
-    url: `${siteUrl}/terms`,
-  },
-  alternates: {
-    canonical: `${siteUrl}/terms`,
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+  path: "/terms",
+});
 
 function TermsSection({
   title,

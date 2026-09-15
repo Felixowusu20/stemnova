@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { AdminProviders } from "@/components/admin/AdminProviders";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { ensureHomePage } from "@/lib/cms/ensure-home-page";
 import { prisma } from "@/lib/db";
 
 export const metadata = {
@@ -19,6 +21,8 @@ export default async function AdminDashboardLayout({
     redirect("/admin/login");
   }
 
+  await ensureHomePage();
+
   const pages = await prisma.contentItem.findMany({
     where: { collection: "pages", slug: { not: null } },
     select: { id: true, slug: true },
@@ -31,15 +35,17 @@ export default async function AdminDashboardLayout({
 
   return (
     <AdminProviders>
-      <AdminShell
-        user={{
-          name: session.user.name,
-          email: session.user.email,
-        }}
-        pageIdBySlug={pageIdBySlug}
-      >
-        {children}
-      </AdminShell>
+      <Suspense>
+        <AdminShell
+          user={{
+            name: session.user.name,
+            email: session.user.email,
+          }}
+          pageIdBySlug={pageIdBySlug}
+        >
+          {children}
+        </AdminShell>
+      </Suspense>
     </AdminProviders>
   );
 }

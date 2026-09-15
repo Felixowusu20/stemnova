@@ -9,6 +9,8 @@ export type AdminNavLeaf = {
   href?: string;
   /** Resolve via CMS pages collection slug → /admin/content/pages/{id} */
   pageSlug?: string;
+  /** Homepage section tab, appended as ?section= */
+  section?: string;
 };
 
 export type AdminNavGroup = {
@@ -34,9 +36,24 @@ export const ADMIN_PRIMARY_NAV = [
 
 export const ADMIN_SITE_NAV: AdminSiteNavItem[] = [
   {
-    kind: "link",
-    label: "Home · Focus Areas",
-    pageSlug: "home-focus-areas",
+    kind: "group",
+    id: "home",
+    label: "Home page",
+    children: [
+      { label: "Hero", pageSlug: "home", section: "hero" },
+      { label: "Challenges", pageSlug: "home", section: "challenges" },
+      { label: "Focus Areas", pageSlug: "home-focus-areas" },
+      { label: "Mission", pageSlug: "home", section: "mission" },
+      { label: "Programmes", pageSlug: "home", section: "programmes" },
+      { label: "Research", pageSlug: "home", section: "research" },
+      { label: "Impact", pageSlug: "home", section: "impact" },
+      { label: "Success Story", pageSlug: "home", section: "successStory" },
+      { label: "Testimonials", pageSlug: "home", section: "testimonials" },
+      { label: "Partners", pageSlug: "home", section: "partners" },
+      { label: "Latest News", pageSlug: "home", section: "news" },
+      { label: "Newsletter", pageSlug: "home", section: "newsletter" },
+      { label: "Call to Action", pageSlug: "home", section: "cta" },
+    ],
   },
   {
     kind: "group",
@@ -105,30 +122,52 @@ export const ADMIN_SYSTEM_NAV = [
 ] as const;
 
 export function resolveAdminHref(
-  leaf: Pick<AdminNavLeaf, "href" | "pageSlug">,
+  leaf: Pick<AdminNavLeaf, "href" | "pageSlug" | "section">,
   pageIdBySlug: Record<string, string>
 ): string {
-  if (leaf.href) return leaf.href;
-  if (leaf.pageSlug) {
+  let href = "/admin/content";
+  if (leaf.href) {
+    href = leaf.href;
+  } else if (leaf.pageSlug) {
     const id = pageIdBySlug[leaf.pageSlug];
-    if (id) return `/admin/content/pages/${id}`;
-    return `/admin/content/pages`;
+    href = id ? `/admin/content/pages/${id}` : `/admin/content/pages`;
   }
-  return "/admin/content";
+  if (leaf.section) {
+    return `${href}?section=${encodeURIComponent(leaf.section)}`;
+  }
+  return href;
 }
 
-export function isAdminHrefActive(pathname: string, href: string): boolean {
-  if (href === "/admin") return pathname === "/admin";
-  if (href === "/admin/content") return pathname === "/admin/content";
-  return pathname === href || pathname.startsWith(`${href}/`);
+export function isAdminHrefActive(
+  pathname: string,
+  href: string,
+  search = ""
+): boolean {
+  const [hrefPath, hrefQuery = ""] = href.split("?");
+  if (hrefPath === "/admin") return pathname === "/admin";
+  if (hrefPath === "/admin/content") return pathname === "/admin/content";
+  const pathMatch =
+    pathname === hrefPath || pathname.startsWith(`${hrefPath}/`);
+  if (!pathMatch) return false;
+
+  const hrefSection = new URLSearchParams(hrefQuery).get("section");
+  if (!hrefSection) return !new URLSearchParams(search).get("section");
+
+  const currentSection = new URLSearchParams(search).get("section") || "hero";
+  return currentSection === hrefSection;
 }
 
 export function isGroupActive(
   group: AdminNavGroup,
   pathname: string,
-  pageIdBySlug: Record<string, string>
+  pageIdBySlug: Record<string, string>,
+  search = ""
 ): boolean {
   return group.children.some((child) =>
-    isAdminHrefActive(pathname, resolveAdminHref(child, pageIdBySlug))
+    isAdminHrefActive(
+      pathname,
+      resolveAdminHref(child, pageIdBySlug),
+      search
+    )
   );
 }

@@ -9,6 +9,7 @@ import {
 import { prisma } from "@/lib/db";
 
 const PAGE_DISPLAY_NAMES: Record<string, string> = {
+  home: "Home page",
   "home-focus-areas": "Home · Focus Areas",
   "about-overview": "Overview",
   "about-story": "Our Story",
@@ -75,7 +76,11 @@ export default async function AdminCollectionPage({
                     isFounder: data.isFounder,
                   })
                 )
-              : null;
+              : collection === "blog" && data
+                ? [data.author, data.publishedAt]
+                    .filter((value) => typeof value === "string" && value)
+                    .join(" · ") || null
+                : null;
 
           const displayTitle =
             collection === "pages" && item.slug && PAGE_DISPLAY_NAMES[item.slug]

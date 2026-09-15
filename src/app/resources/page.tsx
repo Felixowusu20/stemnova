@@ -1,16 +1,18 @@
-import type { Metadata } from "next";
 import { Container, PageHero, SectionHeading } from "@/components";
 import { images } from "@/content";
 import { resolveResources } from "@/lib/cms/resolve-content";
+import { buildPageMetadata } from "@/lib/seo";
 import { ResourcesExplorer } from "./ResourcesExplorer";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Resources",
   description:
     "Browse STEMNova Foundation resources — guides, articles, videos, and FAQs on talent discovery, research leadership, women in STEM, quantum education, and teacher development.",
-};
+  path: "/resources",
+  image: images.hero.about,
+});
 
 export default async function ResourcesPage() {
   const resources = await resolveResources();

@@ -9,6 +9,8 @@ import { CMS_COLLECTIONS } from "@/lib/cms/collections";
 import { prisma } from "@/lib/db";
 
 const PAGE_LABELS: Record<string, string> = {
+  home: "Home page",
+  "home-focus-areas": "Focus Areas",
   "about-overview": "Overview",
   "about-story": "Our Story",
   "vision-mission": "Vision & Mission",

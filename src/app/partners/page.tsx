@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -20,29 +19,19 @@ import {
   partnerCategoryLabel,
 } from "@/content/partners";
 import { resolvePartners } from "@/lib/cms/resolve-content";
-import { getSiteUrl } from "@/lib/site-url";
+import { buildPageMetadata } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import type { Partner, PartnerCategory } from "@/types";
 
 export const dynamic = "force-dynamic";
 
-const siteUrl = getSiteUrl();
-
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Partners",
   description:
     "Meet the universities, governments, organisations, and research institutions partnering with STEMNova Foundation across Africa.",
-  openGraph: {
-    title: "Partners | STEMNova Foundation",
-    description:
-      "Explore STEMNova partners advancing Africa's STEM talent, research, and education.",
-    url: `${siteUrl}/partners`,
-    images: [{ url: images.partners.hero, width: 1200, height: 630 }],
-  },
-  alternates: {
-    canonical: `${siteUrl}/partners`,
-  },
-};
+  path: "/partners",
+  image: images.partners.hero,
+});
 
 const categoryIcons: Record<PartnerCategory, typeof Building2> = {
   university: Building2,

@@ -1,15 +1,17 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Container, CtaSection } from "@/components";
 import { FellowshipForm } from "@/components/forms/FellowshipForm";
 import { images } from "@/content";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Apply for Fellowships",
   description:
     "Apply for African STEM Fellows or Young African Researchers Fellowship and accelerate your research career with STEMNova.",
-};
+  path: "/fellowships",
+  image: images.programmes.fellows,
+});
 
 export default function FellowshipsPage() {
   return (

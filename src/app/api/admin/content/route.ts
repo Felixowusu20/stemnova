@@ -17,9 +17,23 @@ const contentSchema = z.object({
   data: z.unknown().optional(),
   status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).default("PUBLISHED"),
   sortOrder: z.number().int().default(0),
+  publishedAt: z.string().nullable().optional(),
 });
 
 const COLLECTION_IDS = new Set<string>(CMS_COLLECTIONS.map((item) => item.id));
+
+function resolvePublishedAt(
+  value: string | null | undefined,
+  status: "DRAFT" | "PUBLISHED" | "ARCHIVED",
+  existing: Date | null
+) {
+  if (status !== "PUBLISHED") return null;
+  if (value) {
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+  return existing ?? new Date();
+}
 
 function revalidateCollection(collection: string, slug?: string | null) {
   revalidatePath("/", "layout");
@@ -68,6 +82,9 @@ function revalidateCollection(collection: string, slug?: string | null) {
     if (slug === "roadmap") revalidatePath("/about/roadmap");
     if (slug === "impact") {
       revalidatePath("/impact");
+      revalidatePath("/");
+    }
+    if (slug === "home" || slug === "home-focus-areas") {
       revalidatePath("/");
     }
     revalidatePath("/about");
@@ -140,7 +157,7 @@ export async function POST(request: Request) {
       data: data.data ? (data.data as Prisma.InputJsonValue) : undefined,
       status: data.status,
       sortOrder: data.sortOrder,
-      publishedAt: data.status === "PUBLISHED" ? new Date() : null,
+      publishedAt: resolvePublishedAt(data.publishedAt, data.status, null),
     },
   });
   await ensureCmsActiveMarker();
@@ -162,6 +179,10 @@ export async function PUT(request: Request) {
   }
 
   const data = parsed.data;
+  const existing = await prisma.contentItem.findUnique({
+    where: { id: data.id },
+    select: { publishedAt: true },
+  });
   const item = await prisma.contentItem.update({
     where: { id: data.id },
     data: {
@@ -174,7 +195,11 @@ export async function PUT(request: Request) {
       data: data.data ? (data.data as Prisma.InputJsonValue) : undefined,
       status: data.status,
       sortOrder: data.sortOrder,
-      publishedAt: data.status === "PUBLISHED" ? new Date() : null,
+      publishedAt: resolvePublishedAt(
+        data.publishedAt,
+        data.status,
+        existing?.publishedAt ?? null
+      ),
     },
   });
   revalidateCollection(item.collection, item.slug);

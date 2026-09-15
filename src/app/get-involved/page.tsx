@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -17,12 +16,15 @@ import {
   SectionHeading,
 } from "@/components";
 import { getInvolvedOptions, images } from "@/content";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Get Involved",
   description:
     "Join STEMNova Foundation as a mentor, volunteer, partner, sponsor, donor, or fellowship applicant.",
-};
+  path: "/get-involved",
+  image: images.hero.about,
+});
 
 const optionIcons = {
   mentor: Users,

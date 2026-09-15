@@ -11,11 +11,9 @@ import {
   resolveGalleryAlbumBySlug,
   resolveGalleryAlbums,
 } from "@/lib/cms/resolve-content";
-import { getSiteUrl } from "@/lib/site-url";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
-
-const siteUrl = getSiteUrl();
 
 interface GalleryAlbumPageProps {
   params: Promise<{ slug: string }>;
@@ -35,19 +33,12 @@ export async function generateMetadata({
     return { title: "Album Not Found" };
   }
 
-  return {
+  return buildPageMetadata({
     title: `${album.title} Gallery`,
     description: album.description,
-    openGraph: {
-      title: `${album.title} Gallery | STEMNova Foundation`,
-      description: album.description,
-      url: `${siteUrl}/gallery/${album.slug}`,
-      images: [{ url: album.coverImageUrl, width: 1200, height: 630 }],
-    },
-    alternates: {
-      canonical: `${siteUrl}/gallery/${album.slug}`,
-    },
-  };
+    path: `/gallery/${album.slug}`,
+    image: album.coverImageUrl,
+  });
 }
 
 export default async function GalleryAlbumPage({

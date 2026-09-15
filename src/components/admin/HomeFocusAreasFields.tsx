@@ -41,6 +41,20 @@ export function HomeFocusAreasFields({
         </p>
       </div>
 
+      <label className="flex items-center justify-between gap-3 rounded-xl border border-navy/10 bg-white px-3 py-2.5">
+        <span className="text-sm font-medium text-navy">
+          Show this section on the homepage
+        </span>
+        <input
+          type="checkbox"
+          checked={value.visibleOnHomepage}
+          onChange={(e) =>
+            onChange({ ...value, visibleOnHomepage: e.target.checked })
+          }
+          className="h-4 w-4 rounded border-navy/30"
+        />
+      </label>
+
       <div className="space-y-3 rounded-xl border border-navy/10 bg-white p-3">
         <div>
           <label className="mb-1 block text-xs font-medium text-navy/70">

@@ -30,7 +30,7 @@ function ChallengeCard({
   index: number;
   className?: string;
 }) {
-  const Icon = challengeIcons[challenge.icon];
+  const Icon = challengeIcons[challenge.icon] || Search;
 
   return (
     <article
@@ -59,7 +59,21 @@ function ChallengeCard({
   );
 }
 
-export function ChallengesCycle() {
+export function ChallengesCycle({
+  eyebrow = "Why STEMNova Exists",
+  title = "The Gaps We Are Built to Close",
+  highlight = "Closes these gaps through connected programmes",
+  imageUrl = images.home.challenges,
+  imageCaption = "Pathways for Africa's next scientists",
+  items = challenges,
+}: {
+  eyebrow?: string;
+  title?: string;
+  highlight?: string;
+  imageUrl?: string;
+  imageCaption?: string;
+  items?: Challenge[];
+}) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#eefbf8] via-light to-white py-20 sm:py-24">
       <div
@@ -72,16 +86,13 @@ export function ChallengesCycle() {
       <Container className="relative">
         <div className="mb-12 grid items-center gap-8 lg:mb-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
           <div>
-            <SectionHeading
-              eyebrow="Why STEMNova Exists"
-              title="The Gaps We Are Built to Close"
-            />
+            <SectionHeading eyebrow={eyebrow} title={title} />
             <div className="mt-6 rounded-2xl bg-gradient-to-r from-navy via-navy to-[#0d3d4a] px-6 py-5 text-left shadow-lg">
               <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-teal">
                 STEMNova
               </p>
               <p className="mt-2 font-display text-base font-semibold leading-snug text-white sm:text-lg">
-                Closes these gaps through connected programmes
+                {highlight}
               </p>
             </div>
           </div>
@@ -89,7 +100,7 @@ export function ChallengesCycle() {
           <div className="relative hidden overflow-hidden rounded-3xl border border-teal/20 shadow-xl lg:block">
             <div className="relative aspect-[5/4]">
               <Image
-                src={images.home.challenges}
+                src={imageUrl}
                 alt="Students and educators collaborating in STEM learning"
                 fill
                 className="object-cover"
@@ -102,7 +113,7 @@ export function ChallengesCycle() {
               />
               <div className="absolute inset-x-0 bottom-0 p-5">
                 <p className="font-display text-lg font-semibold text-white">
-                  Pathways for Africa&apos;s next scientists
+                  {imageCaption}
                 </p>
               </div>
             </div>
@@ -115,8 +126,8 @@ export function ChallengesCycle() {
             className="absolute bottom-6 left-[1.375rem] top-6 w-px bg-gradient-to-b from-blue via-teal to-blue"
             aria-hidden="true"
           />
-          {challenges.map((challenge, index) => {
-            const Icon = challengeIcons[challenge.icon];
+          {items.map((challenge, index) => {
+            const Icon = challengeIcons[challenge.icon] || Search;
             return (
               <li
                 key={challenge.id}
@@ -143,7 +154,7 @@ export function ChallengesCycle() {
 
         {/* Desktop grid */}
         <ul className="mx-auto hidden max-w-5xl gap-5 lg:grid lg:grid-cols-6">
-          {challenges.map((challenge, index) => (
+          {items.map((challenge, index) => (
             <li
               key={challenge.id}
               className={cn(

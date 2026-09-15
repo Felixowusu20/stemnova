@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -6,27 +5,17 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { images } from "@/content/images";
 import { resolveGalleryAlbums } from "@/lib/cms/resolve-content";
-import { getSiteUrl } from "@/lib/site-url";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-const siteUrl = getSiteUrl();
-
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Programme Gallery",
   description:
     "Browse photo albums from STEMNova Foundation programmes across Africa including camps, fellowships, workshops, and outreach.",
-  openGraph: {
-    title: "Programme Gallery | STEMNova Foundation",
-    description:
-      "Explore moments from talent discovery camps, research fellowships, workshops, and STEM outreach.",
-    url: `${siteUrl}/gallery`,
-    images: [{ url: images.gallery[0], width: 1200, height: 630 }],
-  },
-  alternates: {
-    canonical: `${siteUrl}/gallery`,
-  },
-};
+  path: "/gallery",
+  image: images.gallery[0],
+});
 
 export default async function GalleryPage() {
   const albums = await resolveGalleryAlbums();

@@ -5,6 +5,9 @@ export async function GET() {
   const siteUrl = getSiteUrl();
   const body = `User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
 
 Sitemap: ${siteUrl}/sitemap.xml
 `;

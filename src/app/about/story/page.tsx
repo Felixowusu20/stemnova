@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import {
   Container,
@@ -7,14 +6,17 @@ import {
 } from "@/components";
 import { images } from "@/content";
 import { resolveAboutStory } from "@/lib/cms/resolve-content";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Our Story",
   description:
     "Learn why STEMNova Foundation was founded and what we are building for African STEM talent.",
-};
+  path: "/about/story",
+  image: images.hero.about,
+});
 
 export default async function AboutStoryPage() {
   const story = await resolveAboutStory();

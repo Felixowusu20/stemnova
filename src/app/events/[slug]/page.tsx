@@ -19,6 +19,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { events } from "@/content";
 import { resolveEventBySlug } from "@/lib/cms/resolve-content";
 import { getEventSchema } from "@/lib/seo-schemas";
+import { buildPageMetadata } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/site-url";
 import type { EventCategory } from "@/types";
 
@@ -51,19 +52,12 @@ export async function generateMetadata({
   const event = await resolveEventBySlug(slug);
   if (!event) return { title: "Event Not Found" };
 
-  return {
+  return buildPageMetadata({
     title: event.title,
     description: event.description,
-    openGraph: {
-      title: `${event.title} | STEMNova Foundation`,
-      description: event.description,
-      url: `${siteUrl}/events/${event.slug}`,
-      images: [{ url: event.imageUrl, width: 1200, height: 630 }],
-    },
-    alternates: {
-      canonical: `${siteUrl}/events/${event.slug}`,
-    },
-  };
+    path: `/events/${event.slug}`,
+    image: event.imageUrl,
+  });
 }
 
 function formatDate(dateStr: string): string {

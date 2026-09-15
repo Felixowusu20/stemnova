@@ -18,6 +18,7 @@ import { valuesData } from "../src/content/values";
 import { contactPageContent } from "../src/content/contact";
 import { impactData, IMPACT_DATA_DISCLAIMER } from "../src/content/impact";
 import { roadmapPhases, strategicPillars } from "../src/content/pillars";
+import { defaultHomePageData } from "../src/lib/cms/home-sections";
 
 loadEnv({ path: ".env.local" });
 loadEnv();
@@ -348,16 +349,28 @@ async function seedCollections() {
 
   await upsertContent(
     "pages",
+    "home",
+    "Home page",
+    defaultHomePageData(),
+    {
+      excerpt: "Homepage section visibility and copy",
+      sortOrder: 0,
+    }
+  );
+
+  await upsertContent(
+    "pages",
     "home-focus-areas",
     "Seven Focus Areas Driving Africa's STEM Future",
     {
       eyebrow: "Our Strategic Pillars",
       sectionTitle: "Seven Focus Areas Driving Africa's STEM Future",
       pillars: strategicPillars,
+      visibleOnHomepage: true,
     },
     {
       excerpt: "Our Strategic Pillars",
-      sortOrder: 0,
+      sortOrder: 1,
     }
   );
 

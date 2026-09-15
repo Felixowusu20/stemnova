@@ -1,14 +1,16 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Container, CtaSection, PartnerForm } from "@/components";
 import { images } from "@/content";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Partner With Us",
   description:
     "Partner with STEMNova Foundation as a university, government agency, company, NGO, or research institution.",
-};
+  path: "/partner",
+  image: images.partners.hero,
+});
 
 export default function PartnerPage() {
   return (

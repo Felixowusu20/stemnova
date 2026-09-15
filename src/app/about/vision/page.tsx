@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import {
   Award,
@@ -17,15 +16,17 @@ import {
 import { valuesData } from "@/content";
 import { getPhilosophyQuotes, isCmsActive } from "@/lib/cms/queries";
 import { resolveVisionMission } from "@/lib/cms/resolve-content";
+import { buildPageMetadata } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Vision & Mission",
   description:
     "STEMNova Foundation's vision, mission, and core values for African STEM talent development.",
-};
+  path: "/about/vision",
+});
 
 const valueIconMap = {
   excellence: Award,

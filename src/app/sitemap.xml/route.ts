@@ -1,4 +1,12 @@
 import { blogPosts, events, getAllLeaders, partners, programs } from "@/content";
+import {
+  resolveBlogPosts,
+  resolveEvents,
+  resolveGalleryAlbums,
+  resolvePartners,
+  resolvePrograms,
+  resolveTeam,
+} from "@/lib/cms/resolve-content";
 import { getSiteUrl } from "@/lib/site-url";
 
 type ChangeFrequency =
@@ -51,10 +59,52 @@ function escapeXml(value: string): string {
     .replaceAll("'", "&apos;");
 }
 
+async function loadIndexedContent() {
+  const fallback = {
+    programs,
+    posts: blogPosts,
+    events,
+    partners,
+    leaders: getAllLeaders(),
+    gallerySlugs: programs.map((program) => program.slug),
+  };
+
+  const cms = Promise.all([
+    resolvePrograms(),
+    resolveBlogPosts(),
+    resolveEvents(),
+    resolvePartners(),
+    resolveTeam(),
+    resolveGalleryAlbums(),
+  ])
+    .then(
+      ([cmsPrograms, cmsPosts, cmsEvents, cmsPartners, cmsTeam, cmsAlbums]) => ({
+        programs: cmsPrograms.length > 0 ? cmsPrograms : programs,
+        posts: cmsPosts.length > 0 ? cmsPosts : blogPosts,
+        events: cmsEvents.length > 0 ? cmsEvents : events,
+        partners: cmsPartners.length > 0 ? cmsPartners : partners,
+        leaders: cmsTeam.length > 0 ? cmsTeam : getAllLeaders(),
+        gallerySlugs:
+          cmsAlbums.length > 0
+            ? cmsAlbums.map((album) => album.slug)
+            : programs.map((program) => program.slug),
+      })
+    )
+    .catch(() => fallback);
+
+  return Promise.race([
+    cms,
+    new Promise<typeof fallback>((resolve) => {
+      setTimeout(() => resolve(fallback), 4000);
+    }),
+  ]);
+}
+
 /** Route handler avoids Next metadata-loader issues with apostrophes in the project path. */
 export async function GET() {
   const baseUrl = getSiteUrl();
   const now = new Date().toISOString();
+  const content = await loadIndexedContent();
 
   const entries: {
     url: string;
@@ -68,37 +118,37 @@ export async function GET() {
       changeFrequency: route.changeFrequency,
       priority: route.priority,
     })),
-    ...programs.map((program) => ({
+    ...content.programs.map((program) => ({
       url: `${baseUrl}/programs/${program.slug}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    ...programs.map((program) => ({
-      url: `${baseUrl}/gallery/${program.slug}`,
+    ...content.gallerySlugs.map((slug) => ({
+      url: `${baseUrl}/gallery/${slug}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
-    ...blogPosts.map((post) => ({
+    ...content.posts.map((post) => ({
       url: `${baseUrl}/blog/${post.slug}`,
       lastModified: new Date(post.publishedAt).toISOString(),
       changeFrequency: "monthly" as const,
-      priority: 0.6,
+      priority: 0.7,
     })),
-    ...getAllLeaders().map((leader) => ({
+    ...content.leaders.map((leader) => ({
       url: `${baseUrl}/about/leadership/${leader.slug}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
-    ...events.map((event) => ({
+    ...content.events.map((event) => ({
       url: `${baseUrl}/events/${event.slug}`,
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),
-    ...partners.map((partner) => ({
+    ...content.partners.map((partner) => ({
       url: `${baseUrl}/partners/${partner.slug}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
@@ -106,9 +156,11 @@ export async function GET() {
     })),
   ];
 
+  const unique = [...new Map(entries.map((entry) => [entry.url, entry])).values()];
+
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${entries
+${unique
   .map(
     (entry) => `  <url>
     <loc>${escapeXml(entry.url)}</loc>

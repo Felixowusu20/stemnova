@@ -16,13 +16,11 @@ import { Container } from "@/components/ui/Container";
 import { images } from "@/content/images";
 import { getResolvedSiteConfig } from "@/lib/cms/queries";
 import { resolveContactPage } from "@/lib/cms/resolve-content";
-import { getSiteUrl } from "@/lib/site-url";
+import { buildPageMetadata } from "@/lib/seo";
 import type { ContactDetailIcon } from "@/content/contact";
 import type { SocialPlatform } from "@/types";
 
 export const dynamic = "force-dynamic";
-
-const siteUrl = getSiteUrl();
 
 const socialIcons: Record<SocialPlatform, typeof Facebook> = {
   facebook: Facebook,
@@ -47,19 +45,12 @@ export async function generateMetadata(): Promise<Metadata> {
     content.shortIntro ||
     "Contact STEMNova Foundation in Accra for programmes, fellowships, volunteering, and partnerships.";
 
-  return {
+  return buildPageMetadata({
     title,
     description,
-    openGraph: {
-      title: `${title} | STEMNova Foundation`,
-      description: content.responseNote || description,
-      url: `${siteUrl}/contact`,
-      images: [{ url: images.hero.contact, width: 1200, height: 630 }],
-    },
-    alternates: {
-      canonical: `${siteUrl}/contact`,
-    },
-  };
+    path: "/contact",
+    image: images.hero.contact,
+  });
 }
 
 export default async function ContactPage() {

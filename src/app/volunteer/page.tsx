@@ -1,14 +1,16 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Container, CtaSection, VolunteerForm } from "@/components";
 import { images } from "@/content";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Volunteer",
   description:
     "Volunteer with STEMNova Foundation supporting STEM camps, workshops, outreach events, and programme delivery across Africa.",
-};
+  path: "/volunteer",
+  image: images.hero.about,
+});
 
 export default function VolunteerPage() {
   return (

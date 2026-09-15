@@ -1,15 +1,17 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Container, CtaSection } from "@/components";
 import { SponsorForm } from "@/components/forms/SponsorForm";
 import { images } from "@/content";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Sponsor a Programme",
   description:
     "Sponsor a STEMNova flagship programme and multiply your institutional impact across African STEM talent.",
-};
+  path: "/sponsor",
+  image: images.partners.handshake,
+});
 
 export default function SponsorPage() {
   return (
