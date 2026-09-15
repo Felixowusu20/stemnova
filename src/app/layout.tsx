@@ -109,9 +109,15 @@ export const metadata: Metadata = {
     images: ["/images/stemnova-logo.jpg"],
   },
   icons: {
-    icon: "/images/stemnova-logo.jpg",
-    apple: "/images/stemnova-logo.jpg",
-    shortcut: "/images/stemnova-logo.jpg",
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
+      { url: "/icons/icon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
   },
   manifest: "/manifest.webmanifest",
   robots: {
