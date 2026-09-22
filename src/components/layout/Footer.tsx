@@ -81,12 +81,8 @@ export function Footer() {
     { label: "Contact", href: "/contact" },
   ];
 
-  const address = [
-    contact.address.line1,
-    contact.address.line2,
-    `${contact.address.city}, ${contact.address.region}`,
-    contact.address.country,
-  ]
+  const address = [contact.address.city, contact.address.country]
+    .map((part) => part?.trim())
     .filter(Boolean)
     .join(", ");
 
