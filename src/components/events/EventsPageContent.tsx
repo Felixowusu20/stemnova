@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { images } from "@/content/images";
 import type { Event } from "@/types";
 
 interface EventsPageContentProps {
@@ -265,39 +264,14 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
 
       <section className={past.length > 0 ? "py-16 sm:py-20" : "bg-light py-16 sm:py-20"}>
         <Container>
-          <div className="overflow-hidden rounded-3xl border border-navy/8 bg-white shadow-sm">
-            <div className="grid lg:grid-cols-2">
-              <div className="relative min-h-[260px] lg:min-h-full">
-                <Image
-                  src={images.gallery[0]}
-                  alt="STEMNova programme moments"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-              <div className="flex flex-col justify-center p-8 sm:p-10 lg:p-12">
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal">
-                  Programme Gallery
-                </p>
-                <h2 className="mt-3 font-display text-2xl font-bold text-navy sm:text-3xl">
-                  Moments from Our Programmes
-                </h2>
-                <p className="mt-4 text-base leading-relaxed text-navy/70">
-                  Browse photos from STEM camps, fellowships, workshops, and
-                  community gatherings across Africa.
-                </p>
-                <div className="mt-8">
-                  <Link
-                    href="/gallery"
-                    className="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
-                  >
-                    <Images className="h-4 w-4" aria-hidden="true" />
-                    Open Programme Gallery
-                  </Link>
-                </div>
-              </div>
-            </div>
+          <div className="flex justify-center">
+            <Link
+              href="/gallery"
+              className="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
+            >
+              <Images className="h-4 w-4" aria-hidden="true" />
+              Our Event Galleries
+            </Link>
           </div>
         </Container>
       </section>
@@ -312,7 +286,7 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
               align="center"
             />
             <div className="mt-8 flex justify-center">
-              <Button href="/partner" variant="secondary" size="lg">
+              <Button href="/partner" variant="teal" size="lg">
                 Become a Partner
               </Button>
             </div>

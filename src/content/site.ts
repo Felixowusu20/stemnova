@@ -13,10 +13,10 @@ export const siteConfig: SiteConfig = {
     whatsapp: "+233 24 123 4567",
     whatsappLink: "https://wa.me/233241234567",
     address: {
-      line1: "Innovation Hub, Ring Road Central",
-      line2: "Suite 4B, Science Park",
+      line1: "",
+      line2: "",
       city: "Accra",
-      region: "Greater Accra",
+      region: "",
       country: "Ghana",
     },
     hours: {
