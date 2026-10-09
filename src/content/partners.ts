@@ -19,6 +19,25 @@ export function partnerCategoryLabel(category: PartnerCategory): string {
   );
 }
 
+export function uniquePartners<T extends { slug?: string; name: string }>(
+  list: T[]
+): T[] {
+  const seen = new Set<string>();
+  const unique: T[] = [];
+
+  for (const partner of list) {
+    const slugKey = partner.slug?.trim().toLowerCase();
+    const nameKey = partner.name.trim().toLowerCase();
+    if (!nameKey) continue;
+    if ((slugKey && seen.has(slugKey)) || seen.has(`name:${nameKey}`)) continue;
+    if (slugKey) seen.add(slugKey);
+    seen.add(`name:${nameKey}`);
+    unique.push(partner);
+  }
+
+  return unique;
+}
+
 export function toPartnerSlug(name: string): string {
   return name
     .toLowerCase()

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
+import { optimizedImageUrl } from "@/lib/portrait-url";
 import { cn } from "@/lib/utils";
 
 type ImageUploadFieldProps = {
@@ -13,6 +14,7 @@ type ImageUploadFieldProps = {
   helpText?: string;
   className?: string;
   emptySrc?: string;
+  fit?: "cover" | "contain";
 };
 
 export function ImageUploadField({
@@ -23,9 +25,11 @@ export function ImageUploadField({
   helpText = "Upload an image to replace the current one.",
   className,
   emptySrc,
+  fit = "cover",
 }: ImageUploadFieldProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const preview = optimizedImageUrl(value, 960);
 
   async function handleFile(file: File) {
     setUploading(true);
@@ -52,12 +56,13 @@ export function ImageUploadField({
       <p className="text-sm font-medium text-navy">{label}</p>
       <div className="overflow-hidden rounded-2xl border border-navy/10 bg-light">
         <div className="relative flex aspect-[16/10] items-center justify-center bg-navy/[0.03]">
-          {value ? (
+          {preview ? (
             <Image
-              src={value}
+              src={preview}
               alt={label}
               fill
-              className="object-cover"
+              unoptimized
+              className={fit === "contain" ? "object-contain" : "object-cover"}
               sizes="(max-width: 768px) 100vw, 480px"
             />
           ) : emptySrc ? (

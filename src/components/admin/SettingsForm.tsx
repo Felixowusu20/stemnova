@@ -41,7 +41,7 @@ type SettingsShape = {
     href?: string;
     dismissible: boolean;
   } | null;
-  heroSlides?: { src: string; alt: string }[] | null;
+  heroSlides?: { src: string; alt: string; showCaption?: boolean }[] | null;
   pageHeroImages?: Record<string, string> | null;
 };
 
@@ -194,7 +194,8 @@ export function SettingsForm({
           Homepage hero slides
         </h2>
         <p className="mt-1 text-sm text-navy/55">
-          Replace each carousel image with an uploaded photo.
+          Upload each carousel image. Leave the caption on for photos. Turn it
+          off for flyers that already include their own wording.
         </p>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           {heroSlides.map((slide, index) => (
@@ -203,6 +204,8 @@ export function SettingsForm({
                 label={`Slide ${index + 1}`}
                 value={slide.src}
                 folder="stemnova/heroes"
+                fit="contain"
+                helpText="Shown as a compact preview. Flyers stay fully visible."
                 onChange={(url) => {
                   const next = [...heroSlides];
                   next[index] = {
@@ -221,7 +224,24 @@ export function SettingsForm({
                   setForm({ ...form, heroSlides: next });
                 }}
                 placeholder="Alt text"
+                aria-label={`Slide ${index + 1} alt text`}
               />
+              <label className="inline-flex items-center gap-2 text-sm text-navy">
+                <input
+                  type="checkbox"
+                  checked={slide.showCaption !== false}
+                  onChange={(e) => {
+                    const next = [...heroSlides];
+                    next[index] = {
+                      ...next[index],
+                      showCaption: e.target.checked,
+                    };
+                    setForm({ ...form, heroSlides: next });
+                  }}
+                  className="h-4 w-4 rounded border-navy/20 text-blue focus:ring-blue"
+                />
+                Show caption on this slide
+              </label>
             </div>
           ))}
         </div>

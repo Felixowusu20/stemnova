@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { PARTNERS_DISCLAIMER } from "@/content";
+import { PARTNERS_DISCLAIMER, uniquePartners } from "@/content";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/utils";
@@ -16,14 +16,14 @@ interface PartnersSectionProps {
   showDisclaimer?: boolean;
 }
 
-function PartnerMarqueeItem({ partner }: { partner: Partner }) {
+function PartnerChip({ partner }: { partner: Partner }) {
   return (
     <Link
       href={`/partners/${partner.slug}`}
       aria-label={`Read about ${partner.name}`}
       className="inline-flex min-w-[230px] items-center gap-3 rounded-2xl border border-teal/20 bg-white/95 px-4 py-3 shadow-[0_10px_30px_-18px_rgba(20,184,166,0.55)] transition hover:border-teal/50 hover:shadow-[0_14px_34px_-16px_rgba(20,184,166,0.65)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
     >
-      <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-navy to-[#0d3d4a] ring-2 ring-teal/25">
+      <div className="aos-photo relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-navy to-[#0d3d4a] ring-2 ring-teal/25">
         <Image
           src={partner.logoUrl}
           alt=""
@@ -46,7 +46,7 @@ export function PartnersSection({
   className,
   showDisclaimer = true,
 }: PartnersSectionProps) {
-  const loop = [...partners, ...partners];
+  const listed = uniquePartners(partners);
 
   return (
     <section
@@ -67,31 +67,19 @@ export function PartnersSection({
           align="center"
           className="mb-10"
         />
-      </Container>
 
-      <div className="relative">
-        <div
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[#eefbf8] to-transparent sm:w-24"
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#f0faf7] to-transparent sm:w-24"
-          aria-hidden="true"
-        />
+        <ul className="mx-auto flex max-w-5xl flex-wrap justify-center gap-4">
+          {listed.map((partner, index) => (
+            <li
+              key={partner.id}
+              data-aos="fade-up"
+              data-aos-delay={Math.min(index * 70, 350)}
+            >
+              <PartnerChip partner={partner} />
+            </li>
+          ))}
+        </ul>
 
-        <div className="group flex overflow-hidden py-2">
-          <div className="flex w-max gap-4 px-4 animate-partner-marquee group-hover:[animation-play-state:paused]">
-            {loop.map((partner, index) => (
-              <PartnerMarqueeItem
-                key={`${partner.id}-${index}`}
-                partner={partner}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <Container className="relative">
         <div className="mt-8 flex flex-col items-center gap-3 text-center">
           <Link
             href="/partners"

@@ -10,12 +10,14 @@ import {
   TeamCard,
 } from "@/components";
 import { getAllLeaders } from "@/content";
+import { sortLeadership } from "@/lib/cms/leadership-roles";
 import {
   resolveLeaderBySlug,
   resolveTeam,
 } from "@/lib/cms/resolve-content";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getBreadcrumbSchema, getPersonSchema } from "@/lib/seo-schemas";
+import { portraitUrl } from "@/lib/portrait-url";
 import { absoluteUrl, buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -57,10 +59,11 @@ export default async function LeaderProfilePage({ params }: LeaderPageProps) {
     notFound();
   }
 
-  const related = allLeaders
+  const related = sortLeadership(allLeaders)
     .filter((member) => member.slug !== leader.slug)
     .slice(0, 3);
 
+  const photo = portraitUrl(leader.imageUrl, 960);
   const bioParagraphs =
     leader.fullBio?.length > 0 ? leader.fullBio : [leader.bio];
   const profileSchema = [
@@ -132,15 +135,18 @@ export default async function LeaderProfilePage({ params }: LeaderPageProps) {
             </div>
 
             <div className="relative order-1 min-h-[280px] bg-navy/5 sm:min-h-[380px] lg:order-2 lg:min-h-[560px]">
-              <Image
-                src={leader.imageUrl}
-                alt={`Portrait of ${leader.name}`}
-                fill
-                priority
-                quality={90}
-                className="object-cover object-top"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
+              {photo ? (
+                <Image
+                  src={photo}
+                  alt={`Portrait of ${leader.name}`}
+                  fill
+                  unoptimized
+                  priority
+                  quality={90}
+                  className="object-cover object-top"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              ) : null}
             </div>
           </div>
         </section>
@@ -233,15 +239,18 @@ export default async function LeaderProfilePage({ params }: LeaderPageProps) {
               <div className="flex gap-3 p-2.5 lg:block lg:p-0">
                 <div className="relative w-[36%] min-w-[6.75rem] shrink-0 self-stretch overflow-hidden rounded-xl bg-navy/5 lg:w-auto lg:min-w-0 lg:rounded-none lg:aspect-[4/5]">
                   <div className="relative h-full min-h-[9rem] lg:min-h-0 lg:aspect-[4/5]">
-                    <Image
-                      src={leader.imageUrl}
-                      alt={`Portrait of ${leader.name}`}
-                      fill
-                      quality={90}
-                      priority
-                      className="object-cover object-top"
-                      sizes="(max-width: 1024px) 36vw, 320px"
-                    />
+                    {photo ? (
+                      <Image
+                        src={photo}
+                        alt={`Portrait of ${leader.name}`}
+                        fill
+                        unoptimized
+                        quality={90}
+                        priority
+                        className="object-cover object-top"
+                        sizes="(max-width: 1024px) 36vw, 320px"
+                      />
+                    ) : null}
                   </div>
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col justify-center py-1 pr-1 lg:p-5">
@@ -291,40 +300,46 @@ export default async function LeaderProfilePage({ params }: LeaderPageProps) {
                 ))}
               </div>
 
-              <div className="mt-10 grid gap-8 sm:grid-cols-2">
-                <div>
-                  <h2 className="font-display text-xl font-semibold text-navy">
-                    Focus Areas
-                  </h2>
-                  <ul className="mt-4 space-y-2.5">
-                    {leader.focusAreas.map((area) => (
-                      <li key={area} className="flex gap-2 text-sm text-navy">
-                        <CheckCircle2
-                          className="mt-0.5 h-4 w-4 shrink-0 text-teal"
-                          aria-hidden="true"
-                        />
-                        {area}
-                      </li>
-                    ))}
-                  </ul>
+              {(leader.focusAreas.length > 0 || leader.highlights.length > 0) && (
+                <div className="mt-10 grid gap-8 sm:grid-cols-2">
+                  {leader.focusAreas.length > 0 ? (
+                    <div>
+                      <h2 className="font-display text-xl font-semibold text-navy">
+                        Focus Areas
+                      </h2>
+                      <ul className="mt-4 space-y-2.5">
+                        {leader.focusAreas.map((area) => (
+                          <li key={area} className="flex gap-2 text-sm text-navy">
+                            <CheckCircle2
+                              className="mt-0.5 h-4 w-4 shrink-0 text-teal"
+                              aria-hidden="true"
+                            />
+                            {area}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                  {leader.highlights.length > 0 ? (
+                    <div>
+                      <h2 className="font-display text-xl font-semibold text-navy">
+                        Highlights
+                      </h2>
+                      <ul className="mt-4 space-y-2.5">
+                        {leader.highlights.map((item) => (
+                          <li key={item} className="flex gap-2 text-sm text-navy">
+                            <CheckCircle2
+                              className="mt-0.5 h-4 w-4 shrink-0 text-blue"
+                              aria-hidden="true"
+                            />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
                 </div>
-                <div>
-                  <h2 className="font-display text-xl font-semibold text-navy">
-                    Highlights
-                  </h2>
-                  <ul className="mt-4 space-y-2.5">
-                    {leader.highlights.map((item) => (
-                      <li key={item} className="flex gap-2 text-sm text-navy">
-                        <CheckCircle2
-                          className="mt-0.5 h-4 w-4 shrink-0 text-blue"
-                          aria-hidden="true"
-                        />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </Container>

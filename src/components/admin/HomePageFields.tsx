@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Plus, Trash2 } from "lucide-react";
 import { AdminAccordion } from "@/components/admin/AdminAccordion";
@@ -14,6 +16,7 @@ import {
   type HomePageData,
   type HomeSectionId,
 } from "@/lib/cms/home-sections";
+import { optimizedImageUrl } from "@/lib/portrait-url";
 import { cn } from "@/lib/utils";
 
 const fieldClass =
@@ -58,6 +61,28 @@ export function HomePageFields({
   const searchParams = useSearchParams();
   const requested = searchParams.get("section") || "hero";
   const active: HomeSectionId = isHomeSectionId(requested) ? requested : "hero";
+  const [heroSlides, setHeroSlides] = useState<
+    { src: string; alt: string; showCaption?: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    if (active !== "hero") return;
+    let cancelled = false;
+
+    fetch("/api/admin/settings")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (cancelled || !data || !Array.isArray(data.heroSlides)) return;
+        setHeroSlides(data.heroSlides);
+      })
+      .catch(() => {
+        if (!cancelled) setHeroSlides([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [active]);
 
   function selectSection(id: HomeSectionId) {
     const params = new URLSearchParams(searchParams.toString());
@@ -139,10 +164,49 @@ export function HomePageFields({
         ) : null}
 
         {active === "hero" && (
-          <p className="text-sm text-navy/70">
-            The homepage carousel images are edited in Site settings. Use the
-            toggle above if you want to hide the hero entirely.
-          </p>
+          <div className="space-y-3">
+            <p className="text-sm text-navy/70">
+              These are the homepage carousel images. Replace one in Site
+              settings. Each preview is a smaller copy of the file so the page
+              stays quick.
+            </p>
+            {heroSlides.length > 0 ? (
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {heroSlides.map((slide, index) => {
+                  const src = optimizedImageUrl(slide.src, 960);
+                  return (
+                    <li
+                      key={`${slide.src}-${index}`}
+                      className="overflow-hidden rounded-xl border border-navy/10 bg-white"
+                    >
+                      <div className="relative aspect-[16/9] bg-navy/[0.04]">
+                        {src ? (
+                          <Image
+                            src={src}
+                            alt={slide.alt || `Slide ${index + 1}`}
+                            fill
+                            unoptimized
+                            className="object-contain"
+                            sizes="(max-width: 768px) 100vw, 480px"
+                          />
+                        ) : null}
+                      </div>
+                      <p className="px-3 py-2 text-xs text-navy/60">
+                        Slide {index + 1}
+                        {slide.showCaption === false
+                          ? " · caption off"
+                          : " · caption on"}
+                      </p>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="text-sm text-navy/55">
+                No carousel images yet. Add them in Site settings.
+              </p>
+            )}
+          </div>
         )}
 
         {active === "challenges" && (

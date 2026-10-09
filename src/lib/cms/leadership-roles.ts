@@ -1,5 +1,11 @@
 export const LEADERSHIP_CATEGORIES = [
   {
+    id: "ceo",
+    label: "C.E.O",
+    isFounder: false,
+    defaultRole: "C.E.O",
+  },
+  {
     id: "co-founder",
     label: "Co-Founder",
     isFounder: true,
@@ -67,6 +73,7 @@ export function resolveLeadershipCategory(input: {
   if (isLeadershipCategoryId(input.leadershipCategory)) {
     return input.leadershipCategory;
   }
+  if (isCeoRole(input.role)) return "ceo";
   if (input.isFounder === true) return "co-founder";
 
   const role =
@@ -97,6 +104,55 @@ export function resolveLeadershipCategory(input: {
 
 export function leadershipCategoryLabel(id: LeadershipCategoryId) {
   return getLeadershipCategory(id).label;
+}
+
+function roleText(role: unknown) {
+  return typeof role === "string" ? role : "";
+}
+
+function isCeoRole(role: unknown) {
+  return /\b(c\s*\.?\s*e\s*\.?\s*o|chief executive)\b/i.test(roleText(role));
+}
+
+function isAdvisoryRole(role: unknown) {
+  const text = roleText(role).toLowerCase();
+  return (
+    text.includes("advisor") ||
+    text.includes("adviser") ||
+    text.includes("advisory") ||
+    text.includes("board member")
+  );
+}
+
+/** 0 = C.E.O, 1 = advisory board (advisors and members), 2 = everyone else. */
+export function leadershipDisplayRank(input: {
+  leadershipCategory?: unknown;
+  isFounder?: unknown;
+  role?: unknown;
+}) {
+  const category = resolveLeadershipCategory(input);
+  if (category === "ceo" || isCeoRole(input.role)) return 0;
+  if (
+    category === "advisor" ||
+    category === "board-member" ||
+    isAdvisoryRole(input.role)
+  ) {
+    return 1;
+  }
+  return 2;
+}
+
+export function sortLeadership<
+  T extends { leadershipCategory?: unknown; isFounder?: unknown; role?: unknown },
+>(people: T[]) {
+  return people
+    .map((person, index) => ({
+      person,
+      index,
+      rank: leadershipDisplayRank(person),
+    }))
+    .sort((a, b) => a.rank - b.rank || a.index - b.index)
+    .map((entry) => entry.person);
 }
 
 export function isFounderCategory(id: LeadershipCategoryId) {

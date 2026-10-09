@@ -31,13 +31,15 @@ export default async function GalleryPage() {
           className="mb-10"
         />
         <ul className="grid gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
-          {albums.map((album) => (
+          {albums.map((album, index) => (
             <li key={album.slug}>
               <Link
                 href={`/gallery/${album.slug}`}
+                data-aos="fade-up"
+                data-aos-delay={Math.min(index * 70, 280)}
                 className="group flex h-full flex-row overflow-hidden rounded-2xl border border-navy/8 bg-white shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:flex-col"
               >
-                <div className="relative w-[38%] min-w-[7.5rem] shrink-0 self-stretch overflow-hidden sm:w-full sm:min-w-0 sm:aspect-[16/10]">
+                <div className="aos-photo relative w-[38%] min-w-[7.5rem] shrink-0 self-stretch overflow-hidden sm:w-full sm:min-w-0 sm:aspect-[16/10]">
                   <Image
                     src={album.coverImageUrl}
                     alt=""

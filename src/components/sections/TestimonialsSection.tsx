@@ -41,8 +41,12 @@ export function TestimonialsSection({
         />
 
         <ul className="mx-auto grid max-w-5xl gap-4 md:grid-cols-3">
-          {testimonials.map((testimonial) => (
-            <li key={testimonial.id}>
+          {testimonials.map((testimonial, index) => (
+            <li
+              key={testimonial.id}
+              data-aos="fade-up"
+              data-aos-delay={Math.min(index * 80, 240)}
+            >
               <TestimonialCard testimonial={testimonial} />
             </li>
           ))}

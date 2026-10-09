@@ -61,8 +61,10 @@ function FocusCard({
 
   return (
     <article
+      data-aos="fade-up"
+      data-aos-delay={Math.min(index * 70, 350)}
       className={cn(
-        "group relative flex h-full min-h-[12.5rem] overflow-hidden rounded-3xl border transition duration-300 hover:-translate-y-1",
+        "aos-photo group relative flex h-full min-h-[12.5rem] overflow-hidden rounded-3xl border transition duration-300 hover:-translate-y-1",
         hasImage
           ? "border-white/10 shadow-[0_18px_44px_-20px_rgba(10,37,64,0.55)] hover:shadow-[0_24px_52px_-18px_rgba(20,184,166,0.4)]"
           : "border-teal/20 bg-white/45 shadow-[0_12px_36px_-22px_rgba(10,37,64,0.35)] backdrop-blur-md hover:border-teal/40 hover:bg-white/60",

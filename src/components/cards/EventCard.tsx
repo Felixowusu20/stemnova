@@ -32,13 +32,15 @@ interface EventCardProps {
 export function EventCard({ event, className }: EventCardProps) {
   return (
     <article
+      data-aos="fade-up"
+      data-aos-delay={80}
       className={cn(
         "group overflow-hidden rounded-2xl border border-navy/8 bg-white shadow-sm transition-shadow hover:shadow-md",
         "flex flex-row sm:flex-col",
         className
       )}
     >
-      <div className="relative w-[38%] min-w-[7.5rem] shrink-0 overflow-hidden self-stretch sm:w-full sm:min-w-0 sm:aspect-[16/10]">
+      <div className="aos-photo relative w-[38%] min-w-[7.5rem] shrink-0 overflow-hidden self-stretch sm:w-full sm:min-w-0 sm:aspect-[16/10]">
         <Image
           src={event.imageUrl}
           alt=""

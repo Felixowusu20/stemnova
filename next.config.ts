@@ -4,6 +4,13 @@ import path from "path";
 const nextConfig: NextConfig = {
   // Keep tracing rooted in this app when a parent folder also has a lockfile.
   outputFileTracingRoot: path.join(__dirname),
+  experimental: {
+    // In-process compile. A worker drops page bundles on this path.
+    cpus: 1,
+    webpackBuildWorker: false,
+    parallelServerCompiles: false,
+    parallelServerBuildTraces: false,
+  },
   async headers() {
     return [
       {
@@ -20,6 +27,8 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
     remotePatterns: [
       {
         protocol: "https",

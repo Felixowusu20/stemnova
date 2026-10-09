@@ -34,6 +34,8 @@ function ChallengeCard({
 
   return (
     <article
+      data-aos="fade-up"
+      data-aos-delay={Math.min(index * 70, 280)}
       className={cn(
         "group h-full rounded-2xl border border-teal/15 bg-white/95 p-6 shadow-[0_12px_40px_-24px_rgba(10,37,64,0.4)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-[0_18px_44px_-20px_rgba(20,184,166,0.35)]",
         className
@@ -97,7 +99,10 @@ export function ChallengesCycle({
             </div>
           </div>
 
-          <div className="relative hidden overflow-hidden rounded-3xl border border-teal/20 shadow-xl lg:block">
+          <div
+            data-aos="fade-left"
+            className="aos-photo relative hidden overflow-hidden rounded-3xl border border-teal/20 shadow-xl lg:block"
+          >
             <div className="relative aspect-[5/4]">
               <Image
                 src={imageUrl}
@@ -131,6 +136,8 @@ export function ChallengesCycle({
             return (
               <li
                 key={challenge.id}
+                data-aos="fade-up"
+                data-aos-delay={Math.min(index * 60, 280)}
                 className="relative flex gap-4 pb-8 last:pb-0"
               >
                 <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-navy to-[#0d3d4a] text-white ring-4 ring-[#eefbf8]">

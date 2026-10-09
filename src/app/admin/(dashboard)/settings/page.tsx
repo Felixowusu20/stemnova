@@ -34,7 +34,7 @@ export default async function AdminSettingsPage() {
           (row.announcementBar as unknown as typeof siteConfig.announcementBar) ??
           siteConfig.announcementBar,
         heroSlides: row.heroSlides as unknown as
-          | { src: string; alt: string }[]
+          | { src: string; alt: string; showCaption?: boolean }[]
           | null,
         pageHeroImages: row.pageHeroImages as unknown as Record<
           string,

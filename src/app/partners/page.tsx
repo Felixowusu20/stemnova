@@ -57,12 +57,15 @@ function PartnerCard({
 
   return (
     <li>
-      <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-teal/15 bg-white shadow-[0_12px_40px_-24px_rgba(10,37,64,0.45)] transition duration-300 hover:-translate-y-1 hover:border-teal/35 hover:shadow-[0_24px_50px_-20px_rgba(20,184,166,0.35)]">
+      <article
+      data-aos="fade-up"
+      className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-teal/15 bg-white shadow-[0_12px_40px_-24px_rgba(10,37,64,0.45)] transition duration-300 hover:-translate-y-1 hover:border-teal/35 hover:shadow-[0_24px_50px_-20px_rgba(20,184,166,0.35)]"
+    >
         <Link
           href={`/partners/${partner.slug}`}
           className="flex flex-1 flex-col focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
         >
-          <div className="relative h-36 overflow-hidden sm:h-40">
+          <div className="aos-photo relative h-36 overflow-hidden sm:h-40">
             <Image
               src={coverImage}
               alt=""
@@ -306,8 +309,9 @@ export default async function PartnersPage() {
                   </div>
 
                   <div
+                    data-aos="fade-left"
                     className={cn(
-                      "relative hidden overflow-hidden rounded-3xl lg:block",
+                      "aos-photo relative hidden overflow-hidden rounded-3xl lg:block",
                       groupIndex % 2 === 1 && "lg:order-first"
                     )}
                   >
@@ -399,8 +403,10 @@ export default async function PartnersPage() {
             ].map((src, index) => (
               <div
                 key={src}
+                data-aos="zoom-in"
+                data-aos-delay={Math.min(index * 80, 240)}
                 className={cn(
-                  "relative overflow-hidden rounded-2xl border border-white/15 shadow-lg",
+                  "aos-photo relative overflow-hidden rounded-2xl border border-white/15 shadow-lg",
                   index % 2 === 1 && "mt-6"
                 )}
               >

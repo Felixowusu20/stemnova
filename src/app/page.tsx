@@ -134,7 +134,7 @@ export default async function HomePage() {
           />
         </div>
         <Container className="relative grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-2 lg:gap-14">
-          <div>
+          <div data-aos="fade-right">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-teal">
               {home.mission.eyebrow}
             </p>
@@ -159,15 +159,17 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          <div data-aos="fade-left" className="grid grid-cols-2 gap-3 sm:gap-4">
             {(home.mission.mosaic.length > 0
               ? home.mission.mosaic
               : images.home.mosaic
             ).map((src, index) => (
               <div
                 key={src}
+                data-aos="zoom-in"
+                data-aos-delay={Math.min(index * 80, 240)}
                 className={cn(
-                  "relative overflow-hidden rounded-2xl border border-white/15 shadow-lg",
+                  "aos-photo relative overflow-hidden rounded-2xl border border-white/15 shadow-lg",
                   index % 2 === 1 && "mt-6"
                 )}
               >
@@ -203,7 +205,10 @@ export default async function HomePage() {
               eyebrow={home.programmes.eyebrow}
               title={home.programmes.title}
             />
-            <div className="relative hidden overflow-hidden rounded-3xl border border-teal/20 shadow-lg lg:block">
+            <div
+              data-aos="fade-left"
+              className="aos-photo relative hidden overflow-hidden rounded-3xl border border-teal/20 shadow-lg lg:block"
+            >
               <div className="relative aspect-[16/10]">
                 <Image
                   src={home.programmes.imageUrl || images.home.programmes}
@@ -266,7 +271,7 @@ export default async function HomePage() {
             className="mb-14"
           />
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {home.research.items.map((area) => {
+            {home.research.items.map((area, index) => {
               const Icon = researchIcons[area.icon] || FileText;
               const imageSrc =
                 researchImages[area.id as keyof typeof researchImages] ||
@@ -274,8 +279,12 @@ export default async function HomePage() {
 
               return (
                 <li key={area.id}>
-                  <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-teal/15 bg-white shadow-[0_12px_36px_-22px_rgba(10,37,64,0.4)] transition duration-300 hover:-translate-y-1 hover:border-teal/40 hover:shadow-[0_20px_44px_-18px_rgba(20,184,166,0.35)]">
-                    <div className="relative h-32 overflow-hidden sm:h-36">
+                  <article
+                    data-aos="fade-up"
+                    data-aos-delay={Math.min(index * 70, 280)}
+                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-teal/15 bg-white shadow-[0_12px_36px_-22px_rgba(10,37,64,0.4)] transition duration-300 hover:-translate-y-1 hover:border-teal/40 hover:shadow-[0_20px_44px_-18px_rgba(20,184,166,0.35)]"
+                  >
+                    <div className="aos-photo relative h-32 overflow-hidden sm:h-36">
                       <Image
                         src={imageSrc}
                         alt=""
@@ -318,9 +327,12 @@ export default async function HomePage() {
       {show.successStory ? (
       <section className="relative overflow-hidden bg-gradient-to-b from-[#eefbf8] to-white py-20 sm:py-24">
         <Container>
-          <div className="overflow-hidden rounded-3xl border border-teal/15 bg-white shadow-[0_20px_50px_-28px_rgba(10,37,64,0.45)]">
+          <div
+            data-aos="fade-up"
+            className="overflow-hidden rounded-3xl border border-teal/15 bg-white shadow-[0_20px_50px_-28px_rgba(10,37,64,0.45)]"
+          >
             <div className="grid lg:grid-cols-2">
-              <div className="relative min-h-[240px] sm:min-h-[320px] lg:min-h-full">
+              <div className="aos-photo relative min-h-[240px] sm:min-h-[320px] lg:min-h-full">
                 <Image
                   src={storyImage}
                   alt=""

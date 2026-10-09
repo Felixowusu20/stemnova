@@ -17,6 +17,7 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   return (
     <div
+      data-aos="fade-up"
       className={cn(
         "max-w-3xl",
         align === "center" && "mx-auto text-center",

@@ -8,14 +8,16 @@ import {
 } from "@/components";
 import {
   leadershipCategoryLabel,
+  leadershipDisplayRank,
   resolveLeadershipCategory,
+  sortLeadership,
 } from "@/lib/cms/leadership-roles";
 import {
-  resolveFounders,
   resolveLeadershipPage,
-  resolveNonFounderTeam,
+  resolveTeam,
 } from "@/lib/cms/resolve-content";
 import type { TeamMember } from "@/types";
+import { portraitUrl } from "@/lib/portrait-url";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -43,70 +45,102 @@ function memberTitle(member: TeamMember) {
 }
 
 export default async function AboutLeadershipPage() {
-  const [founders, team, page] = await Promise.all([
-    resolveFounders(),
-    resolveNonFounderTeam(),
+  const [leaders, page] = await Promise.all([
+    resolveTeam(),
     resolveLeadershipPage(),
   ]);
-
-  const featuredFounder = founders.length === 1;
+  const ordered = sortLeadership(leaders);
+  const ceos = ordered.filter((member) => leadershipDisplayRank(member) === 0);
+  const advisory = ordered.filter(
+    (member) => leadershipDisplayRank(member) === 1
+  );
+  const rest = ordered.filter((member) => leadershipDisplayRank(member) === 2);
+  const featuredCeo = ceos.length === 1;
+  const groups = [
+    advisory.length > 0
+      ? {
+          key: "advisory",
+          eyebrow: "Advisory Board",
+          title: "Advisors and Members",
+          description: "Advisory board members guiding STEMNova's work.",
+          members: advisory,
+        }
+      : null,
+    rest.length > 0
+      ? {
+          key: "rest",
+          eyebrow: page.teamEyebrow,
+          title: page.teamTitle,
+          description: page.teamDescription,
+          members: rest,
+        }
+      : null,
+  ].filter((group) => group !== null);
 
   return (
     <>
       <section className="bg-light py-16 sm:py-20">
         <Container>
-          {founders.length > 0 ? (
+          {ceos.length > 0 ? (
             <>
               <SectionHeading
-                eyebrow={page.foundersEyebrow}
-                title={page.foundersTitle}
-                description={page.foundersDescription}
+                eyebrow="Leadership"
+                title="C.E.O"
+                description="The chief executive leading STEMNova Foundation."
                 align="center"
                 className="mb-10"
               />
               <ul
                 className={
-                  featuredFounder
+                  featuredCeo
                     ? "mx-auto max-w-4xl"
                     : "mx-auto grid max-w-5xl gap-6 lg:grid-cols-2"
                 }
               >
-                {founders.map((founder) => (
+                {ceos.map((founder) => {
+                  const photo = portraitUrl(founder.imageUrl, 960);
+                  return (
                   <li key={founder.id}>
-                    <article className="overflow-hidden rounded-2xl border border-navy/10 bg-white shadow-sm transition-shadow hover:shadow-md">
+                    <article
+                      data-aos="fade-up"
+                      className="overflow-hidden rounded-2xl border border-navy/10 bg-white shadow-sm transition-shadow hover:shadow-md"
+                    >
                       <div
                         className={
-                          featuredFounder
+                          featuredCeo
                             ? "grid sm:grid-cols-[min(42%,280px)_1fr]"
                             : "grid sm:grid-cols-[min(40%,220px)_1fr]"
                         }
                       >
                         <div
-                          className={`relative bg-navy/5 ${
-                            featuredFounder
+                          className={`aos-photo relative bg-navy/5 ${
+                            featuredCeo
                               ? "min-h-[280px] sm:min-h-[340px]"
                               : "min-h-[240px] sm:min-h-[280px]"
                           }`}
                         >
-                          <Image
-                            src={founder.imageUrl}
-                            alt={`Portrait of ${founder.name}`}
-                            fill
-                            quality={92}
-                            priority={featuredFounder}
-                            className="object-cover object-top"
-                            sizes={
-                              featuredFounder
-                                ? "(max-width: 640px) 100vw, 280px"
-                                : "(max-width: 640px) 100vw, 220px"
-                            }
-                          />
+                          {photo ? (
+                            <Image
+                              src={photo}
+                              alt={`Portrait of ${founder.name}`}
+                              fill
+                              unoptimized
+                              quality={92}
+                              priority={featuredCeo}
+                              className="object-cover object-[center_12%]"
+                              sizes={
+                                featuredCeo
+                                  ? "(max-width: 640px) 100vw, 280px"
+                                  : "(max-width: 640px) 100vw, 220px"
+                              }
+                            />
+                          ) : null}
                         </div>
 
                         <div className="flex min-w-0 flex-col justify-center p-5 sm:p-7 lg:p-8">
                           <h2
                             className={`font-display font-bold leading-snug text-navy ${
-                              featuredFounder
+                              featuredCeo
                                 ? "text-2xl sm:text-3xl"
                                 : "text-xl sm:text-2xl"
                             }`}
@@ -118,7 +152,7 @@ export default async function AboutLeadershipPage() {
                           </p>
                           <p
                             className={`mt-3 leading-relaxed text-navy/75 ${
-                              featuredFounder
+                              featuredCeo
                                 ? "line-clamp-4 text-sm sm:text-base"
                                 : "line-clamp-3 text-sm"
                             }`}
@@ -170,28 +204,31 @@ export default async function AboutLeadershipPage() {
                       </div>
                     </article>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             </>
           ) : null}
 
-          {team.length > 0 ? (
+          {groups.map((group, groupIndex) => (
             <div
+              key={group.key}
               className={
-                founders.length > 0
+                ceos.length > 0 || groupIndex > 0
                   ? "mt-16 border-t border-navy/10 pt-14"
                   : undefined
               }
             >
               <SectionHeading
-                eyebrow={page.teamEyebrow}
-                title={page.teamTitle}
-                description={page.teamDescription}
+                eyebrow={group.eyebrow}
+                title={group.title}
+                description={group.description}
                 align="center"
                 className="mb-8"
               />
               <ul className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {team.map((member) => {
+                {group.members.map((member) => {
+                  const photo = portraitUrl(member.imageUrl, 720);
                   const title = memberTitle(member);
                   const category = resolveLeadershipCategory({
                     leadershipCategory: member.leadershipCategory,
@@ -200,20 +237,26 @@ export default async function AboutLeadershipPage() {
 
                   return (
                     <li key={member.id}>
-                      <article className="group h-full overflow-hidden rounded-2xl border border-navy/10 bg-white transition-shadow hover:shadow-md">
+                      <article
+                        data-aos="fade-up"
+                        className="group h-full overflow-hidden rounded-2xl border border-navy/10 bg-white transition-shadow hover:shadow-md"
+                      >
                         <Link
                           href={`/about/leadership/${member.slug}`}
                           className="flex h-full flex-col focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
                         >
-                          <div className="relative aspect-[4/3] bg-navy/5">
-                            <Image
-                              src={member.imageUrl}
-                              alt={`Portrait of ${member.name}`}
-                              fill
-                              quality={90}
-                              className="object-cover object-top"
-                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            />
+                          <div className="aos-photo relative aspect-[4/3] bg-navy/5">
+                            {photo ? (
+                              <Image
+                                src={photo}
+                                alt={`Portrait of ${member.name}`}
+                                fill
+                                unoptimized
+                                quality={90}
+                                className="object-cover object-[center_12%]"
+                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              />
+                            ) : null}
                           </div>
                           <div className="flex flex-1 flex-col p-5">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-teal">
@@ -240,7 +283,7 @@ export default async function AboutLeadershipPage() {
                 })}
               </ul>
             </div>
-          ) : null}
+          ))}
         </Container>
       </section>
 

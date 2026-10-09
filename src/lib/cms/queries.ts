@@ -7,7 +7,7 @@ export type ResolvedSiteConfig = SiteConfig & {
   logoUrl: string;
   logoAlt: string;
   faviconUrl?: string | null;
-  heroSlides: { src: string; alt: string }[];
+  heroSlides: { src: string; alt: string; showCaption?: boolean }[];
   pageHeroImages: Record<string, string>;
 };
 
@@ -45,7 +45,9 @@ export async function getResolvedSiteConfig(): Promise<ResolvedSiteConfig> {
       logoAlt: row.logoAlt || row.name,
       faviconUrl: row.faviconUrl,
       heroSlides:
-        (row.heroSlides as unknown as { src: string; alt: string }[] | null) ??
+        (row.heroSlides as unknown as
+          | { src: string; alt: string; showCaption?: boolean }[]
+          | null) ??
         [...images.homeSlides],
       pageHeroImages:
         (row.pageHeroImages as unknown as Record<string, string> | null) ?? {

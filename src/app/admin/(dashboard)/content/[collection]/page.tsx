@@ -4,6 +4,7 @@ import { CollectionItemsTable } from "@/components/admin/CollectionItemsTable";
 import { getCollectionMeta } from "@/lib/cms/collections";
 import {
   leadershipCategoryLabel,
+  leadershipDisplayRank,
   resolveLeadershipCategory,
 } from "@/lib/cms/leadership-roles";
 import { prisma } from "@/lib/db";
@@ -34,6 +35,23 @@ export default async function AdminCollectionPage({
     where: { collection },
     orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }],
   });
+  const orderedItems =
+    collection === "team"
+      ? [...items].sort((a, b) => {
+          const rank = (item: (typeof items)[number]) => {
+            const data =
+              item.data && typeof item.data === "object" && item.data !== null
+                ? (item.data as Record<string, unknown>)
+                : {};
+            return leadershipDisplayRank({
+              leadershipCategory: data.leadershipCategory,
+              isFounder: data.isFounder,
+              role: item.excerpt || data.role,
+            });
+          };
+          return rank(a) - rank(b);
+        })
+      : items;
 
   const canAdd = collection !== "pages";
 
@@ -63,7 +81,7 @@ export default async function AdminCollectionPage({
 
       <CollectionItemsTable
         collection={collection}
-        items={items.map((item) => {
+        items={orderedItems.map((item) => {
           const data =
             item.data && typeof item.data === "object" && item.data !== null
               ? (item.data as Record<string, unknown>)

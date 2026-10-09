@@ -29,6 +29,7 @@ export function CtaSection({
         }}
       />
       <Container className="relative text-center">
+        <div data-aos="fade-up">
         <h2 className="font-display text-3xl font-bold text-white sm:text-4xl">
           {title}
         </h2>
@@ -55,6 +56,7 @@ export function CtaSection({
           >
             Partner With Us
           </Button>
+        </div>
         </div>
       </Container>
     </section>

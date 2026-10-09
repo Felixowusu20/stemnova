@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Linkedin, Mail } from "lucide-react";
+import { portraitUrl } from "@/lib/portrait-url";
 import { cn } from "@/lib/utils";
 import type { TeamMember } from "@/types";
 
@@ -10,8 +11,11 @@ interface TeamCardProps {
 }
 
 export function TeamCard({ member, className }: TeamCardProps) {
+  const photo = portraitUrl(member.imageUrl, 720);
+
   return (
     <article
+      data-aos="fade-up"
       className={cn(
         "group h-full overflow-hidden rounded-xl border border-navy/10 bg-white transition-shadow hover:shadow-md",
         className
@@ -21,15 +25,18 @@ export function TeamCard({ member, className }: TeamCardProps) {
         href={`/about/leadership/${member.slug}`}
         className="flex h-full flex-row focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:flex-col"
       >
-        <div className="relative w-[36%] min-w-[6.5rem] shrink-0 self-stretch overflow-hidden bg-navy/5 sm:w-full sm:min-w-0 sm:aspect-[5/4] lg:aspect-[4/3]">
-          <Image
-            src={member.imageUrl}
-            alt={`Portrait of ${member.name}`}
-            fill
-            quality={90}
-            className="object-cover object-top"
-            sizes="(max-width: 640px) 36vw, (max-width: 1200px) 50vw, 25vw"
-          />
+        <div className="aos-photo relative w-[36%] min-w-[6.5rem] shrink-0 self-stretch overflow-hidden bg-navy/5 sm:w-full sm:min-w-0 sm:aspect-[5/4] lg:aspect-[4/3]">
+          {photo ? (
+            <Image
+              src={photo}
+              alt={`Portrait of ${member.name}`}
+              fill
+              unoptimized
+              quality={90}
+              className="object-cover object-[center_12%]"
+              sizes="(max-width: 640px) 36vw, (max-width: 1200px) 50vw, 25vw"
+            />
+          ) : null}
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col justify-between gap-2 p-3 sm:gap-0 sm:p-4">
