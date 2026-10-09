@@ -18,6 +18,7 @@ import {
   testimonials,
   partners,
   toPartnerSlug,
+  uniquePartners,
   valuesData,
 } from "@/content";
 import { parseNewsContent } from "@/lib/cms/news-body";
@@ -68,6 +69,14 @@ function splitParagraphs(body?: string | null): string[] {
 
 function stringOr<T extends string>(value: unknown, fallback: T): T {
   return typeof value === "string" && value.trim() ? (value as T) : fallback;
+}
+
+function stringList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 export async function resolvePrograms(): Promise<Program[]> {
@@ -369,6 +378,12 @@ export async function resolveTeam(): Promise<TeamMember[]> {
           member?.fullBio ||
           [],
         imageUrl: item.coverUrl || data.imageUrl || member?.imageUrl || "",
+        focusAreas: stringList(
+          "focusAreas" in data ? data.focusAreas : member?.focusAreas
+        ),
+        highlights: stringList(
+          "highlights" in data ? data.highlights : member?.highlights
+        ),
         email:
           "email" in data
             ? typeof data.email === "string" && data.email.trim()
@@ -454,11 +469,11 @@ export async function resolveTestimonials(): Promise<Testimonial[]> {
 
 export async function resolvePartners(): Promise<Partner[]> {
   const items = await getContentByCollection("partners");
-  if (!(await isCmsActive())) return partners;
+  if (!(await isCmsActive())) return uniquePartners(partners);
 
-  if (items.length === 0) return partners;
+  if (items.length === 0) return uniquePartners(partners);
 
-  return items.map((item) => {
+  return uniquePartners(items.map((item) => {
     const data = asData<Partner>(item.data);
     const name = item.title || data.name || "Partner";
     const slug =
@@ -481,7 +496,7 @@ export async function resolvePartners(): Promise<Partner[]> {
       category: data.category || "ngo",
       isPlaceholder: true as const,
     };
-  });
+  }));
 }
 
 export async function resolvePartnerBySlug(

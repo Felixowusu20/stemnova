@@ -29,12 +29,14 @@ interface BlogCardProps {
 export function BlogCard({ post, className }: BlogCardProps) {
   return (
     <article
+      data-aos="fade-up"
+      data-aos-delay={80}
       className={cn(
         "group flex flex-row overflow-hidden rounded-2xl border border-navy/8 bg-white shadow-sm transition-shadow hover:shadow-md",
         className
       )}
     >
-      <div className="relative m-2.5 w-[6.75rem] min-h-[7.5rem] shrink-0 self-stretch overflow-hidden rounded-xl bg-navy/5 sm:m-3 sm:w-[8.25rem] sm:min-h-[9rem]">
+      <div className="aos-photo relative m-2.5 w-[6.75rem] min-h-[7.5rem] shrink-0 self-stretch overflow-hidden rounded-xl bg-navy/5 sm:m-3 sm:w-[8.25rem] sm:min-h-[9rem]">
         <NewsImage
           src={post.imageUrl}
           alt={post.title}

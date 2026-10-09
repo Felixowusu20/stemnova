@@ -37,6 +37,8 @@ export function ProgramCard({ program, className }: ProgramCardProps) {
 
   return (
     <article
+      data-aos="fade-up"
+      data-aos-delay={80}
       className={cn(
         "group h-full overflow-hidden rounded-2xl border border-navy/10 bg-white shadow-sm transition-shadow hover:shadow-md",
         className
@@ -46,7 +48,7 @@ export function ProgramCard({ program, className }: ProgramCardProps) {
         href={`/programs/${program.slug}`}
         className="flex h-full flex-row focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 sm:flex-col"
       >
-        <div className="relative w-[38%] min-w-[7.5rem] shrink-0 self-stretch overflow-hidden bg-navy/5 sm:w-full sm:min-w-0 sm:aspect-[2/1]">
+        <div className="aos-photo relative w-[38%] min-w-[7.5rem] shrink-0 self-stretch overflow-hidden bg-navy/5 sm:w-full sm:min-w-0 sm:aspect-[2/1]">
           <Image
             src={program.heroImageUrl}
             alt=""

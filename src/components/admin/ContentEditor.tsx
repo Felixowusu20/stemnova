@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { AboutOverviewPageFields } from "@/components/admin/AboutOverviewPageFields";
@@ -126,12 +127,22 @@ function readBlogFields(data: unknown, publishedAt?: string | Date | null) {
   };
 }
 
+function readStringList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function readTeamContact(data: unknown) {
   if (!data || typeof data !== "object") {
     return {
       email: "",
       linkedin: "",
       leadershipCategory: "other" as LeadershipCategoryId,
+      focusAreas: [] as string[],
+      highlights: [] as string[],
     };
   }
   const record = data as Record<string, unknown>;
@@ -142,6 +153,8 @@ function readTeamContact(data: unknown) {
       leadershipCategory: record.leadershipCategory,
       isFounder: record.isFounder,
     }),
+    focusAreas: readStringList(record.focusAreas),
+    highlights: readStringList(record.highlights),
   };
 }
 
@@ -221,6 +234,12 @@ export function ContentEditor({
   const [linkedin, setLinkedin] = useState(initialContact.linkedin);
   const [leadershipCategory, setLeadershipCategory] =
     useState<LeadershipCategoryId>(initialContact.leadershipCategory);
+  const [focusAreas, setFocusAreas] = useState<string[]>(
+    initialContact.focusAreas
+  );
+  const [highlights, setHighlights] = useState<string[]>(
+    initialContact.highlights
+  );
   const [partnerWebsite, setPartnerWebsite] = useState(initialPartner.website);
   const [partnerCategory, setPartnerCategory] = useState(
     initialPartner.category
@@ -350,6 +369,12 @@ export function ContentEditor({
       existingData.linkedin = linkedin.trim();
       existingData.leadershipCategory = leadershipCategory;
       existingData.isFounder = isFounderCategory(leadershipCategory);
+      existingData.focusAreas = focusAreas
+        .map((item) => item.trim())
+        .filter(Boolean);
+      existingData.highlights = highlights
+        .map((item) => item.trim())
+        .filter(Boolean);
     }
 
     if (collection === "programs") {
@@ -1309,11 +1334,26 @@ export function ContentEditor({
                     ))}
                   </select>
                   <p className="mt-1.5 text-xs text-navy/55">
-                    Co-Founders appear in the top section on the Leadership
-                    page. Board and other roles appear in the institutional
-                    team grid below.
+                    The Leadership page lists the C.E.O first, then advisors
+                    and board members, then everyone else.
                   </p>
                 </div>
+                <StringListEditor
+                  label="Focus Areas"
+                  description="Shown on this person's profile with a teal checkmark."
+                  items={focusAreas}
+                  onChange={setFocusAreas}
+                  placeholder="Research leadership"
+                  addLabel="Add focus area"
+                />
+                <StringListEditor
+                  label="Highlights"
+                  description="Shown on this person's profile with a blue checkmark."
+                  items={highlights}
+                  onChange={setHighlights}
+                  placeholder="Board member since 2024"
+                  addLabel="Add highlight"
+                />
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block text-sm font-medium">
@@ -1440,5 +1480,75 @@ export function ContentEditor({
         onConfirm={() => void onDelete()}
       />
     </form>
+  );
+}
+
+function StringListEditor({
+  label,
+  description,
+  items,
+  onChange,
+  placeholder,
+  addLabel,
+}: {
+  label: string;
+  description: string;
+  items: string[];
+  onChange: (next: string[]) => void;
+  placeholder: string;
+  addLabel: string;
+}) {
+  const field =
+    "w-full rounded-xl border border-navy/15 bg-white px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue";
+
+  return (
+    <div className="space-y-2 rounded-xl border border-navy/10 bg-light/40 p-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <p className="text-sm font-medium text-navy">{label}</p>
+          <p className="text-xs text-navy/55">{description}</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => onChange([...items, ""])}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-navy/15 bg-white px-2.5 py-1.5 text-xs font-semibold text-navy"
+        >
+          <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+          {addLabel}
+        </button>
+      </div>
+      {items.length === 0 ? (
+        <p className="text-xs text-navy/45">None yet.</p>
+      ) : (
+        <ul className="space-y-2">
+          {items.map((item, index) => (
+            <li key={`${label}-${index}`} className="flex items-center gap-2">
+              <input
+                className={field}
+                value={item}
+                onChange={(event) =>
+                  onChange(
+                    items.map((current, itemIndex) =>
+                      itemIndex === index ? event.target.value : current
+                    )
+                  )
+                }
+                placeholder={placeholder}
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  onChange(items.filter((_, itemIndex) => itemIndex !== index))
+                }
+                className="inline-flex shrink-0 items-center rounded-lg border border-red-200 px-2 py-2 text-red-700"
+                aria-label={`Remove ${label} item`}
+              >
+                <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

@@ -41,7 +41,7 @@ export function ImpactHighlights({ stats }: ImpactHighlightsProps) {
       </div>
 
       <Container className="relative">
-        <div className="mx-auto max-w-2xl text-center">
+        <div data-aos="fade-up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-teal">
             Our Impact
           </p>
@@ -54,7 +54,10 @@ export function ImpactHighlights({ stats }: ImpactHighlightsProps) {
         </div>
 
         {featured && (
-          <div className="mx-auto mt-14 max-w-xl border-b border-white/10 pb-12 text-center">
+          <div
+            data-aos="fade-up"
+            className="mx-auto mt-14 max-w-xl border-b border-white/10 pb-12 text-center"
+          >
             <ImpactCounter
               stat={{ ...featured, note: undefined }}
               className="border-0 bg-transparent p-0 shadow-none [&_.font-display]:text-5xl [&_.font-display]:text-teal sm:[&_.font-display]:text-6xl [&_p]:text-white [&_p.text-sm]:mt-3 [&_p.text-sm]:text-base"
@@ -66,6 +69,8 @@ export function ImpactHighlights({ stats }: ImpactHighlightsProps) {
           {supporting.map((stat, index) => (
             <li
               key={stat.label}
+              data-aos="fade-up"
+              data-aos-delay={Math.min(index * 60, 300)}
               className={
                 index > 0
                   ? "lg:border-l lg:border-white/10 lg:px-5"

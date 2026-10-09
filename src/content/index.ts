@@ -30,6 +30,7 @@ export {
   getPartnerBySlug,
   partnerCategoryLabel,
   toPartnerSlug,
+  uniquePartners,
 } from "@/content/partners";
 export {
   events,

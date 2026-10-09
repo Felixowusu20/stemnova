@@ -35,6 +35,7 @@ export function ResourceCard({ resource, className }: ResourceCardProps) {
 
   return (
     <article
+      data-aos="fade-up"
       className={cn(
         "group overflow-hidden rounded-2xl border border-navy/8 bg-white shadow-sm transition-shadow hover:shadow-md",
         "flex flex-row sm:flex-col",
@@ -42,7 +43,7 @@ export function ResourceCard({ resource, className }: ResourceCardProps) {
       )}
     >
       {resource.imageUrl ? (
-        <div className="relative w-[38%] min-w-[7.5rem] shrink-0 self-stretch overflow-hidden sm:w-full sm:min-w-0 sm:aspect-[16/9]">
+        <div className="aos-photo relative w-[38%] min-w-[7.5rem] shrink-0 self-stretch overflow-hidden sm:w-full sm:min-w-0 sm:aspect-[16/9]">
           <Image
             src={resource.imageUrl}
             alt=""

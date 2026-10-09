@@ -35,6 +35,7 @@ const settingsSchema = z.object({
       z.object({
         src: z.string(),
         alt: z.string(),
+        showCaption: z.boolean().optional(),
       })
     )
     .optional()

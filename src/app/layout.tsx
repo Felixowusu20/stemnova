@@ -8,6 +8,7 @@ import {
   Plus_Jakarta_Sans,
 } from "next/font/google";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { AosInit } from "@/components/layout/AosInit";
 import { PublicChrome } from "@/components/layout/PublicChrome";
 import { siteConfig } from "@/content";
 import { getOrganizationSchema, getWebSiteSchema } from "@/lib/seo-schemas";
@@ -175,6 +176,7 @@ export default function RootLayout({
       className={fontVariables}
     >
       <body className="flex min-h-screen flex-col font-sans antialiased">
+        <AosInit />
         <JsonLd data={[getOrganizationSchema(), getWebSiteSchema()]} />
         <a
           href="#main-content"

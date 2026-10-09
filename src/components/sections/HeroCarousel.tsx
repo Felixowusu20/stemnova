@@ -5,11 +5,18 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/content";
+import { optimizedImageUrl } from "@/lib/portrait-url";
 import { cn } from "@/lib/utils";
 
 export interface HeroSlide {
   src: string;
   alt: string;
+  /** When false, the site name, tagline, and buttons stay off this slide. */
+  showCaption?: boolean;
+}
+
+function slideShowsCaption(slide: HeroSlide | undefined): boolean {
+  return slide?.showCaption !== false;
 }
 
 interface HeroCarouselProps {
@@ -47,9 +54,11 @@ export function HeroCarousel({
 
   if (count === 0) return null;
 
+  const showCaption = slideShowsCaption(slides[active]);
+
   return (
     <section
-      className="relative h-[min(78svh,680px)] min-h-[420px] overflow-hidden"
+      className="relative h-[min(78svh,680px)] min-h-[420px] overflow-hidden bg-navy"
       aria-roledescription="carousel"
       aria-label="STEMNova Foundation highlights"
       onMouseEnter={() => setPaused(true)}
@@ -71,62 +80,76 @@ export function HeroCarousel({
           aria-hidden={index !== active}
         >
           <Image
-            src={slide.src}
+            src={optimizedImageUrl(slide.src, 1600) || slide.src}
             alt={slide.alt}
             fill
+            unoptimized
             priority={index === 0}
             className={cn(
-              "object-cover",
-              index === active && "motion-safe:animate-[heroKenBurns_12s_ease-out_forwards]"
+              slideShowsCaption(slide) ? "object-cover" : "object-contain",
+              index === active &&
+                slideShowsCaption(slide) &&
+                "motion-safe:animate-[heroKenBurns_12s_ease-out_forwards]"
             )}
             sizes="100vw"
           />
         </div>
       ))}
 
-      <div
-        className="absolute inset-0 bg-gradient-to-r from-navy/80 via-navy/50 to-navy/30"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-navy/65 via-transparent to-navy/25"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-0 opacity-70"
-        aria-hidden="true"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 18% 35%, rgba(20,184,166,0.28), transparent 42%), radial-gradient(circle at 82% 70%, rgba(34,197,94,0.14), transparent 40%)",
-        }}
-      />
+      {showCaption ? (
+        <>
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-navy/80 via-navy/50 to-navy/30"
+            aria-hidden="true"
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-navy/65 via-transparent to-navy/25"
+            aria-hidden="true"
+          />
+          <div
+            className="absolute inset-0 opacity-70"
+            aria-hidden="true"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 18% 35%, rgba(20,184,166,0.28), transparent 42%), radial-gradient(circle at 82% 70%, rgba(34,197,94,0.14), transparent 40%)",
+            }}
+          />
+        </>
+      ) : null}
 
       <Container className="relative flex h-full flex-col justify-end pb-16 pt-28 sm:pb-20 sm:pt-32">
-        <div className="max-w-2xl">
-          <p className="font-display text-sm font-semibold uppercase tracking-[0.22em] text-teal">
-            {siteConfig.name}
-          </p>
-          <h1 className="mt-4 font-display text-2xl font-semibold leading-snug tracking-tight text-white sm:text-3xl lg:text-4xl">
-            {siteConfig.tagline}
-          </h1>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Button href="/get-involved" variant="teal" size="lg">
-              Join Our Mission
-            </Button>
-            <Button
-              href="/donate"
-              variant="outline"
-              size="lg"
-              className="border-white text-white hover:bg-white/10"
-            >
-              Support STEMNova
-            </Button>
+        {showCaption ? (
+          <div className="max-w-2xl">
+            <p className="font-display text-sm font-semibold uppercase tracking-[0.22em] text-teal">
+              {siteConfig.name}
+            </p>
+            <h1 className="mt-4 font-display text-2xl font-semibold leading-snug tracking-tight text-white sm:text-3xl lg:text-4xl">
+              {siteConfig.tagline}
+            </h1>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Button href="/get-involved" variant="teal" size="lg">
+                Join Our Mission
+              </Button>
+              <Button
+                href="/donate"
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white/10"
+              >
+                Support STEMNova
+              </Button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <h1 className="sr-only">{siteConfig.tagline}</h1>
+        )}
 
         {count > 1 && (
           <div
-            className="mt-10 flex items-center gap-2"
+            className={cn(
+              "mt-10 flex w-fit items-center gap-2",
+              !showCaption && "rounded-full bg-navy/55 px-3 py-2 backdrop-blur-sm"
+            )}
             role="tablist"
             aria-label="Hero slides"
           >

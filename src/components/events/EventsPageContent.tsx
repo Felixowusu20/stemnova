@@ -45,8 +45,8 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
           <Container className="relative py-8 sm:py-12 lg:py-14">
             <div className="grid gap-5 sm:gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
               {/* Mobile: image left + details right; desktop: text first, image second */}
-              <div className="order-1 flex gap-3 sm:hidden">
-                <div className="relative w-[40%] min-w-[7.75rem] shrink-0 overflow-hidden rounded-2xl">
+              <div data-aos="fade-up" className="order-1 flex gap-3 sm:hidden">
+                <div className="aos-photo relative w-[40%] min-w-[7.75rem] shrink-0 overflow-hidden rounded-2xl">
                   <div className="relative h-full min-h-[9.5rem]">
                     <Image
                       src={nextEvent.imageUrl}
@@ -105,7 +105,7 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
                 </div>
               </div>
 
-              <div className="hidden sm:block lg:col-span-7">
+              <div data-aos="fade-right" className="hidden sm:block lg:col-span-7">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-teal">
                   Featured Event
                 </p>
@@ -157,8 +157,8 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
                   />
                 </div>
               </div>
-              <div className="order-2 hidden sm:block lg:col-span-5">
-                <div className="overflow-hidden rounded-2xl border border-white/15 bg-white/5 backdrop-blur-sm">
+              <div data-aos="fade-left" className="order-2 hidden sm:block lg:col-span-5">
+                <div className="aos-photo overflow-hidden rounded-2xl border border-white/15 bg-white/5 backdrop-blur-sm">
                   <div className="relative aspect-[16/10]">
                     <Image
                       src={nextEvent.imageUrl}
@@ -220,12 +220,14 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
               className="mb-10"
             />
             <ul className="space-y-3 sm:space-y-4">
-              {past.map((event) => (
+              {past.map((event, index) => (
                 <li
                   key={event.id}
+                  data-aos="fade-up"
+                  data-aos-delay={Math.min(index * 60, 240)}
                   className="flex gap-3 overflow-hidden rounded-2xl border border-navy/8 bg-white p-2.5 shadow-sm sm:grid sm:grid-cols-[180px_1fr] sm:gap-5 sm:p-5 lg:grid-cols-[220px_1fr]"
                 >
-                  <div className="relative w-[36%] min-w-[6.75rem] shrink-0 overflow-hidden rounded-xl self-stretch sm:w-auto sm:min-w-0 sm:aspect-auto sm:min-h-[140px]">
+                  <div className="aos-photo relative w-[36%] min-w-[6.75rem] shrink-0 overflow-hidden rounded-xl self-stretch sm:w-auto sm:min-w-0 sm:aspect-auto sm:min-h-[140px]">
                     <Image
                       src={event.imageUrl}
                       alt=""
@@ -264,7 +266,7 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
 
       <section className={past.length > 0 ? "py-16 sm:py-20" : "bg-light py-16 sm:py-20"}>
         <Container>
-          <div className="flex justify-center">
+          <div data-aos="fade-up" className="flex justify-center">
             <Link
               href="/gallery"
               className="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"

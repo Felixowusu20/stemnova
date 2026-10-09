@@ -43,6 +43,7 @@ export function PageHero({
       )}
 
       <Container className="relative py-12 sm:py-20 lg:py-24">
+        <div data-aos="fade-up">
         {breadcrumbs && breadcrumbs.length > 0 && (
           <Breadcrumbs
             items={breadcrumbs}
@@ -58,6 +59,7 @@ export function PageHero({
           </p>
         )}
         {children}
+        </div>
       </Container>
     </section>
   );

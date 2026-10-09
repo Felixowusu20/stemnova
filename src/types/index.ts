@@ -234,6 +234,7 @@ export interface ImpactData {
 }
 
 export type LeadershipCategoryId =
+  | "ceo"
   | "co-founder"
   | "board-chair"
   | "board-trustee"
