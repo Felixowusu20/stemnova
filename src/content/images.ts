@@ -5,7 +5,7 @@
 
 export const images = {
   hero: {
-    home: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&q=80",
+    home: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1920&q=80",
     about:
       "https://images.unsplash.com/photo-1531487487862-6abf10f6d48a?w=1920&q=90&auto=format&fit=crop",
     programs: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1600&q=80",
@@ -19,7 +19,7 @@ export const images = {
   /** Homepage hero background carousel slides. */
   homeSlides: [
     {
-      src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&q=80",
+      src: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1920&q=80",
       alt: "Researchers collaborating in a modern laboratory",
     },
     {
