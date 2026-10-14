@@ -62,7 +62,7 @@ export const images = {
   },
 
   gallery: [
-    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
+    "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1920&q=80",
     "https://images.unsplash.com/photo-1531487487862-6abf10f6d48a?w=800&q=80",
     "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&q=80",
     "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80",
