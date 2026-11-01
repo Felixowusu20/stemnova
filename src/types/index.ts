@@ -358,6 +358,10 @@ export interface GalleryAlbum {
   description: string;
   coverImageUrl: string;
   images: GalleryImage[];
+  /** Programme albums are the default; event albums group photos by past event. */
+  kind?: "programme" | "event";
+  /** When set, this album is the photo set for the matching event slug. */
+  eventSlug?: string;
 }
 
 export type BlogCategory =

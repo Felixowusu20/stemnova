@@ -23,7 +23,16 @@ import { defaultHomePageData } from "../src/lib/cms/home-sections";
 loadEnv({ path: ".env.local" });
 loadEnv();
 
-const connectionString = process.env.DATABASE_URL;
+function normalizeDatabaseUrl(url: string) {
+  return url.replace(
+    /([?&])sslmode=(require|prefer|verify-ca)(?=&|$)/gi,
+    "$1sslmode=verify-full"
+  );
+}
+
+const connectionString = process.env.DATABASE_URL
+  ? normalizeDatabaseUrl(process.env.DATABASE_URL.trim())
+  : "";
 if (!connectionString) {
   throw new Error("DATABASE_URL is required to seed the database");
 }

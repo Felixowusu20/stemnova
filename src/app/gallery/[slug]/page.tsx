@@ -71,10 +71,10 @@ export default async function GalleryAlbumPage({
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <Link
               href="/gallery"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-navy/70 transition-colors hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 rounded"
+              className="inline-flex items-center gap-2 rounded text-sm font-semibold text-navy/70 transition-colors hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              All programme albums
+              All galleries
             </Link>
             <p className="text-sm text-navy/55">
               {album.images.length}{" "}
@@ -83,9 +83,15 @@ export default async function GalleryAlbumPage({
           </div>
           <GalleryGrid albums={albums} albumSlug={album.slug} />
           <div className="mt-12 flex flex-col items-center justify-center gap-3 border-t border-navy/8 pt-10 sm:flex-row">
-            <Button href={`/programs/${album.slug}`} variant="secondary">
-              Learn About This Programme
-            </Button>
+            {album.kind === "event" && album.eventSlug ? (
+              <Button href={`/events/${album.eventSlug}`} variant="secondary">
+                View event details
+              </Button>
+            ) : (
+              <Button href={`/programs/${album.slug}`} variant="secondary">
+                Learn About This Programme
+              </Button>
+            )}
             <Button href="/events" variant="outline">
               Back to Events
             </Button>

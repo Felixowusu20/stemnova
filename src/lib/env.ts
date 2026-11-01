@@ -40,6 +40,23 @@ export function getAdminSeedCredentials() {
   };
 }
 
+/**
+ * Keep current pg SSL behaviour without the Node security warning.
+ * `sslmode=require|prefer|verify-ca` are treated as verify-full today;
+ * set that explicitly so pg-connection-string stops warning.
+ */
+export function normalizeDatabaseUrl(url: string) {
+  return url.replace(
+    /([?&])sslmode=(require|prefer|verify-ca)(?=&|$)/gi,
+    "$1sslmode=verify-full"
+  );
+}
+
+export function getDatabaseUrl() {
+  const url = process.env.DATABASE_URL?.trim() || "";
+  return url ? normalizeDatabaseUrl(url) : "";
+}
+
 export function getCloudinaryConfig() {
   const fromUrl = parseCloudinaryUrl(process.env.CLOUDINARY_URL);
 

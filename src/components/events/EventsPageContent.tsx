@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { eventGalleryHref } from "@/lib/cms/event-gallery";
 import type { Event } from "@/types";
 
 interface EventsPageContentProps {
@@ -250,12 +251,21 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
                     <p className="mt-3 hidden max-w-2xl text-sm leading-relaxed text-navy/70 sm:block">
                       {event.description}
                     </p>
-                    <Link
-                      href={`/events/${event.slug}`}
-                      className="mt-2 inline-flex text-xs font-semibold text-blue hover:text-navy sm:mt-3 sm:text-sm"
-                    >
-                      View event details
-                    </Link>
+                    <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 sm:mt-3">
+                      <Link
+                        href={`/events/${event.slug}`}
+                        className="inline-flex text-xs font-semibold text-blue hover:text-navy sm:text-sm"
+                      >
+                        View event details
+                      </Link>
+                      <Link
+                        href={eventGalleryHref(event.slug)}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal hover:text-navy sm:text-sm"
+                      >
+                        <Images className="h-3.5 w-3.5" aria-hidden="true" />
+                        View event images
+                      </Link>
+                    </div>
                   </div>
                 </li>
               ))}
@@ -272,7 +282,7 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
               className="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
             >
               <Images className="h-4 w-4" aria-hidden="true" />
-              Our Event Galleries
+              Browse event galleries
             </Link>
           </div>
         </Container>

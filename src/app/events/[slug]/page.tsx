@@ -7,17 +7,23 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
+  Images,
   MapPin,
   Users,
 } from "lucide-react";
 import { EventCountdown } from "@/components/events/EventCountdown";
 import { EventRegisterButton } from "@/components/events/EventRegisterButton";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { events } from "@/content";
-import { resolveEventBySlug } from "@/lib/cms/resolve-content";
+import { eventGalleryHref } from "@/lib/cms/event-gallery";
+import {
+  resolveEventBySlug,
+  resolveEventGalleryAlbum,
+} from "@/lib/cms/resolve-content";
 import { getEventSchema } from "@/lib/seo-schemas";
 import { buildPageMetadata } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/site-url";
@@ -78,6 +84,13 @@ export default async function EventDetailPage({
   if (!event) {
     notFound();
   }
+
+  const eventAlbum = event.isPast
+    ? await resolveEventGalleryAlbum(event.slug)
+    : null;
+  const galleryHref = eventAlbum
+    ? `/gallery/${eventAlbum.slug}`
+    : eventGalleryHref(event.slug);
 
   return (
     <>
@@ -167,6 +180,19 @@ export default async function EventDetailPage({
                         />
                       </div>
                     )}
+                    {event.isPast && eventAlbum ? (
+                      <div className="mt-3">
+                        <Button
+                          href={galleryHref}
+                          size="sm"
+                          variant="teal"
+                          className="w-full justify-center"
+                        >
+                          <Images className="h-3.5 w-3.5" aria-hidden="true" />
+                          View event images
+                        </Button>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -298,6 +324,18 @@ export default async function EventDetailPage({
                       />
                     )}
 
+                    {event.isPast && eventAlbum ? (
+                      <Button
+                        href={galleryHref}
+                        size="lg"
+                        variant="teal"
+                        className="w-full"
+                      >
+                        <Images className="h-4 w-4" aria-hidden="true" />
+                        View event images
+                      </Button>
+                    ) : null}
+
                     {event.isIllustrative && (
                       <p className="text-xs text-navy/50">
                         Illustrative schedule. Final details will be managed from
@@ -309,6 +347,32 @@ export default async function EventDetailPage({
               </div>
             </aside>
           </div>
+
+          {event.isPast && eventAlbum ? (
+            <div className="mt-10 rounded-2xl border border-teal/20 bg-teal/5 p-6 sm:mt-12 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-8">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal">
+                  Event gallery
+                </p>
+                <h2 className="mt-2 font-display text-xl font-bold text-navy sm:text-2xl">
+                  Photos from this event
+                </h2>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-navy/70">
+                  Browse the album for {event.title}, grouped with other event
+                  galleries.
+                </p>
+              </div>
+              <Button
+                href={galleryHref}
+                size="lg"
+                variant="teal"
+                className="mt-5 shrink-0 sm:mt-0"
+              >
+                <Images className="h-4 w-4" aria-hidden="true" />
+                View event images
+              </Button>
+            </div>
+          ) : null}
         </Container>
       </section>
     </>
