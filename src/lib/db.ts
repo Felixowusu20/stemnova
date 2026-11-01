@@ -1,8 +1,9 @@
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { getDatabaseUrl } from "@/lib/env";
 
 /** Bump when adding/removing Prisma models so the HMR singleton is recreated. */
-const PRISMA_CLIENT_VERSION = 2;
+const PRISMA_CLIENT_VERSION = 3;
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -10,7 +11,7 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient() {
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString = getDatabaseUrl();
   if (!connectionString) {
     throw new Error("DATABASE_URL is not set");
   }

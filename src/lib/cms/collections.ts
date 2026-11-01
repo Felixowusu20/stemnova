@@ -40,7 +40,7 @@ export const CMS_COLLECTIONS = [
   {
     id: "gallery",
     label: "Gallery",
-    description: "Photo albums and programme galleries",
+    description: "Event and programme photo albums",
     hasSlug: true,
   },
   {

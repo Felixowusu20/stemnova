@@ -168,9 +168,15 @@ function readEventFields(data: unknown) {
       audience: "",
       isPast: false,
       registrationRequired: true,
+      galleryImageUrls: [] as string[],
     };
   }
   const record = data as Record<string, unknown>;
+  const galleryImageUrls = Array.isArray(record.galleryImageUrls)
+    ? record.galleryImageUrls.filter(
+        (url): url is string => typeof url === "string" && Boolean(url.trim())
+      )
+    : [];
   return {
     date: typeof record.date === "string" ? record.date : "",
     time: typeof record.time === "string" ? record.time : "",
@@ -182,6 +188,43 @@ function readEventFields(data: unknown) {
       record.registrationRequired === undefined
         ? true
         : Boolean(record.registrationRequired),
+    galleryImageUrls,
+  };
+}
+
+function readGalleryFields(data: unknown) {
+  if (!data || typeof data !== "object") {
+    return {
+      kind: "programme" as const,
+      eventSlug: "",
+      images: [] as { url: string; alt: string; caption: string }[],
+    };
+  }
+  const record = data as Record<string, unknown>;
+  const images = Array.isArray(record.images)
+    ? record.images
+        .map((item) => {
+          if (!item || typeof item !== "object") return null;
+          const image = item as Record<string, unknown>;
+          const url = typeof image.url === "string" ? image.url.trim() : "";
+          if (!url) return null;
+          return {
+            url,
+            alt: typeof image.alt === "string" ? image.alt : "",
+            caption: typeof image.caption === "string" ? image.caption : "",
+          };
+        })
+        .filter(
+          (
+            item
+          ): item is { url: string; alt: string; caption: string } =>
+            Boolean(item)
+        )
+    : [];
+  return {
+    kind: record.kind === "event" ? ("event" as const) : ("programme" as const),
+    eventSlug: typeof record.eventSlug === "string" ? record.eventSlug : "",
+    images,
   };
 }
 
@@ -250,9 +293,20 @@ export function ContentEditor({
   const [eventCategory, setEventCategory] = useState(initialEvent.category);
   const [eventAudience, setEventAudience] = useState(initialEvent.audience);
   const [eventIsPast, setEventIsPast] = useState(initialEvent.isPast);
+  const [eventGalleryUrls, setEventGalleryUrls] = useState<string[]>(
+    initialEvent.galleryImageUrls
+  );
   const [eventRegistrationRequired, setEventRegistrationRequired] = useState(
     initialEvent.registrationRequired
   );
+  const initialGallery = readGalleryFields(initial?.data);
+  const [galleryKind, setGalleryKind] = useState<"programme" | "event">(
+    initialGallery.kind
+  );
+  const [galleryEventSlug, setGalleryEventSlug] = useState(
+    initialGallery.eventSlug
+  );
+  const [galleryImages, setGalleryImages] = useState(initialGallery.images);
   const [registrationForm, setRegistrationForm] =
     useState<EventRegistrationFormConfig>(() =>
       parseRegistrationForm(initial?.data)
@@ -408,6 +462,9 @@ export function ContentEditor({
       existingData.category = eventCategory;
       existingData.audience = eventAudience.trim();
       existingData.isPast = eventIsPast;
+      existingData.galleryImageUrls = eventGalleryUrls
+        .map((url) => url.trim())
+        .filter(Boolean);
       existingData.registrationRequired = eventRegistrationRequired;
       existingData.registrationForm = {
         title: registrationForm.title.trim() || "Event registration",
@@ -446,6 +503,16 @@ export function ContentEditor({
       existingData.title = title;
       if (excerpt) existingData.description = excerpt;
       if (coverUrl) existingData.coverImageUrl = coverUrl;
+      existingData.kind = galleryKind;
+      existingData.eventSlug =
+        galleryKind === "event" ? galleryEventSlug.trim() : undefined;
+      existingData.images = galleryImages
+        .map((image) => ({
+          url: image.url.trim(),
+          alt: image.alt.trim() || title,
+          caption: image.caption.trim() || title,
+        }))
+        .filter((image) => image.url);
     }
 
     if (collection === "testimonials") {
@@ -1294,6 +1361,155 @@ export function ContentEditor({
                   />
                   Registration required
                 </label>
+                <div className="sm:col-span-2 space-y-3 rounded-xl border border-navy/10 bg-white p-4">
+                  <div>
+                    <p className="text-sm font-medium text-navy">
+                      Event gallery photos
+                    </p>
+                    <p className="mt-1 text-xs text-navy/55">
+                      Used on past events for the “View event images” button.
+                      The featured image is included automatically.
+                    </p>
+                  </div>
+                  {eventGalleryUrls.map((url, index) => (
+                    <div
+                      key={`event-gallery-${index}`}
+                      className="space-y-2 rounded-xl border border-navy/8 p-3"
+                    >
+                      <ImageUploadField
+                        label={`Photo ${index + 1}`}
+                        value={url}
+                        folder="stemnova/events/gallery"
+                        onChange={(next) => {
+                          const updated = [...eventGalleryUrls];
+                          updated[index] = next || "";
+                          setEventGalleryUrls(updated);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className="text-xs font-semibold text-red-700"
+                        onClick={() =>
+                          setEventGalleryUrls(
+                            eventGalleryUrls.filter((_, i) => i !== index)
+                          )
+                        }
+                      >
+                        Remove photo
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="rounded-xl border border-navy/15 px-3 py-2 text-xs font-semibold text-navy"
+                    onClick={() => setEventGalleryUrls([...eventGalleryUrls, ""])}
+                  >
+                    Add gallery photo
+                  </button>
+                </div>
+              </div>
+            )}
+            {collection === "gallery" && (
+              <div className="space-y-4 rounded-xl border border-navy/10 bg-light/60 p-4">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">
+                    Album type
+                  </label>
+                  <select
+                    className={field}
+                    value={galleryKind}
+                    onChange={(e) =>
+                      setGalleryKind(
+                        e.target.value === "event" ? "event" : "programme"
+                      )
+                    }
+                  >
+                    <option value="programme">Programme gallery</option>
+                    <option value="event">Event gallery</option>
+                  </select>
+                </div>
+                {galleryKind === "event" ? (
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">
+                      Linked event slug
+                    </label>
+                    <input
+                      className={field}
+                      value={galleryEventSlug}
+                      onChange={(e) => setGalleryEventSlug(e.target.value)}
+                      placeholder="africa-stem-leadership-summit-2026"
+                    />
+                    <p className="mt-1 text-xs text-navy/55">
+                      Must match the event slug so past event pages can open
+                      this album.
+                    </p>
+                  </div>
+                ) : null}
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-medium text-navy">Album photos</p>
+                    <p className="mt-1 text-xs text-navy/55">
+                      Add the images shown inside this gallery album.
+                    </p>
+                  </div>
+                  {galleryImages.map((image, index) => (
+                    <div
+                      key={`gallery-image-${index}`}
+                      className="space-y-2 rounded-xl border border-navy/8 bg-white p-3"
+                    >
+                      <ImageUploadField
+                        label={`Photo ${index + 1}`}
+                        value={image.url}
+                        folder="stemnova/gallery"
+                        onChange={(next) => {
+                          const updated = [...galleryImages];
+                          updated[index] = {
+                            ...updated[index],
+                            url: next || "",
+                          };
+                          setGalleryImages(updated);
+                        }}
+                      />
+                      <input
+                        className={field}
+                        value={image.caption}
+                        onChange={(e) => {
+                          const updated = [...galleryImages];
+                          updated[index] = {
+                            ...updated[index],
+                            caption: e.target.value,
+                            alt: updated[index].alt || e.target.value,
+                          };
+                          setGalleryImages(updated);
+                        }}
+                        placeholder="Caption"
+                      />
+                      <button
+                        type="button"
+                        className="text-xs font-semibold text-red-700"
+                        onClick={() =>
+                          setGalleryImages(
+                            galleryImages.filter((_, i) => i !== index)
+                          )
+                        }
+                      >
+                        Remove photo
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="rounded-xl border border-navy/15 px-3 py-2 text-xs font-semibold text-navy"
+                    onClick={() =>
+                      setGalleryImages([
+                        ...galleryImages,
+                        { url: "", alt: "", caption: "" },
+                      ])
+                    }
+                  >
+                    Add album photo
+                  </button>
+                </div>
               </div>
             )}
             {collection === "events" && eventRegistrationRequired && (

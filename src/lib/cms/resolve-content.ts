@@ -32,6 +32,10 @@ import {
 } from "@/lib/cms/page-forms";
 import { defaultHomePageData, type HomePageData } from "@/lib/cms/home-sections";
 import {
+  findEventGalleryAlbum,
+  mergeEventGalleryAlbums,
+} from "@/lib/cms/event-gallery";
+import {
   isFounderCategory,
   resolveLeadershipCategory,
 } from "@/lib/cms/leadership-roles";
@@ -507,12 +511,19 @@ export async function resolvePartnerBySlug(
 }
 
 export async function resolveGalleryAlbums(): Promise<GalleryAlbum[]> {
-  const items = await getContentByCollection("gallery");
-  if (!(await isCmsActive())) return galleryAlbums;
+  const [items, events, cmsActive] = await Promise.all([
+    getContentByCollection("gallery"),
+    resolveEvents(),
+    isCmsActive(),
+  ]);
+
+  if (!cmsActive) {
+    return mergeEventGalleryAlbums(galleryAlbums, events);
+  }
 
   const staticBySlug = new Map(galleryAlbums.map((item) => [item.slug, item]));
 
-  return items
+  const cmsAlbums = items
     .filter((item) => item.slug)
     .map((item) => {
       const album = staticBySlug.get(item.slug as string);
@@ -520,6 +531,16 @@ export async function resolveGalleryAlbums(): Promise<GalleryAlbum[]> {
       const images = Array.isArray(data.images)
         ? (data.images as GalleryImage[])
         : album?.images || [];
+      const eventSlug =
+        typeof data.eventSlug === "string" && data.eventSlug.trim()
+          ? data.eventSlug.trim()
+          : album?.eventSlug;
+      const kind =
+        data.kind === "event" || eventSlug
+          ? ("event" as const)
+          : data.kind === "programme"
+            ? ("programme" as const)
+            : album?.kind || ("programme" as const);
 
       return {
         ...(album || { images: [] }),
@@ -531,13 +552,30 @@ export async function resolveGalleryAlbums(): Promise<GalleryAlbum[]> {
         coverImageUrl:
           item.coverUrl || data.coverImageUrl || album?.coverImageUrl || "",
         images,
+        kind,
+        eventSlug,
       };
     });
+
+  // Keep static programme albums when CMS has not replaced that slug yet.
+  const cmsSlugs = new Set(cmsAlbums.map((album) => album.slug));
+  const mergedAlbums = [
+    ...cmsAlbums,
+    ...galleryAlbums.filter((album) => !cmsSlugs.has(album.slug)),
+  ];
+
+  return mergeEventGalleryAlbums(mergedAlbums, events);
 }
 
 export async function resolveGalleryAlbumBySlug(slug: string) {
   const albums = await resolveGalleryAlbums();
   return albums.find((album) => album.slug === slug);
+}
+
+/** Gallery album linked to a specific event, if photos exist. */
+export async function resolveEventGalleryAlbum(eventSlug: string) {
+  const albums = await resolveGalleryAlbums();
+  return findEventGalleryAlbum(albums, eventSlug) || null;
 }
 
 export async function resolveResources(): Promise<Resource[]> {

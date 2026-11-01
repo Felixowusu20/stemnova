@@ -148,6 +148,7 @@ export const galleryAlbums: GalleryAlbum[] = programs.map((program) => {
     title: program.title,
     description: program.shortDescription,
     coverImageUrl: program.heroImageUrl,
+    kind: "programme" as const,
     images: uniqueImages([
       {
         url: program.heroImageUrl,
