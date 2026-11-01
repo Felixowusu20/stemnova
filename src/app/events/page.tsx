@@ -3,7 +3,14 @@ import { EventsPageContent } from "@/components/events/EventsPageContent";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { images } from "@/content/images";
-import { resolveEvents } from "@/lib/cms/resolve-content";
+import {
+  eventGalleryHref,
+  findEventGalleryAlbum,
+} from "@/lib/cms/event-gallery";
+import {
+  resolveEvents,
+  resolveGalleryAlbums,
+} from "@/lib/cms/resolve-content";
 import { getEventSchema } from "@/lib/seo-schemas";
 import { buildPageMetadata } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/site-url";
@@ -24,6 +31,16 @@ export default async function EventsPage() {
   const allEvents = await resolveEvents();
   const upcoming = allEvents.filter((event) => !event.isPast);
   const past = allEvents.filter((event) => event.isPast);
+  const galleryAlbums = await resolveGalleryAlbums();
+  const pastGalleryHrefs = Object.fromEntries(
+    past.map((event) => {
+      const album = findEventGalleryAlbum(galleryAlbums, event.slug);
+      return [
+        event.slug,
+        album ? `/gallery/${album.slug}` : eventGalleryHref(event.slug),
+      ] as const;
+    })
+  );
   const eventSchemas = upcoming.map((event) =>
     getEventSchema(event, `${siteUrl}/events#${event.slug}`)
   );
@@ -49,7 +66,11 @@ export default async function EventsPage() {
           </h1>
         </Container>
       </section>
-      <EventsPageContent upcoming={upcoming} past={past} />
+      <EventsPageContent
+        upcoming={upcoming}
+        past={past}
+        pastGalleryHrefs={pastGalleryHrefs}
+      />
     </>
   );
 }

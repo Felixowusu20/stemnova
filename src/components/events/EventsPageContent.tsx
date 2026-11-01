@@ -16,6 +16,8 @@ import type { Event } from "@/types";
 interface EventsPageContentProps {
   upcoming: Event[];
   past: Event[];
+  /** Resolved album paths keyed by event slug (CMS album slug wins). */
+  pastGalleryHrefs?: Record<string, string>;
 }
 
 function formatDate(dateStr: string): string {
@@ -27,7 +29,11 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
+export function EventsPageContent({
+  upcoming,
+  past,
+  pastGalleryHrefs = {},
+}: EventsPageContentProps) {
   const nextEvent = upcoming[0] ?? null;
   const otherUpcoming = upcoming.slice(1);
 
@@ -259,7 +265,10 @@ export function EventsPageContent({ upcoming, past }: EventsPageContentProps) {
                         View event details
                       </Link>
                       <Link
-                        href={eventGalleryHref(event.slug)}
+                        href={
+                          pastGalleryHrefs[event.slug] ||
+                          eventGalleryHref(event.slug)
+                        }
                         className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal hover:text-navy sm:text-sm"
                       >
                         <Images className="h-3.5 w-3.5" aria-hidden="true" />

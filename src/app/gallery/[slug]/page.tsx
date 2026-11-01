@@ -6,7 +6,6 @@ import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { PageHero } from "@/components/ui/PageHero";
-import { galleryAlbums, getGalleryAlbumBySlug } from "@/content";
 import {
   resolveGalleryAlbumBySlug,
   resolveGalleryAlbums,
@@ -19,16 +18,16 @@ interface GalleryAlbumPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return galleryAlbums.map((album) => ({ slug: album.slug }));
+export async function generateStaticParams() {
+  const albums = await resolveGalleryAlbums();
+  return albums.map((album) => ({ slug: album.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: GalleryAlbumPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const album =
-    (await resolveGalleryAlbumBySlug(slug)) ?? getGalleryAlbumBySlug(slug);
+  const album = await resolveGalleryAlbumBySlug(slug);
   if (!album) {
     return { title: "Album Not Found" };
   }

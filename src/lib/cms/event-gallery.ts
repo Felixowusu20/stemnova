@@ -1,7 +1,16 @@
 import type { Event, GalleryAlbum, GalleryImage } from "@/types";
 
-/** Stable slug for an auto-built event photo album. */
+/**
+ * Stable slug for an auto-built event photo album.
+ * Prefer the event's own slug so CMS albums and event links stay aligned.
+ * Legacy `event-{slug}` URLs remain supported via albumMatchesEvent.
+ */
 export function eventGallerySlug(eventSlug: string): string {
+  return eventSlug;
+}
+
+/** Legacy auto-built album slug used before galleries keyed off the event slug. */
+export function legacyEventGallerySlug(eventSlug: string): string {
   return eventSlug.startsWith("event-") ? eventSlug : `event-${eventSlug}`;
 }
 
@@ -12,7 +21,13 @@ export function albumMatchesEvent(
 ): boolean {
   if (album.eventSlug === eventSlug) return true;
   if (album.slug === eventSlug) return true;
-  if (album.slug === eventGallerySlug(eventSlug)) return true;
+  if (album.slug === legacyEventGallerySlug(eventSlug)) return true;
+  if (
+    album.eventSlug &&
+    legacyEventGallerySlug(album.eventSlug) === legacyEventGallerySlug(eventSlug)
+  ) {
+    return true;
+  }
   return false;
 }
 
@@ -48,7 +63,7 @@ export function buildEventGalleryAlbum(event: Event): GalleryAlbum | null {
   if (images.length === 0) return null;
 
   return {
-    slug: eventGallerySlug(event.slug),
+    slug: event.slug,
     title: event.title,
     description:
       event.description ||
@@ -62,7 +77,7 @@ export function buildEventGalleryAlbum(event: Event): GalleryAlbum | null {
 
 /** Public path for an event's photo album. */
 export function eventGalleryHref(eventSlug: string): string {
-  return `/gallery/${eventGallerySlug(eventSlug)}`;
+  return `/gallery/${eventSlug}`;
 }
 
 /**
@@ -76,9 +91,13 @@ export function mergeEventGalleryAlbums(
   const normalised = albums.map((album) => {
     const eventSlug =
       album.eventSlug ||
-      (album.slug.startsWith("event-") ? album.slug.slice("event-".length) : undefined);
+      (album.slug.startsWith("event-")
+        ? album.slug.slice("event-".length)
+        : undefined);
     const isEvent =
-      album.kind === "event" || Boolean(album.eventSlug) || album.slug.startsWith("event-");
+      album.kind === "event" ||
+      Boolean(album.eventSlug) ||
+      album.slug.startsWith("event-");
 
     return {
       ...album,
@@ -91,7 +110,12 @@ export function mergeEventGalleryAlbums(
     normalised
       .filter((album) => album.kind === "event")
       .flatMap((album) => {
-        const keys = [album.slug, album.eventSlug].filter(Boolean) as string[];
+        const keys = [
+          album.slug,
+          album.eventSlug,
+          album.eventSlug ? legacyEventGallerySlug(album.eventSlug) : null,
+          album.slug ? legacyEventGallerySlug(album.slug) : null,
+        ].filter(Boolean) as string[];
         return keys;
       })
   );
@@ -101,7 +125,11 @@ export function mergeEventGalleryAlbums(
     .map((event) => buildEventGalleryAlbum(event))
     .filter((album): album is GalleryAlbum => Boolean(album))
     .filter((album) => {
-      const keys = [album.slug, album.eventSlug, eventGallerySlug(album.eventSlug || "")];
+      const keys = [
+        album.slug,
+        album.eventSlug,
+        album.eventSlug ? legacyEventGallerySlug(album.eventSlug) : null,
+      ];
       return !keys.some((key) => key && coveredEvents.has(key));
     });
 
