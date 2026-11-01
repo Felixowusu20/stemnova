@@ -23,6 +23,7 @@ export function Lightbox({
 }: LightboxProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const touchStartX = useRef<number | null>(null);
 
   const current = images[currentIndex];
   const hasPrev = currentIndex > 0;
@@ -57,7 +58,7 @@ export function Lightbox({
     };
   }, [isOpen, onClose, goPrev, goNext]);
 
-  if (!isOpen || !current) return null;
+  if (!isOpen || !current?.url) return null;
 
   return (
     <div
@@ -65,29 +66,49 @@ export function Lightbox({
       role="dialog"
       aria-modal="true"
       aria-label={`Image ${currentIndex + 1} of ${images.length}: ${current.alt}`}
-      className="fixed inset-0 z-50 flex flex-col bg-[#0A2540]/95"
+      className="fixed inset-0 z-[100] flex flex-col bg-black/95"
+      onClick={onClose}
+      onTouchStart={(event) => {
+        touchStartX.current = event.changedTouches[0]?.clientX ?? null;
+      }}
+      onTouchEnd={(event) => {
+        const start = touchStartX.current;
+        const end = event.changedTouches[0]?.clientX;
+        touchStartX.current = null;
+        if (start == null || end == null) return;
+        const delta = end - start;
+        if (Math.abs(delta) < 48) return;
+        if (delta > 0) goPrev();
+        else goNext();
+      }}
     >
-      <div className="flex items-center justify-between px-4 py-3 text-white">
+      <div
+        className="flex items-center justify-between px-4 py-3 text-white"
+        onClick={(event) => event.stopPropagation()}
+      >
         <p className="text-sm">
           {currentIndex + 1} / {images.length}
         </p>
         <button
           type="button"
           onClick={onClose}
-          className="rounded-lg p-2 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A2540]"
+          className="rounded-lg p-2 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           aria-label="Close lightbox"
         >
           <X className="h-6 w-6" />
         </button>
       </div>
 
-      <div className="relative flex flex-1 items-center justify-center px-4 pb-4">
+      <div
+        className="relative flex min-h-0 flex-1 items-center justify-center px-2 pb-3 sm:px-6"
+        onClick={(event) => event.stopPropagation()}
+      >
         <button
           type="button"
           onClick={goPrev}
           disabled={!hasPrev}
           className={cn(
-            "absolute left-2 z-10 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-30 sm:left-4",
+            "absolute left-1 z-10 rounded-full bg-white/15 p-2.5 text-white transition-colors hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-30 sm:left-3 sm:p-3",
             !hasPrev && "invisible"
           )}
           aria-label="Previous image"
@@ -95,13 +116,13 @@ export function Lightbox({
           <ChevronLeft className="h-6 w-6" />
         </button>
 
-        <div className="relative h-full w-full max-h-[70vh] max-w-5xl">
+        <div className="relative h-[min(86vh,960px)] w-full max-w-7xl">
           <Image
             src={current.url}
-            alt={current.alt}
+            alt={current.alt || "Gallery photo"}
             fill
             className="object-contain"
-            sizes="(max-width: 768px) 100vw, 80vw"
+            sizes="100vw"
             priority
           />
         </div>
@@ -111,7 +132,7 @@ export function Lightbox({
           onClick={goNext}
           disabled={!hasNext}
           className={cn(
-            "absolute right-2 z-10 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-30 sm:right-4",
+            "absolute right-1 z-10 rounded-full bg-white/15 p-2.5 text-white transition-colors hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-30 sm:right-3 sm:p-3",
             !hasNext && "invisible"
           )}
           aria-label="Next image"
@@ -120,11 +141,14 @@ export function Lightbox({
         </button>
       </div>
 
-      {current.caption && (
-        <figcaption className="border-t border-white/10 px-4 py-4 text-center text-sm text-white/90">
+      {current.caption ? (
+        <figcaption
+          className="border-t border-white/10 px-4 py-4 text-center text-sm text-white/90"
+          onClick={(event) => event.stopPropagation()}
+        >
           {current.caption}
         </figcaption>
-      )}
+      ) : null}
     </div>
   );
 }
