@@ -20,22 +20,50 @@ export function NewsImage({
   const url = newsHeroImage(src);
   const placeholder = isNewsPlaceholder(url);
 
+  if (variant === "hero") {
+    return (
+      <Image
+        src={url}
+        alt={alt}
+        width={1600}
+        height={1200}
+        priority={priority}
+        className={cn(
+          "mx-auto h-auto w-auto max-w-full",
+          placeholder
+            ? "max-h-72 object-contain object-center p-[6%]"
+            : "max-h-[min(90vh,56rem)] object-contain object-center",
+          className
+        )}
+        sizes={sizes}
+      />
+    );
+  }
+
   return (
-    <Image
-      src={url}
-      alt={alt}
-      fill
-      priority={priority}
-      className={cn(
-        placeholder
-          ? cn(
-              "object-contain object-center",
-              variant === "hero" ? "p-[6%]" : "p-1.5"
-            )
-          : "object-cover object-center",
-        className
-      )}
-      sizes={sizes}
-    />
+    <>
+      {!placeholder ? (
+        <Image
+          src={url}
+          alt=""
+          fill
+          aria-hidden
+          className="scale-125 object-cover blur-2xl opacity-45"
+          sizes={sizes}
+        />
+      ) : null}
+      <Image
+        src={url}
+        alt={alt}
+        fill
+        priority={priority}
+        className={cn(
+          "object-contain object-center",
+          placeholder ? "p-1.5" : "p-1",
+          className
+        )}
+        sizes={sizes}
+      />
+    </>
   );
 }

@@ -15,6 +15,8 @@ type ImageUploadFieldProps = {
   className?: string;
   emptySrc?: string;
   fit?: "cover" | "contain";
+  /** Tailwind aspect class, e.g. "aspect-[16/10]" or "aspect-[3/4]" */
+  previewAspect?: string;
 };
 
 export function ImageUploadField({
@@ -26,6 +28,7 @@ export function ImageUploadField({
   className,
   emptySrc,
   fit = "cover",
+  previewAspect = "aspect-[16/10]",
 }: ImageUploadFieldProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -55,14 +58,23 @@ export function ImageUploadField({
     <div className={cn("space-y-2", className)}>
       <p className="text-sm font-medium text-navy">{label}</p>
       <div className="overflow-hidden rounded-2xl border border-navy/10 bg-light">
-        <div className="relative flex aspect-[16/10] items-center justify-center bg-navy/[0.03]">
+        <div
+          className={cn(
+            "relative flex items-center justify-center bg-navy/[0.03]",
+            previewAspect
+          )}
+        >
           {preview ? (
             <Image
               src={preview}
               alt={label}
               fill
               unoptimized
-              className={fit === "contain" ? "object-contain" : "object-cover"}
+              className={
+                fit === "contain"
+                  ? "object-contain object-center p-2"
+                  : "object-cover"
+              }
               sizes="(max-width: 768px) 100vw, 480px"
             />
           ) : emptySrc ? (

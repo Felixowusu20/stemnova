@@ -136,6 +136,60 @@ export function FooterContactFields({
         />
       </div>
 
+      <div className="space-y-3 rounded-xl border border-navy/10 bg-light/40 p-4">
+        <div>
+          <p className="text-sm font-semibold text-navy">
+            Website developed by
+          </p>
+          <p className="mt-0.5 text-[11px] text-navy/50">
+            Shown in the footer. Link to your agency or portfolio site so
+            visitors can see your work.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className={labelClass} htmlFor="footer-developed-by-name">
+              Developer / agency name
+            </label>
+            <input
+              id="footer-developed-by-name"
+              className={fieldClass}
+              value={safeContact.developedBy?.name || ""}
+              onChange={(e) =>
+                onContactChange({
+                  ...safeContact,
+                  developedBy: {
+                    name: e.target.value,
+                    url: safeContact.developedBy?.url || "",
+                  },
+                })
+              }
+              placeholder="Your agency name"
+            />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="footer-developed-by-url">
+              Website URL
+            </label>
+            <input
+              id="footer-developed-by-url"
+              className={fieldClass}
+              value={safeContact.developedBy?.url || ""}
+              onChange={(e) =>
+                onContactChange({
+                  ...safeContact,
+                  developedBy: {
+                    name: safeContact.developedBy?.name || "",
+                    url: e.target.value,
+                  },
+                })
+              }
+              placeholder="https://yourwebsite.com"
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-2">
           <div>

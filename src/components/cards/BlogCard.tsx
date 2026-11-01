@@ -36,14 +36,14 @@ export function BlogCard({ post, className }: BlogCardProps) {
         className
       )}
     >
-      <div className="aos-photo relative m-2.5 w-[6.75rem] min-h-[7.5rem] shrink-0 self-stretch overflow-hidden rounded-xl bg-navy/5 sm:m-3 sm:w-[8.25rem] sm:min-h-[9rem]">
+      <div className="aos-photo relative m-2.5 aspect-[3/4] w-[5.75rem] shrink-0 self-center overflow-hidden rounded-xl bg-navy/5 sm:m-3 sm:w-[7.25rem]">
         <NewsImage
           src={post.imageUrl}
           alt={post.title}
           className="motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
-          sizes="(max-width: 640px) 28vw, 132px"
+          sizes="(max-width: 640px) 28vw, 116px"
         />
-        <span className="absolute left-1.5 top-1.5 rounded-full bg-navy px-2 py-0.5 text-[10px] font-semibold text-white sm:left-2 sm:top-2">
+        <span className="absolute left-1.5 top-1.5 z-[1] rounded-full bg-navy px-2 py-0.5 text-[10px] font-semibold text-white sm:left-2 sm:top-2">
           {categoryLabels[post.category]}
         </span>
       </div>

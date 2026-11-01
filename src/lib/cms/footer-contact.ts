@@ -18,6 +18,10 @@ export type FooterContactShape = {
     sunday?: string;
     note?: string;
   };
+  developedBy?: {
+    name: string;
+    url: string;
+  };
 };
 
 export type FooterSocialLink = {
@@ -40,6 +44,7 @@ export function emptyFooterContact(): FooterContactShape {
       country: "",
     },
     hours: { weekdays: "" },
+    developedBy: { name: "", url: "" },
   };
 }
 
@@ -49,6 +54,11 @@ export function normalizeFooterContact(
 ): FooterContactShape {
   const base = emptyFooterContact();
   if (!input || typeof input !== "object") return base;
+
+  const developedBy =
+    input.developedBy && typeof input.developedBy === "object"
+      ? input.developedBy
+      : null;
 
   return {
     email: typeof input.email === "string" ? input.email : "",
@@ -79,6 +89,11 @@ export function normalizeFooterContact(
       sunday:
         typeof input.hours?.sunday === "string" ? input.hours.sunday : undefined,
       note: typeof input.hours?.note === "string" ? input.hours.note : undefined,
+    },
+    developedBy: {
+      name:
+        typeof developedBy?.name === "string" ? developedBy.name.trim() : "",
+      url: typeof developedBy?.url === "string" ? developedBy.url.trim() : "",
     },
   };
 }

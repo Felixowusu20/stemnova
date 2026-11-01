@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { siteConfig, images } from "@/content";
+import { normalizeFooterContact } from "@/lib/cms/footer-contact";
 import type { NavItem, SiteConfig } from "@/types";
 import type { ContentStatus } from "@/generated/prisma/client";
 
@@ -36,7 +37,9 @@ export async function getResolvedSiteConfig(): Promise<ResolvedSiteConfig> {
       shortName: row.shortName,
       tagline: row.tagline,
       description: row.description,
-      contact: row.contact as unknown as SiteConfig["contact"],
+      contact: normalizeFooterContact(
+        row.contact as unknown as SiteConfig["contact"]
+      ),
       social: row.social as unknown as SiteConfig["social"],
       announcementBar:
         (row.announcementBar as unknown as SiteConfig["announcementBar"]) ??

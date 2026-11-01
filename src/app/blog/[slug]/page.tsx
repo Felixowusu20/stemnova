@@ -128,7 +128,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 {post.title}
               </h1>
 
-              <div className="relative mt-6 aspect-[16/10] overflow-hidden bg-navy/5">
+              <div className="relative mt-6 overflow-hidden bg-navy/5">
                 <NewsImage
                   src={post.imageUrl}
                   alt={post.title}

@@ -1638,6 +1638,16 @@ export function ContentEditor({
                 value={coverUrl}
                 onChange={(url) => setCoverUrl(url || "")}
                 folder={`stemnova/${collection}`}
+                fit={
+                  collection === "blog" || collection === "partners"
+                    ? "contain"
+                    : "cover"
+                }
+                previewAspect={
+                  collection === "blog"
+                    ? "mx-auto aspect-[3/4] h-72 w-auto max-w-full"
+                    : undefined
+                }
                 emptySrc={
                   collection === "blog"
                     ? "/images/news-placeholder.png"
@@ -1646,7 +1656,9 @@ export function ContentEditor({
                 helpText={
                   collection === "partners"
                     ? "Logo shown on the partners page, carousel, and partner profile."
-                    : "Upload or replace the image shown on the public site for this item."
+                    : collection === "blog"
+                      ? "Shown on news cards and the article page. Portrait flyers are kept fully visible."
+                      : "Upload or replace the image shown on the public site for this item."
                 }
               />
             </div>

@@ -27,12 +27,16 @@ export function ArticleBody({
           return (
             <figure
               key={`image-${index}`}
-              className="mx-auto max-w-full overflow-hidden rounded-2xl bg-navy/5"
+              className="mx-auto max-w-full overflow-hidden rounded-2xl bg-navy/[0.04]"
               style={{ width: `${width}%` }}
             >
               <div
-                className="relative max-h-[36rem] w-full overflow-hidden"
-                style={block.height ? { height: Math.min(block.height, 576) } : undefined}
+                className="relative flex w-full items-center justify-center px-2 py-3 sm:px-3 sm:py-4"
+                style={
+                  block.height
+                    ? { height: Math.min(block.height, 720) }
+                    : undefined
+                }
               >
                 <Image
                   src={block.url}
@@ -41,8 +45,8 @@ export function ArticleBody({
                   height={1000}
                   className={
                     block.height
-                      ? "h-full w-full max-w-full object-contain object-center"
-                      : "h-auto max-h-[36rem] w-full max-w-full object-contain"
+                      ? "h-full w-auto max-h-full max-w-full object-contain object-center"
+                      : "mx-auto h-auto max-h-[min(75vh,48rem)] w-auto max-w-full object-contain object-center"
                   }
                   sizes="(max-width: 1024px) 100vw, 70vw"
                 />

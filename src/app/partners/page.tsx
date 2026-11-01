@@ -6,7 +6,6 @@ import {
   ExternalLink,
   FlaskConical,
   Globe2,
-  Handshake,
   HeartHandshake,
   Landmark,
   Users,
@@ -20,7 +19,6 @@ import {
 } from "@/content/partners";
 import { resolvePartners } from "@/lib/cms/resolve-content";
 import { buildPageMetadata } from "@/lib/seo";
-import { cn } from "@/lib/utils";
 import type { Partner, PartnerCategory } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -273,7 +271,7 @@ export default async function PartnersPage() {
           aria-hidden="true"
         />
         <Container className="relative space-y-16">
-          {grouped.map((group, groupIndex) => {
+          {grouped.map((group) => {
             const Icon = categoryIcons[group.id];
             const cover =
               images.partners.categories[group.id] || images.partners.hero;
@@ -285,55 +283,18 @@ export default async function PartnersPage() {
                 aria-labelledby={`partners-heading-${group.id}`}
                 className="scroll-mt-28"
               >
-                <div className="mb-8 grid items-center gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                  <div>
-                    <div className="inline-flex items-center gap-2 rounded-full bg-teal/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-teal">
-                      <Icon className="h-3.5 w-3.5" aria-hidden="true" />
-                      {group.label}
-                    </div>
-                    <h2
-                      id={`partners-heading-${group.id}`}
-                      className="mt-3 font-display text-2xl font-bold text-navy sm:text-3xl"
-                    >
-                      {group.label} partners
-                    </h2>
-                    <p className="mt-2 max-w-xl text-sm leading-relaxed text-navy/65 sm:text-base">
-                      Organisations in this category collaborate with STEMNova
-                      on programmes, research pathways, and STEM capacity across
-                      Africa.
-                    </p>
-                    <p className="mt-3 text-sm font-semibold text-teal">
-                      {group.partners.length}{" "}
-                      {group.partners.length === 1 ? "partner" : "partners"}
-                    </p>
-                  </div>
-
+                <div className="mb-8">
                   <div
-                    data-aos="fade-left"
-                    className={cn(
-                      "aos-photo relative hidden overflow-hidden rounded-3xl lg:block",
-                      groupIndex % 2 === 1 && "lg:order-first"
-                    )}
+                    id={`partners-heading-${group.id}`}
+                    className="inline-flex items-center gap-2 rounded-full bg-teal/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-teal"
                   >
-                    <div className="relative aspect-[16/9]">
-                      <Image
-                        src={cover}
-                        alt=""
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 1024px) 0px, 40vw"
-                      />
-                      <div
-                        className="absolute inset-0 bg-gradient-to-tr from-navy/80 via-teal/40 to-transparent"
-                        aria-hidden="true"
-                      />
-                      <div className="absolute inset-x-0 bottom-0 p-5">
-                        <p className="font-display text-lg font-semibold text-white">
-                          Building STEM capacity together
-                        </p>
-                      </div>
-                    </div>
+                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                    {group.label}
                   </div>
+                  <p className="mt-3 text-sm font-semibold text-teal">
+                    {group.partners.length}{" "}
+                    {group.partners.length === 1 ? "partner" : "partners"}
+                  </p>
                 </div>
 
                 <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
@@ -348,84 +309,6 @@ export default async function PartnersPage() {
               </section>
             );
           })}
-        </Container>
-      </section>
-
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src={images.partners.collaboration}
-            alt=""
-            fill
-            className="object-cover"
-            sizes="100vw"
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-teal/70"
-            aria-hidden="true"
-          />
-        </div>
-        <Container className="relative grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-2 lg:gap-14">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-teal">
-              Why partner with STEMNova
-            </p>
-            <h2 className="mt-3 font-display text-3xl font-bold text-white sm:text-4xl">
-              Shared ambition for Africa&apos;s scientific future
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-white/85">
-              Our partners help discover talent, train educators, open research
-              pathways, and connect African scientists to global networks —
-              through programmes designed for lasting impact.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button href="/partner" variant="teal" size="lg">
-                <Handshake className="mr-2 h-4 w-4" aria-hidden="true" />
-                Start a partnership
-              </Button>
-              <Button
-                href="/contact"
-                variant="outline"
-                size="lg"
-                className="border-white/40 text-white hover:bg-white/10"
-              >
-                Talk to our team
-              </Button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            {[
-              images.partners.handshake,
-              images.partners.network,
-              images.programmes.fellows,
-              images.hero.research,
-            ].map((src, index) => (
-              <div
-                key={src}
-                data-aos="zoom-in"
-                data-aos-delay={Math.min(index * 80, 240)}
-                className={cn(
-                  "aos-photo relative overflow-hidden rounded-2xl border border-white/15 shadow-lg",
-                  index % 2 === 1 && "mt-6"
-                )}
-              >
-                <div className="relative aspect-[4/5]">
-                  <Image
-                    src={src}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 45vw, 20vw"
-                  />
-                  <div
-                    className="absolute inset-0 bg-gradient-to-t from-navy/50 to-transparent"
-                    aria-hidden="true"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
         </Container>
       </section>
 
