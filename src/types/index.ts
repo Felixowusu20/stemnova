@@ -37,6 +37,11 @@ export interface ContactInfo {
     sunday?: string;
     note?: string;
   };
+  /** Credit shown in the site footer, with a link to the developer's portfolio. */
+  developedBy?: {
+    name: string;
+    url: string;
+  };
 }
 
 export interface SiteConfig {

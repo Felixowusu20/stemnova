@@ -181,9 +181,30 @@ export function Footer() {
 
       <div className="border-t border-white/10">
         <Container className="flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
-          <p className="text-sm text-white/50">
-            © {new Date().getFullYear()} {settings.name}. All rights reserved.
-          </p>
+          <div className="space-y-1 text-center text-sm text-white/50 sm:text-left">
+            <p>
+              © {new Date().getFullYear()} {settings.name}. All rights reserved.
+            </p>
+            {contact.developedBy?.name?.trim() ? (
+              <p>
+                Website developed by{" "}
+                {contact.developedBy.url?.trim() ? (
+                  <a
+                    href={contact.developedBy.url.trim()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded font-medium text-teal transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
+                  >
+                    {contact.developedBy.name.trim()}
+                  </a>
+                ) : (
+                  <span className="font-medium text-white/70">
+                    {contact.developedBy.name.trim()}
+                  </span>
+                )}
+              </p>
+            ) : null}
+          </div>
           <div className="flex gap-6 text-sm">
             <Link
               href="/privacy"

@@ -172,7 +172,7 @@ export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
                 </Link>
               </h2>
 
-              <div className="relative mt-5 aspect-[16/10] overflow-hidden bg-navy/5 sm:mt-6">
+              <div className="relative mt-5 overflow-hidden bg-navy/5 sm:mt-6">
                 <NewsImage
                   src={lead.imageUrl}
                   alt={lead.title}

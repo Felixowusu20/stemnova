@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { SettingsForm } from "@/components/admin/SettingsForm";
 import { siteConfig } from "@/content";
+import { normalizeFooterContact } from "@/lib/cms/footer-contact";
 import { resolveAnnouncementEvent } from "@/lib/cms/resolve-content";
 
 export default async function AdminSettingsPage() {
@@ -28,7 +29,9 @@ export default async function AdminSettingsPage() {
         description: row.description,
         logoUrl: row.logoUrl,
         logoAlt: row.logoAlt,
-        contact: row.contact as unknown as typeof siteConfig.contact,
+        contact: normalizeFooterContact(
+          row.contact as unknown as typeof siteConfig.contact
+        ),
         social: row.social as unknown as typeof siteConfig.social,
         announcementBar:
           (row.announcementBar as unknown as typeof siteConfig.announcementBar) ??

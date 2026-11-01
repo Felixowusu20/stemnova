@@ -34,6 +34,10 @@ type SettingsShape = {
       sunday?: string;
       note?: string;
     };
+    developedBy?: {
+      name: string;
+      url: string;
+    };
   };
   social: { platform: string; label: string; href: string }[];
   announcementBar?: {
@@ -365,7 +369,8 @@ export function SettingsForm({
           Footer & site contact
         </h2>
         <p className="mt-1 text-sm text-navy/55">
-          Email, phone, address, and social links shown in the website footer.
+          Email, phone, address, social links, and the “Website developed by”
+          credit shown in the website footer.
         </p>
         <div className="mt-4">
           <FooterContactFields

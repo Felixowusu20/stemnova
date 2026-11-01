@@ -41,8 +41,8 @@ export function RecentNewsList({
               href={`/blog/${post.slug}`}
               className="group flex gap-3 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
             >
-              <div className="relative h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-md bg-navy/5 sm:h-[4.75rem] sm:w-[4.75rem]">
-                <NewsImage src={post.imageUrl} alt="" sizes="76px" />
+              <div className="relative aspect-[3/4] w-[3.5rem] shrink-0 overflow-hidden rounded-md bg-navy/5 sm:w-[4rem]">
+                <NewsImage src={post.imageUrl} alt="" sizes="64px" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="font-display text-sm font-semibold leading-snug text-navy group-hover:text-teal">

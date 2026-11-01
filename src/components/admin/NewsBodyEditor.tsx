@@ -400,11 +400,11 @@ function ImagePreview({
             }
           }}
           className={cn(
-            "relative block w-full max-h-[22rem] cursor-pointer overflow-hidden rounded-lg bg-navy/[0.03]",
+            "relative flex w-full max-h-[32rem] cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-navy/[0.03] px-2 py-2",
             selected ? "ring-2 ring-blue" : "ring-1 ring-navy/10"
           )}
           style={
-            block.height ? { height: Math.min(block.height, 352) } : undefined
+            block.height ? { height: Math.min(block.height, 512) } : undefined
           }
         >
           {block.url ? (
@@ -413,8 +413,10 @@ function ImagePreview({
               src={block.url}
               alt={block.alt || block.caption || "Article image"}
               className={cn(
-                "mx-auto block max-h-[22rem] max-w-full",
-                block.height ? "h-full object-contain" : "h-auto w-auto object-contain"
+                "mx-auto block max-h-[32rem] max-w-full",
+                block.height
+                  ? "h-full w-auto object-contain"
+                  : "h-auto w-auto object-contain"
               )}
             />
           ) : (
