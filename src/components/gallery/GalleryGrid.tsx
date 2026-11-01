@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import { Expand } from "lucide-react";
 import { Lightbox } from "@/components/ui/Lightbox";
 import { cn } from "@/lib/utils";
 import type { GalleryAlbum, GalleryImage } from "@/types";
@@ -22,11 +23,13 @@ export function GalleryGrid({ className, albums, albumSlug }: GalleryGridProps) 
     useMemo(
       () =>
         albums.flatMap((album) =>
-          album.images.map((img) => ({
-            ...img,
-            albumSlug: album.slug,
-            albumTitle: album.title,
-          }))
+          album.images
+            .filter((img) => Boolean(img.url?.trim()))
+            .map((img) => ({
+              ...img,
+              albumSlug: album.slug,
+              albumTitle: album.title,
+            }))
         ),
       [albums]
     );
@@ -88,20 +91,22 @@ export function GalleryGrid({ className, albums, albumSlug }: GalleryGridProps) 
                 type="button"
                 onClick={() => openLightbox(index)}
                 className="group relative aspect-square w-full overflow-hidden rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
-                aria-label={`View image: ${image.alt}`}
+                aria-label={`Open full image: ${image.alt || image.caption || "gallery photo"}`}
               >
                 <Image
                   src={image.url}
-                  alt={image.alt}
+                  alt={image.alt || ""}
                   fill
                   className="object-cover motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-105"
                   sizes="(max-width: 768px) 50vw, 25vw"
                 />
-                <div
-                  className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy/70 to-transparent p-3 opacity-0 motion-safe:transition-opacity motion-safe:group-hover:opacity-100"
-                  aria-hidden="true"
-                >
-                  <p className="truncate text-xs text-white">{image.caption}</p>
+                <span className="absolute right-2 top-2 rounded-full bg-navy/70 p-1.5 text-white opacity-90 backdrop-blur-sm sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100">
+                  <Expand className="h-3.5 w-3.5" aria-hidden="true" />
+                </span>
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy/75 to-transparent p-3 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100">
+                  <p className="truncate text-xs text-white">
+                    {image.caption || image.alt || "Tap to enlarge"}
+                  </p>
                 </div>
               </button>
             </li>
