@@ -7,7 +7,6 @@ import {
 import {
   blogPosts,
   events,
-  galleryAlbums,
   impactData,
   IMPACT_DATA_DISCLAIMER,
   programs,
@@ -517,59 +516,53 @@ export async function resolveGalleryAlbums(): Promise<GalleryAlbum[]> {
     isCmsActive(),
   ]);
 
+  // Do not fall back to static programme placeholders — gallery albums come
+  // from CMS entries plus auto-built past-event photo sets.
   if (!cmsActive) {
-    return mergeEventGalleryAlbums(galleryAlbums, events);
+    return mergeEventGalleryAlbums([], events);
   }
-
-  const staticBySlug = new Map(galleryAlbums.map((item) => [item.slug, item]));
 
   const cmsAlbums = items
     .filter((item) => item.slug)
     .map((item) => {
-      const album = staticBySlug.get(item.slug as string);
       const data = asData<GalleryAlbum>(item.data);
       const images = Array.isArray(data.images)
         ? (data.images as GalleryImage[])
-        : album?.images || [];
+        : [];
       const eventSlug =
         typeof data.eventSlug === "string" && data.eventSlug.trim()
           ? data.eventSlug.trim()
-          : album?.eventSlug;
+          : undefined;
       const kind =
         data.kind === "event" || eventSlug
           ? ("event" as const)
           : data.kind === "programme"
             ? ("programme" as const)
-            : album?.kind || ("programme" as const);
+            : ("programme" as const);
 
       return {
-        ...(album || { images: [] }),
         ...data,
         slug: item.slug!,
-        title: item.title || data.title || album?.title || "",
-        description:
-          item.excerpt || data.description || album?.description || "",
-        coverImageUrl:
-          item.coverUrl || data.coverImageUrl || album?.coverImageUrl || "",
+        title: item.title || data.title || "",
+        description: item.excerpt || data.description || "",
+        coverImageUrl: item.coverUrl || data.coverImageUrl || "",
         images,
         kind,
         eventSlug,
       };
     });
 
-  // Keep static programme albums when CMS has not replaced that slug yet.
-  const cmsSlugs = new Set(cmsAlbums.map((album) => album.slug));
-  const mergedAlbums = [
-    ...cmsAlbums,
-    ...galleryAlbums.filter((album) => !cmsSlugs.has(album.slug)),
-  ];
-
-  return mergeEventGalleryAlbums(mergedAlbums, events);
+  return mergeEventGalleryAlbums(cmsAlbums, events);
 }
 
 export async function resolveGalleryAlbumBySlug(slug: string) {
   const albums = await resolveGalleryAlbums();
-  return albums.find((album) => album.slug === slug);
+  const direct = albums.find((album) => album.slug === slug);
+  if (direct) return direct;
+
+  // Support legacy `/gallery/event-{eventSlug}` links and event-slug lookups.
+  const eventSlug = slug.startsWith("event-") ? slug.slice("event-".length) : slug;
+  return findEventGalleryAlbum(albums, eventSlug);
 }
 
 /** Gallery album linked to a specific event, if photos exist. */

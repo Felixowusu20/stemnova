@@ -505,7 +505,9 @@ export function ContentEditor({
       if (coverUrl) existingData.coverImageUrl = coverUrl;
       existingData.kind = galleryKind;
       existingData.eventSlug =
-        galleryKind === "event" ? galleryEventSlug.trim() : undefined;
+        galleryKind === "event"
+          ? galleryEventSlug.trim() || slug.trim()
+          : undefined;
       existingData.images = galleryImages
         .map((image) => ({
           url: image.url.trim(),
@@ -1440,8 +1442,8 @@ export function ContentEditor({
                       placeholder="africa-stem-leadership-summit-2026"
                     />
                     <p className="mt-1 text-xs text-navy/55">
-                      Must match the event slug so past event pages can open
-                      this album.
+                      Use the same value as the event slug (and preferably the
+                      album slug too) so “View event images” opens this album.
                     </p>
                   </div>
                 ) : null}

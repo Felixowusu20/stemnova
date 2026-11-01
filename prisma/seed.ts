@@ -316,20 +316,8 @@ async function seedCollections() {
     );
   }
 
-  i = 0;
-  for (const album of galleryAlbums) {
-    await upsertContent(
-      "gallery",
-      album.slug,
-      album.title,
-      album as unknown as Record<string, unknown>,
-      {
-        excerpt: album.description,
-        coverUrl: album.coverImageUrl,
-        sortOrder: i++,
-      }
-    );
-  }
+  // Gallery albums are managed in the CMS from real event photos.
+  // Do not seed placeholder programme albums.
 
   i = 0;
   for (const resource of resources) {

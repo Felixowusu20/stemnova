@@ -11,9 +11,9 @@ import type { GalleryAlbum } from "@/types";
 export const dynamic = "force-dynamic";
 
 export const metadata = buildPageMetadata({
-  title: "Programme Gallery",
+  title: "Event Gallery",
   description:
-    "Browse photo albums from STEMNova Foundation events and programmes across Africa.",
+    "Browse photo albums from STEMNova Foundation events across Africa.",
   path: "/gallery",
   image: images.gallery[0],
 });
@@ -84,8 +84,8 @@ export default async function GalleryPage() {
       <Container>
         <SectionHeading
           eyebrow="Gallery"
-          title="Event and Programme Gallery"
-          description="Photos grouped by event first, then by programme — so every gathering has its own album."
+          title="Event Gallery"
+          description="Photos grouped by event — so every gathering has its own album."
           align="center"
           className="mb-10"
         />
