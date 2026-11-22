@@ -71,9 +71,18 @@ interface DonutItem {
 interface ImpactDonutChartProps {
   items: DonutItem[];
   className?: string;
+  /** Shown under the center total. Defaults to "Allocated". */
+  centerLabel?: string;
+  /** Appended to values. Use "" for people counts, "%" for shares. */
+  valueSuffix?: string;
 }
 
-export function ImpactDonutChart({ items, className }: ImpactDonutChartProps) {
+export function ImpactDonutChart({
+  items,
+  className,
+  centerLabel = "Allocated",
+  valueSuffix = "%",
+}: ImpactDonutChartProps) {
   const rawTotal = items.reduce((sum, item) => sum + item.value, 0);
   const total = rawTotal || 1;
   const radius = 70;
@@ -129,9 +138,10 @@ export function ImpactDonutChart({ items, className }: ImpactDonutChartProps) {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
           <p className="font-display text-3xl font-bold text-navy">
-            {rawTotal}%
+            {rawTotal.toLocaleString()}
+            {valueSuffix}
           </p>
-          <p className="text-xs font-medium text-navy/60">Allocated</p>
+          <p className="text-xs font-medium text-navy/60">{centerLabel}</p>
         </div>
       </div>
 
@@ -147,7 +157,8 @@ export function ImpactDonutChart({ items, className }: ImpactDonutChartProps) {
               <div className="flex items-baseline justify-between gap-3">
                 <p className="text-sm font-medium text-navy">{segment.label}</p>
                 <p className="font-display text-sm font-bold text-navy">
-                  {segment.value}%
+                  {segment.value.toLocaleString()}
+                  {valueSuffix}
                 </p>
               </div>
             </div>

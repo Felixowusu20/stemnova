@@ -128,6 +128,11 @@ export function ImpactPageFields({
 
       {section === "statistics" && (
         <div className="space-y-2">
+          <p className="text-[11px] text-navy/55">
+            Headline totals shown beside the charts (for example “STEM Teachers
+            Trained”). Region breakdowns for the graphs are edited under
+            Regions &amp; people.
+          </p>
           <div className="flex justify-end">
             <AddButton
               label="Add statistic"
@@ -393,9 +398,9 @@ export function ImpactPageFields({
       {section === "locations" && (
         <div className="space-y-2">
           <p className="text-[11px] text-navy/55">
-            Add each region you work in, then choose who you impacted there
-            (students, teachers, and so on). Those numbers drive the public
-            impact graph.
+            This feeds the bar and pie charts at the top of the Impact page.
+            For each region, pick a category (Students or Teachers), enter how
+            many people you reached there, and save.
           </p>
           <div className="flex justify-end">
             <AddButton

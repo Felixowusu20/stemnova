@@ -1,10 +1,10 @@
 import {
   Container,
   CtaSection,
-  ImpactCounter,
   SectionHeading,
 } from "@/components";
 import { ImpactLocationReach } from "@/components/impact/ImpactLocationReach";
+import { ImpactOverview } from "@/components/impact/ImpactOverview";
 import {
   ImpactBarChart,
   ImpactDonutChart,
@@ -25,7 +25,6 @@ export const metadata = buildPageMetadata({
 
 export default async function ImpactPage() {
   const impact = await resolveImpact();
-  const highlightStats = impact.statistics.slice(0, 6);
 
   return (
     <>
@@ -43,23 +42,11 @@ export default async function ImpactPage() {
             </p>
           </div>
 
-          <div className="mt-12 lg:mt-14">
-            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {highlightStats.map((stat) => (
-                <li key={stat.label}>
-                  <ImpactCounter
-                    stat={{ ...stat, note: undefined }}
-                    className="border-navy/10 bg-white"
-                  />
-                </li>
-              ))}
-            </ul>
-            {impact.disclaimer ? (
-              <p className="mx-auto mt-8 max-w-2xl text-center text-xs text-navy/50">
-                {impact.disclaimer}
-              </p>
-            ) : null}
-          </div>
+          <ImpactOverview
+            statistics={impact.statistics}
+            locations={impact.locations}
+            disclaimer={impact.disclaimer}
+          />
         </Container>
       </section>
 
