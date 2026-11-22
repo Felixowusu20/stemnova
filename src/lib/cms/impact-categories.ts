@@ -9,7 +9,7 @@ export const IMPACT_PEOPLE_CATEGORIES: {
   label: string;
 }[] = [
   { id: "students", label: "Students" },
-  { id: "teachers", label: "Teachers" },
+  { id: "teachers", label: "Teachers / Tutors" },
   { id: "researchers", label: "Researchers" },
   { id: "women", label: "Women in STEM" },
   { id: "schools", label: "Schools" },
@@ -106,4 +106,24 @@ export function categoriesUsedInLocations(
   return IMPACT_PEOPLE_CATEGORIES.map((item) => item.id).filter((id) =>
     used.has(id)
   );
+}
+
+/** Totals by people category across all regions — for homepage highlights. */
+export function summarizeLocationImpact(locations: LocationImpact[]) {
+  const totals = new Map<ImpactPeopleCategory, number>();
+  for (const location of locations) {
+    for (const entry of location.categories || []) {
+      if (entry.value <= 0) continue;
+      totals.set(
+        entry.category,
+        (totals.get(entry.category) || 0) + entry.value
+      );
+    }
+  }
+  return IMPACT_PEOPLE_CATEGORIES.filter((item) => (totals.get(item.id) || 0) > 0)
+    .map((item) => ({
+      label: item.label,
+      value: totals.get(item.id) || 0,
+      isIllustrative: true as const,
+    }));
 }

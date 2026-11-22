@@ -29,6 +29,7 @@ import {
 import { siteConfig } from "@/content";
 import { images } from "@/content/images";
 import { getResolvedSiteConfig } from "@/lib/cms/queries";
+import { summarizeLocationImpact } from "@/lib/cms/impact-categories";
 import {
   resolveHomeFocusAreas,
   resolveHomePage,
@@ -90,7 +91,7 @@ export default async function HomePage() {
   };
   const featuredProgrammes = programs.slice(0, 6);
   const featuredStory = impact.successStories[0];
-  const highlightStats = impact.statistics.slice(0, 6);
+  const highlightStats = summarizeLocationImpact(impact.locations).slice(0, 6);
   const featuredTestimonials = testimonials.slice(0, 3);
   const storyImage =
     featuredStory?.imageUrl || images.programmes.youngScholars;
@@ -322,7 +323,9 @@ export default async function HomePage() {
       </section>
       ) : null}
 
-      {show.impact ? <ImpactHighlights stats={highlightStats} /> : null}
+      {show.impact && highlightStats.length > 0 ? (
+        <ImpactHighlights stats={highlightStats} />
+      ) : null}
 
       {show.successStory ? (
       <section className="relative overflow-hidden bg-gradient-to-b from-[#eefbf8] to-white py-20 sm:py-24">

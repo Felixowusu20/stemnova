@@ -10,6 +10,7 @@ import {
 } from "@/lib/cms/impact-categories";
 import { createId, type ImpactPageData } from "@/lib/cms/page-forms";
 import type { ImpactPeopleCategory, ProgramSlug } from "@/types";
+import { cn } from "@/lib/utils";
 
 const fieldClass =
   "w-full rounded-xl border border-navy/15 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue";
@@ -27,9 +28,7 @@ const PROGRAM_SLUGS: ProgramSlug[] = [
 ];
 
 type ImpactSection =
-  | "statistics"
   | "programBreakdown"
-  | "locations"
   | "successStories"
   | "beforeAfterStories"
   | "annualReports"
@@ -68,19 +67,13 @@ export function ImpactPageFields({
   value: ImpactPageData;
   onChange: (next: ImpactPageData) => void;
 }) {
-  const [section, setSection] = useState<ImpactSection>("statistics");
+  const [section, setSection] = useState<ImpactSection>("programBreakdown");
 
-  const options: { id: ImpactSection; label: string; count: number }[] = [
-    { id: "statistics", label: "Statistics", count: value.statistics.length },
+  const moreOptions: { id: ImpactSection; label: string; count: number }[] = [
     {
       id: "programBreakdown",
       label: "Programme breakdown",
       count: value.programBreakdown.length,
-    },
-    {
-      id: "locations",
-      label: "Regions & people",
-      count: value.locations.length,
     },
     {
       id: "successStories",
@@ -105,167 +98,291 @@ export function ImpactPageFields({
   ];
 
   return (
-    <div className="space-y-3 rounded-xl border border-navy/10 bg-light/50 p-3">
-      <div>
-        <label className="mb-1 block text-xs font-medium text-navy/70">
-          Edit impact section
-        </label>
-        <select
-          className={fieldClass}
-          value={section}
-          onChange={(e) => setSection(e.target.value as ImpactSection)}
-        >
-          {options.map((option) => (
-            <option key={option.id} value={option.id}>
-              {option.label} ({option.count})
-            </option>
-          ))}
-        </select>
-        <p className="mt-1.5 text-[11px] text-navy/50">
-          Only one section opens at a time to keep the editor short.
-        </p>
+    <div className="space-y-5">
+      <div className="rounded-2xl border-2 border-teal/35 bg-teal/[0.06] p-4 shadow-sm sm:p-5">
+        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-base font-semibold text-navy">
+              Regions &amp; people
+            </p>
+            <p className="mt-1 max-w-2xl text-xs leading-relaxed text-navy/65">
+              This is the main Impact chart data. Add a region, pick Students or
+              Teachers, enter how many people you reached there, then click Save
+              item at the bottom of the page.
+            </p>
+          </div>
+        </div>
+        <div className="space-y-2">
+                  <div className="flex justify-end">
+                    <AddButton
+                      label="Add region"
+                      onClick={() =>
+                        onChange({
+                          ...value,
+                          locations: [
+                            ...value.locations,
+                            {
+                              name: "",
+                              region: "",
+                              categories: [
+                                { category: "students", value: 0 },
+                                { category: "teachers", value: 0 },
+                              ],
+                              isIllustrative: true,
+                            },
+                          ],
+                        })
+                      }
+                    />
+                  </div>
+                  {value.locations.map((location, index) => {
+                    const categories = location.categories || [];
+                    const summary = categories
+                      .filter((entry) => entry.value > 0)
+                      .map(
+                        (entry) =>
+                          `${entry.value.toLocaleString()} ${impactCategoryLabel(
+                            entry.category,
+                            entry.label
+                          )}`
+                      )
+                      .join(" · ");
+        
+                    return (
+                      <AdminAccordion
+                        key={`location-${index}`}
+                        variant="item"
+                        title={location.name || `Region ${index + 1}`}
+                        summary={summary || location.region || undefined}
+                        actions={
+                          <RemoveButton
+                            onClick={() =>
+                              onChange({
+                                ...value,
+                                locations: value.locations.filter((_, i) => i !== index),
+                              })
+                            }
+                          />
+                        }
+                      >
+                        <div className="space-y-3">
+                          <div className="grid gap-2 sm:grid-cols-2">
+                            <div>
+                              <label className="mb-1 block text-xs font-medium text-navy/70">
+                                Region / city name
+                              </label>
+                              <input
+                                className={fieldClass}
+                                value={location.name}
+                                placeholder="Accra and Greater Accra"
+                                onChange={(e) => {
+                                  const locations = [...value.locations];
+                                  locations[index] = {
+                                    ...location,
+                                    name: e.target.value,
+                                    isIllustrative: true,
+                                  };
+                                  onChange({ ...value, locations });
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <label className="mb-1 block text-xs font-medium text-navy/70">
+                                Area label
+                              </label>
+                              <input
+                                className={fieldClass}
+                                value={location.region}
+                                placeholder="West Africa, Ghana"
+                                onChange={(e) => {
+                                  const locations = [...value.locations];
+                                  locations[index] = {
+                                    ...location,
+                                    region: e.target.value,
+                                    isIllustrative: true,
+                                  };
+                                  onChange({ ...value, locations });
+                                }}
+                              />
+                            </div>
+                          </div>
+        
+                          <div className="space-y-2 rounded-xl border border-navy/10 bg-white p-3">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <p className="text-xs font-semibold text-navy">
+                                People categories impacted
+                              </p>
+                              <AddButton
+                                label="Add category"
+                                onClick={() => {
+                                  const locations = [...value.locations];
+                                  locations[index] = {
+                                    ...location,
+                                    categories: [
+                                      ...categories,
+                                      { category: "students", value: 0 },
+                                    ],
+                                    isIllustrative: true,
+                                  };
+                                  onChange({ ...value, locations });
+                                }}
+                              />
+                            </div>
+        
+                            {categories.length === 0 ? (
+                              <p className="text-xs text-navy/50">
+                                No categories yet. Add students, teachers, or another
+                                group to plot on the graph.
+                              </p>
+                            ) : null}
+        
+                            {categories.map((entry, entryIndex) => (
+                              <div
+                                key={`loc-${index}-cat-${entryIndex}`}
+                                className="grid gap-2 rounded-lg border border-navy/8 bg-light/40 p-2 sm:grid-cols-[1.2fr_0.8fr_auto]"
+                              >
+                                <div>
+                                  <label className="mb-1 block text-[11px] font-medium text-navy/70">
+                                    Category
+                                  </label>
+                                  <select
+                                    className={fieldClass}
+                                    value={entry.category}
+                                    onChange={(e) => {
+                                      const nextCategory = e.target
+                                        .value as ImpactPeopleCategory;
+                                      const nextCategories = [...categories];
+                                      nextCategories[entryIndex] = {
+                                        ...entry,
+                                        category: nextCategory,
+                                        label:
+                                          nextCategory === "other"
+                                            ? entry.label
+                                            : undefined,
+                                      };
+                                      const locations = [...value.locations];
+                                      locations[index] = {
+                                        ...location,
+                                        categories: nextCategories,
+                                        isIllustrative: true,
+                                      };
+                                      onChange({ ...value, locations });
+                                    }}
+                                  >
+                                    {IMPACT_PEOPLE_CATEGORIES.map((option) => (
+                                      <option key={option.id} value={option.id}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="mb-1 block text-[11px] font-medium text-navy/70">
+                                    Number reached
+                                  </label>
+                                  <input
+                                    type="number"
+                                    min={0}
+                                    className={fieldClass}
+                                    value={entry.value}
+                                    onChange={(e) => {
+                                      const nextCategories = [...categories];
+                                      nextCategories[entryIndex] = {
+                                        ...entry,
+                                        value: Math.max(0, Number(e.target.value) || 0),
+                                      };
+                                      const locations = [...value.locations];
+                                      locations[index] = {
+                                        ...location,
+                                        categories: nextCategories,
+                                        isIllustrative: true,
+                                      };
+                                      onChange({ ...value, locations });
+                                    }}
+                                  />
+                                </div>
+                                <div className="flex items-end justify-end">
+                                  <RemoveButton
+                                    onClick={() => {
+                                      const locations = [...value.locations];
+                                      locations[index] = {
+                                        ...location,
+                                        categories: categories.filter(
+                                          (_, i) => i !== entryIndex
+                                        ),
+                                        isIllustrative: true,
+                                      };
+                                      onChange({ ...value, locations });
+                                    }}
+                                  />
+                                </div>
+                                {entry.category === "other" ? (
+                                  <div className="sm:col-span-3">
+                                    <label className="mb-1 block text-[11px] font-medium text-navy/70">
+                                      Custom label
+                                    </label>
+                                    <input
+                                      className={fieldClass}
+                                      value={entry.label || ""}
+                                      placeholder="e.g. Mentors"
+                                      onChange={(e) => {
+                                        const nextCategories = [...categories];
+                                        nextCategories[entryIndex] = {
+                                          ...entry,
+                                          label: e.target.value,
+                                        };
+                                        const locations = [...value.locations];
+                                        locations[index] = {
+                                          ...location,
+                                          categories: nextCategories,
+                                          isIllustrative: true,
+                                        };
+                                        onChange({ ...value, locations });
+                                      }}
+                                    />
+                                  </div>
+                                ) : null}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </AdminAccordion>
+                    );
+                  })}
+                </div>
+
       </div>
 
-      {section === "statistics" && (
-        <div className="space-y-2">
-          <p className="text-[11px] text-navy/55">
-            Headline totals shown beside the charts (for example “STEM Teachers
-            Trained”). Region breakdowns for the graphs are edited under
-            Regions &amp; people.
-          </p>
-          <div className="flex justify-end">
-            <AddButton
-              label="Add statistic"
-              onClick={() =>
-                onChange({
-                  ...value,
-                  statistics: [
-                    ...value.statistics,
-                    {
-                      label: "",
-                      value: 0,
-                      suffix: "",
-                      prefix: "",
-                      note: "",
-                      isIllustrative: true,
-                    },
-                  ],
-                })
-              }
-            />
-          </div>
-          {value.statistics.map((stat, index) => (
-            <AdminAccordion
-              key={`stat-${index}`}
-              variant="item"
-              title={stat.label || `Statistic ${index + 1}`}
-              summary={`${stat.prefix || ""}${stat.value}${stat.suffix || ""}`}
-              actions={<RemoveButton onClick={() =>
-                onChange({
-                  ...value,
-                  statistics: value.statistics.filter((_, i) => i !== index),
-                })
-              } />}
-            >
-              <div className="grid gap-2 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-navy/70">
-                    Label
-                  </label>
-                  <input
-                    className={fieldClass}
-                    value={stat.label}
-                    onChange={(e) => {
-                      const statistics = [...value.statistics];
-                      statistics[index] = {
-                        ...stat,
-                        label: e.target.value,
-                        isIllustrative: true,
-                      };
-                      onChange({ ...value, statistics });
-                    }}
-                  />
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-navy/70">
-                      Prefix
-                    </label>
-                    <input
-                      className={fieldClass}
-                      value={stat.prefix || ""}
-                      onChange={(e) => {
-                        const statistics = [...value.statistics];
-                        statistics[index] = {
-                          ...stat,
-                          prefix: e.target.value,
-                          isIllustrative: true,
-                        };
-                        onChange({ ...value, statistics });
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-navy/70">
-                      Value
-                    </label>
-                    <input
-                      type="number"
-                      className={fieldClass}
-                      value={stat.value}
-                      onChange={(e) => {
-                        const statistics = [...value.statistics];
-                        statistics[index] = {
-                          ...stat,
-                          value: Number(e.target.value) || 0,
-                          isIllustrative: true,
-                        };
-                        onChange({ ...value, statistics });
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-navy/70">
-                      Suffix
-                    </label>
-                    <input
-                      className={fieldClass}
-                      value={stat.suffix || ""}
-                      onChange={(e) => {
-                        const statistics = [...value.statistics];
-                        statistics[index] = {
-                          ...stat,
-                          suffix: e.target.value,
-                          isIllustrative: true,
-                        };
-                        onChange({ ...value, statistics });
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="mb-1 block text-xs font-medium text-navy/70">
-                    Note
-                  </label>
-                  <input
-                    className={fieldClass}
-                    value={stat.note || ""}
-                    onChange={(e) => {
-                      const statistics = [...value.statistics];
-                      statistics[index] = {
-                        ...stat,
-                        note: e.target.value,
-                        isIllustrative: true,
-                      };
-                      onChange({ ...value, statistics });
-                    }}
-                  />
-                </div>
-              </div>
-            </AdminAccordion>
-          ))}
+      <div className="rounded-2xl border border-navy/10 bg-light/50 p-4">
+        <label className="mb-1 block text-xs font-medium text-navy/70">
+          Other impact sections
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {moreOptions.map((option) => {
+            const selected = section === option.id;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => setSection(option.id)}
+                className={cn(
+                  "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
+                  selected
+                    ? "bg-navy text-white"
+                    : "bg-white text-navy/70 ring-1 ring-navy/10 hover:text-navy"
+                )}
+              >
+                {option.label} ({option.count})
+              </button>
+            );
+          })}
         </div>
-      )}
+        <p className="mt-2 text-[11px] text-navy/50">
+          Charts on the public Impact page use Regions &amp; people above. These
+          extra sections are optional.
+        </p>
+
+        <div className="mt-4">
 
       {section === "programBreakdown" && (
         <div className="space-y-2">
@@ -392,252 +509,6 @@ export function ImpactPageFields({
               </div>
             </AdminAccordion>
           ))}
-        </div>
-      )}
-
-      {section === "locations" && (
-        <div className="space-y-2">
-          <p className="text-[11px] text-navy/55">
-            This feeds the bar and pie charts at the top of the Impact page.
-            For each region, pick a category (Students or Teachers), enter how
-            many people you reached there, and save.
-          </p>
-          <div className="flex justify-end">
-            <AddButton
-              label="Add region"
-              onClick={() =>
-                onChange({
-                  ...value,
-                  locations: [
-                    ...value.locations,
-                    {
-                      name: "",
-                      region: "",
-                      categories: [
-                        { category: "students", value: 0 },
-                        { category: "teachers", value: 0 },
-                      ],
-                      isIllustrative: true,
-                    },
-                  ],
-                })
-              }
-            />
-          </div>
-          {value.locations.map((location, index) => {
-            const categories = location.categories || [];
-            const summary = categories
-              .filter((entry) => entry.value > 0)
-              .map(
-                (entry) =>
-                  `${entry.value.toLocaleString()} ${impactCategoryLabel(
-                    entry.category,
-                    entry.label
-                  )}`
-              )
-              .join(" · ");
-
-            return (
-              <AdminAccordion
-                key={`location-${index}`}
-                variant="item"
-                title={location.name || `Region ${index + 1}`}
-                summary={summary || location.region || undefined}
-                actions={
-                  <RemoveButton
-                    onClick={() =>
-                      onChange({
-                        ...value,
-                        locations: value.locations.filter((_, i) => i !== index),
-                      })
-                    }
-                  />
-                }
-              >
-                <div className="space-y-3">
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-navy/70">
-                        Region / city name
-                      </label>
-                      <input
-                        className={fieldClass}
-                        value={location.name}
-                        placeholder="Accra and Greater Accra"
-                        onChange={(e) => {
-                          const locations = [...value.locations];
-                          locations[index] = {
-                            ...location,
-                            name: e.target.value,
-                            isIllustrative: true,
-                          };
-                          onChange({ ...value, locations });
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-navy/70">
-                        Area label
-                      </label>
-                      <input
-                        className={fieldClass}
-                        value={location.region}
-                        placeholder="West Africa, Ghana"
-                        onChange={(e) => {
-                          const locations = [...value.locations];
-                          locations[index] = {
-                            ...location,
-                            region: e.target.value,
-                            isIllustrative: true,
-                          };
-                          onChange({ ...value, locations });
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 rounded-xl border border-navy/10 bg-white p-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <p className="text-xs font-semibold text-navy">
-                        People categories impacted
-                      </p>
-                      <AddButton
-                        label="Add category"
-                        onClick={() => {
-                          const locations = [...value.locations];
-                          locations[index] = {
-                            ...location,
-                            categories: [
-                              ...categories,
-                              { category: "students", value: 0 },
-                            ],
-                            isIllustrative: true,
-                          };
-                          onChange({ ...value, locations });
-                        }}
-                      />
-                    </div>
-
-                    {categories.length === 0 ? (
-                      <p className="text-xs text-navy/50">
-                        No categories yet. Add students, teachers, or another
-                        group to plot on the graph.
-                      </p>
-                    ) : null}
-
-                    {categories.map((entry, entryIndex) => (
-                      <div
-                        key={`loc-${index}-cat-${entryIndex}`}
-                        className="grid gap-2 rounded-lg border border-navy/8 bg-light/40 p-2 sm:grid-cols-[1.2fr_0.8fr_auto]"
-                      >
-                        <div>
-                          <label className="mb-1 block text-[11px] font-medium text-navy/70">
-                            Category
-                          </label>
-                          <select
-                            className={fieldClass}
-                            value={entry.category}
-                            onChange={(e) => {
-                              const nextCategory = e.target
-                                .value as ImpactPeopleCategory;
-                              const nextCategories = [...categories];
-                              nextCategories[entryIndex] = {
-                                ...entry,
-                                category: nextCategory,
-                                label:
-                                  nextCategory === "other"
-                                    ? entry.label
-                                    : undefined,
-                              };
-                              const locations = [...value.locations];
-                              locations[index] = {
-                                ...location,
-                                categories: nextCategories,
-                                isIllustrative: true,
-                              };
-                              onChange({ ...value, locations });
-                            }}
-                          >
-                            {IMPACT_PEOPLE_CATEGORIES.map((option) => (
-                              <option key={option.id} value={option.id}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="mb-1 block text-[11px] font-medium text-navy/70">
-                            Number reached
-                          </label>
-                          <input
-                            type="number"
-                            min={0}
-                            className={fieldClass}
-                            value={entry.value}
-                            onChange={(e) => {
-                              const nextCategories = [...categories];
-                              nextCategories[entryIndex] = {
-                                ...entry,
-                                value: Math.max(0, Number(e.target.value) || 0),
-                              };
-                              const locations = [...value.locations];
-                              locations[index] = {
-                                ...location,
-                                categories: nextCategories,
-                                isIllustrative: true,
-                              };
-                              onChange({ ...value, locations });
-                            }}
-                          />
-                        </div>
-                        <div className="flex items-end justify-end">
-                          <RemoveButton
-                            onClick={() => {
-                              const locations = [...value.locations];
-                              locations[index] = {
-                                ...location,
-                                categories: categories.filter(
-                                  (_, i) => i !== entryIndex
-                                ),
-                                isIllustrative: true,
-                              };
-                              onChange({ ...value, locations });
-                            }}
-                          />
-                        </div>
-                        {entry.category === "other" ? (
-                          <div className="sm:col-span-3">
-                            <label className="mb-1 block text-[11px] font-medium text-navy/70">
-                              Custom label
-                            </label>
-                            <input
-                              className={fieldClass}
-                              value={entry.label || ""}
-                              placeholder="e.g. Mentors"
-                              onChange={(e) => {
-                                const nextCategories = [...categories];
-                                nextCategories[entryIndex] = {
-                                  ...entry,
-                                  label: e.target.value,
-                                };
-                                const locations = [...value.locations];
-                                locations[index] = {
-                                  ...location,
-                                  categories: nextCategories,
-                                  isIllustrative: true,
-                                };
-                                onChange({ ...value, locations });
-                              }}
-                            />
-                          </div>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </AdminAccordion>
-            );
-          })}
         </div>
       )}
 
@@ -1074,6 +945,8 @@ export function ImpactPageFields({
           ))}
         </div>
       )}
+        </div>
+      </div>
     </div>
   );
 }

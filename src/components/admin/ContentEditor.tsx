@@ -1079,7 +1079,10 @@ export function ContentEditor({
                 )}
               </div>
             )}
-            {!hideExcerptBody && (
+            {slug === "impact" && (
+              <ImpactPageFields value={impactData} onChange={setImpactData} />
+            )}
+            {!hideExcerptBody && slug !== "impact" && (
               <div>
                 <label className="mb-1.5 block text-sm font-medium">
                   {excerptLabel}
@@ -1092,26 +1095,24 @@ export function ContentEditor({
                 />
               </div>
             )}
-            {!hideBodyOnly && (
+            {!hideBodyOnly && slug !== "impact" && (
               <div>
                 <label className="mb-1.5 block text-sm font-medium">
                   {bodyLabel}
                 </label>
                 <textarea
                   className={field}
-                  rows={slug === "impact" ? 4 : 10}
+                  rows={10}
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                   placeholder={
-                    slug === "impact"
-                      ? "Shown under Impact at a Glance"
-                      : collection === "partners"
-                        ? "Write about this partner. Separate paragraphs with a blank line."
-                        : collection === "blog" ||
-                            collection === "team" ||
-                            collection === "pages"
-                          ? "Separate paragraphs with a blank line."
-                          : undefined
+                    collection === "partners"
+                      ? "Write about this partner. Separate paragraphs with a blank line."
+                      : collection === "blog" ||
+                          collection === "team" ||
+                          collection === "pages"
+                        ? "Separate paragraphs with a blank line."
+                        : undefined
                   }
                 />
               </div>
@@ -1161,9 +1162,6 @@ export function ContentEditor({
                 value={roadmapData}
                 onChange={setRoadmapData}
               />
-            )}
-            {slug === "impact" && (
-              <ImpactPageFields value={impactData} onChange={setImpactData} />
             )}
             {slug === "home-focus-areas" && (
               <HomeFocusAreasFields

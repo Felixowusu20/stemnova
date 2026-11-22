@@ -12,9 +12,17 @@ const CHART_COLORS = [
   "#0f766e",
 ] as const;
 
+export const IMPACT_CHART_COLORS = {
+  students: "#14b8a6",
+  teachers: "#2563eb",
+  studentsSoft: ["#14b8a6", "#0d9488", "#2dd4bf", "#0f766e", "#5eead4"],
+  teachersSoft: ["#2563eb", "#1d4ed8", "#3b82f6", "#1e40af", "#60a5fa"],
+} as const;
+
 interface BarItem {
   label: string;
   value: number;
+  color?: string;
 }
 
 interface ImpactBarChartProps {
@@ -53,7 +61,8 @@ export function ImpactBarChart({
               className="h-full rounded-full transition-[width] duration-700"
               style={{
                 width: `${(item.value / max) * 100}%`,
-                backgroundColor: CHART_COLORS[index % CHART_COLORS.length],
+                backgroundColor:
+                  item.color || CHART_COLORS[index % CHART_COLORS.length],
               }}
             />
           </div>
@@ -66,6 +75,7 @@ export function ImpactBarChart({
 interface DonutItem {
   label: string;
   value: number;
+  color?: string;
 }
 
 interface ImpactDonutChartProps {
@@ -94,7 +104,7 @@ export function ImpactDonutChart({
     const length = (item.value / total) * circumference;
     const segment = {
       ...item,
-      color: CHART_COLORS[index % CHART_COLORS.length],
+      color: item.color || CHART_COLORS[index % CHART_COLORS.length],
       dasharray: `${length} ${circumference - length}`,
       dashoffset: -offset,
     };
