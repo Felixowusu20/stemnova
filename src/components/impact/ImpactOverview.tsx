@@ -99,12 +99,8 @@ export function ImpactOverview({
       <article className="rounded-2xl border border-navy/10 bg-white p-5 shadow-sm sm:p-8">
         <div>
           <h2 className="font-display text-xl font-semibold text-navy sm:text-2xl">
-            Impact by region
+            Our Reach
           </h2>
-          <p className="mt-1.5 max-w-2xl text-sm text-navy/65">
-            Students and teachers/tutors reached in each region, from the
-            numbers entered in admin.
-          </p>
         </div>
 
         <div
