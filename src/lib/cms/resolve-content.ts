@@ -28,6 +28,7 @@ import {
   parseContactPageData,
   parseHomeFocusAreasPageData,
   parseHomePageData,
+  parseImpactPageData,
 } from "@/lib/cms/page-forms";
 import { defaultHomePageData, type HomePageData } from "@/lib/cms/home-sections";
 import {
@@ -972,25 +973,19 @@ export async function resolveImpact(): Promise<
   if (!item) return fallback;
 
   const data = asData<ImpactData & { disclaimer?: string }>(item.data);
+  const parsed = parseImpactPageData(item.data);
 
-  // Prefer zeroed static metrics until programmes launch; CMS copy still applies
   return {
     title: item.title || fallback.title,
     description: item.excerpt || fallback.description,
     disclaimer: item.body || data.disclaimer || fallback.disclaimer,
-    statistics: impactData.statistics,
-    programBreakdown: impactData.programBreakdown,
-    locations: impactData.locations,
-    successStories: Array.isArray(data.successStories)
-      ? data.successStories
-      : fallback.successStories,
-    beforeAfterStories: Array.isArray(data.beforeAfterStories)
-      ? data.beforeAfterStories
-      : fallback.beforeAfterStories,
-    annualReports: Array.isArray(data.annualReports)
-      ? data.annualReports
-      : fallback.annualReports,
-    donationUsage: impactData.donationUsage,
+    statistics: parsed.statistics,
+    programBreakdown: parsed.programBreakdown,
+    locations: parsed.locations,
+    successStories: parsed.successStories,
+    beforeAfterStories: parsed.beforeAfterStories,
+    annualReports: parsed.annualReports,
+    donationUsage: parsed.donationUsage,
   };
 }
 
