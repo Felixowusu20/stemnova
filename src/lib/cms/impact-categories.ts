@@ -32,27 +32,25 @@ export function normalizeLocationCategories(
 ): LocationImpactCategoryCount[] {
   if (!Array.isArray(input)) return [];
 
-  return input
-    .map((raw) => {
-      const item =
-        raw && typeof raw === "object"
-          ? (raw as Record<string, unknown>)
-          : null;
-      if (!item) return null;
-      const category = String(item.category || "").trim() as ImpactPeopleCategory;
-      if (!IMPACT_PEOPLE_CATEGORIES.some((entry) => entry.id === category)) {
-        return null;
-      }
-      return {
-        category,
-        label:
-          typeof item.label === "string" && item.label.trim()
-            ? item.label.trim()
-            : undefined,
-        value: Math.max(0, Number(item.value) || 0),
-      };
-    })
-    .filter((item): item is LocationImpactCategoryCount => Boolean(item));
+  const categories: LocationImpactCategoryCount[] = [];
+  for (const raw of input) {
+    const item =
+      raw && typeof raw === "object" ? (raw as Record<string, unknown>) : null;
+    if (!item) continue;
+    const category = String(item.category || "").trim() as ImpactPeopleCategory;
+    if (!IMPACT_PEOPLE_CATEGORIES.some((entry) => entry.id === category)) {
+      continue;
+    }
+    const next: LocationImpactCategoryCount = {
+      category,
+      value: Math.max(0, Number(item.value) || 0),
+    };
+    if (typeof item.label === "string" && item.label.trim()) {
+      next.label = item.label.trim();
+    }
+    categories.push(next);
+  }
+  return categories;
 }
 
 /**
