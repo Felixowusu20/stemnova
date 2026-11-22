@@ -745,9 +745,15 @@ export function ContentEditor({
           .filter((item) => item.programTitle);
         existingData.locations = impactData.locations
           .map((item) => ({
-            ...item,
             name: item.name.trim(),
             region: item.region.trim(),
+            categories: (item.categories || [])
+              .map((entry) => ({
+                category: entry.category,
+                label: entry.label?.trim() || undefined,
+                value: Math.max(0, Number(entry.value) || 0),
+              }))
+              .filter((entry) => entry.category),
             isIllustrative: true as const,
           }))
           .filter((item) => item.name);

@@ -10,6 +10,7 @@ import {
 } from "@/content/contact";
 import { impactData, IMPACT_DATA_DISCLAIMER } from "@/content/impact";
 import { strategicPillars } from "@/content/pillars";
+import { migrateLegacyLocationCategories } from "@/lib/cms/impact-categories";
 import type {
   AnnualReport,
   BeforeAfterStory,
@@ -17,7 +18,6 @@ import type {
   DonationUsage,
   GovernanceBody,
   ImpactData,
-  LocationImpact,
   ProgramBreakdown,
   RoadmapPhase,
   StatItem,
@@ -310,18 +310,22 @@ export function parseImpactPageData(data: unknown): ImpactPageData {
       }));
 
   const locations = Array.isArray(record.locations)
-    ? (record.locations as LocationImpact[]).map((item) => ({
-        name: item.name || "",
-        region: item.region || "",
-        girlsReached: Number(item.girlsReached) || 0,
-        schoolsPartnered: Number(item.schoolsPartnered) || 0,
-        isIllustrative: true as const,
-      }))
+    ? record.locations.map((raw) => {
+        const item =
+          raw && typeof raw === "object"
+            ? (raw as Record<string, unknown>)
+            : {};
+        return {
+          name: typeof item.name === "string" ? item.name : "",
+          region: typeof item.region === "string" ? item.region : "",
+          categories: migrateLegacyLocationCategories(item),
+          isIllustrative: true as const,
+        };
+      })
     : impactData.locations.map((item) => ({
         name: item.name,
         region: item.region,
-        girlsReached: 0,
-        schoolsPartnered: 0,
+        categories: item.categories.map((entry) => ({ ...entry })),
         isIllustrative: true as const,
       }));
 

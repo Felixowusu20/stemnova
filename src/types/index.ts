@@ -187,12 +187,28 @@ export interface ProgramBreakdown {
   isIllustrative: true;
 }
 
+/** Who was reached in a region — drives the impact location graph. */
+export type ImpactPeopleCategory =
+  | "students"
+  | "teachers"
+  | "researchers"
+  | "women"
+  | "schools"
+  | "other";
+
+export interface LocationImpactCategoryCount {
+  category: ImpactPeopleCategory;
+  /** Optional custom label when category is "other". */
+  label?: string;
+  value: number;
+}
+
 export interface LocationImpact {
   name: string;
   region: string;
-  girlsReached: number;
-  schoolsPartnered: number;
-  isIllustrative: true;
+  /** People categories impacted in this region (students, teachers, etc.). */
+  categories: LocationImpactCategoryCount[];
+  isIllustrative?: boolean;
 }
 
 export interface SuccessStory {

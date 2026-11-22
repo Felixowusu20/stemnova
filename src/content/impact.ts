@@ -149,43 +149,55 @@ export const impactData: ImpactData = {
     {
       name: "Accra and Greater Accra",
       region: "West Africa, Ghana",
-      girlsReached: 0,
-      schoolsPartnered: 0,
+      categories: [
+        { category: "students", value: 0 },
+        { category: "teachers", value: 0 },
+      ],
       isIllustrative: true,
     },
     {
       name: "Lagos and Abuja",
       region: "West Africa, Nigeria",
-      girlsReached: 0,
-      schoolsPartnered: 0,
+      categories: [
+        { category: "students", value: 0 },
+        { category: "teachers", value: 0 },
+      ],
       isIllustrative: true,
     },
     {
       name: "Nairobi and Central Kenya",
       region: "East Africa, Kenya",
-      girlsReached: 0,
-      schoolsPartnered: 0,
+      categories: [
+        { category: "students", value: 0 },
+        { category: "teachers", value: 0 },
+      ],
       isIllustrative: true,
     },
     {
       name: "Kigali and Kigali Province",
       region: "East Africa, Rwanda",
-      girlsReached: 0,
-      schoolsPartnered: 0,
+      categories: [
+        { category: "students", value: 0 },
+        { category: "teachers", value: 0 },
+      ],
       isIllustrative: true,
     },
     {
       name: "Cape Town and Western Cape",
       region: "Southern Africa, South Africa",
-      girlsReached: 0,
-      schoolsPartnered: 0,
+      categories: [
+        { category: "students", value: 0 },
+        { category: "teachers", value: 0 },
+      ],
       isIllustrative: true,
     },
     {
       name: "Dakar and Thiès",
       region: "West Africa, Senegal",
-      girlsReached: 0,
-      schoolsPartnered: 0,
+      categories: [
+        { category: "students", value: 0 },
+        { category: "teachers", value: 0 },
+      ],
       isIllustrative: true,
     },
   ],

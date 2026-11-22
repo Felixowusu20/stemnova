@@ -4,8 +4,12 @@ import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { AdminAccordion } from "@/components/admin/AdminAccordion";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import {
+  IMPACT_PEOPLE_CATEGORIES,
+  impactCategoryLabel,
+} from "@/lib/cms/impact-categories";
 import { createId, type ImpactPageData } from "@/lib/cms/page-forms";
-import type { ProgramSlug } from "@/types";
+import type { ImpactPeopleCategory, ProgramSlug } from "@/types";
 
 const fieldClass =
   "w-full rounded-xl border border-navy/15 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue";
@@ -73,7 +77,11 @@ export function ImpactPageFields({
       label: "Programme breakdown",
       count: value.programBreakdown.length,
     },
-    { id: "locations", label: "Locations", count: value.locations.length },
+    {
+      id: "locations",
+      label: "Regions & people",
+      count: value.locations.length,
+    },
     {
       id: "successStories",
       label: "Success stories",
@@ -384,9 +392,14 @@ export function ImpactPageFields({
 
       {section === "locations" && (
         <div className="space-y-2">
+          <p className="text-[11px] text-navy/55">
+            Add each region you work in, then choose who you impacted there
+            (students, teachers, and so on). Those numbers drive the public
+            impact graph.
+          </p>
           <div className="flex justify-end">
             <AddButton
-              label="Add location"
+              label="Add region"
               onClick={() =>
                 onChange({
                   ...value,
@@ -395,8 +408,10 @@ export function ImpactPageFields({
                     {
                       name: "",
                       region: "",
-                      girlsReached: 0,
-                      schoolsPartnered: 0,
+                      categories: [
+                        { category: "students", value: 0 },
+                        { category: "teachers", value: 0 },
+                      ],
                       isIllustrative: true,
                     },
                   ],
@@ -404,101 +419,220 @@ export function ImpactPageFields({
               }
             />
           </div>
-          {value.locations.map((location, index) => (
-            <AdminAccordion
-              key={`location-${index}`}
-              variant="item"
-              title={location.name || `Location ${index + 1}`}
-              summary={location.region || undefined}
-              actions={
-                <RemoveButton
-                  onClick={() =>
-                    onChange({
-                      ...value,
-                      locations: value.locations.filter((_, i) => i !== index),
-                    })
-                  }
-                />
-              }
-            >
-              <div className="grid gap-2 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-navy/70">
-                    Name
-                  </label>
-                  <input
-                    className={fieldClass}
-                    value={location.name}
-                    onChange={(e) => {
-                      const locations = [...value.locations];
-                      locations[index] = {
-                        ...location,
-                        name: e.target.value,
-                        isIllustrative: true,
-                      };
-                      onChange({ ...value, locations });
-                    }}
+          {value.locations.map((location, index) => {
+            const categories = location.categories || [];
+            const summary = categories
+              .filter((entry) => entry.value > 0)
+              .map(
+                (entry) =>
+                  `${entry.value.toLocaleString()} ${impactCategoryLabel(
+                    entry.category,
+                    entry.label
+                  )}`
+              )
+              .join(" · ");
+
+            return (
+              <AdminAccordion
+                key={`location-${index}`}
+                variant="item"
+                title={location.name || `Region ${index + 1}`}
+                summary={summary || location.region || undefined}
+                actions={
+                  <RemoveButton
+                    onClick={() =>
+                      onChange({
+                        ...value,
+                        locations: value.locations.filter((_, i) => i !== index),
+                      })
+                    }
                   />
+                }
+              >
+                <div className="space-y-3">
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-navy/70">
+                        Region / city name
+                      </label>
+                      <input
+                        className={fieldClass}
+                        value={location.name}
+                        placeholder="Accra and Greater Accra"
+                        onChange={(e) => {
+                          const locations = [...value.locations];
+                          locations[index] = {
+                            ...location,
+                            name: e.target.value,
+                            isIllustrative: true,
+                          };
+                          onChange({ ...value, locations });
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-navy/70">
+                        Area label
+                      </label>
+                      <input
+                        className={fieldClass}
+                        value={location.region}
+                        placeholder="West Africa, Ghana"
+                        onChange={(e) => {
+                          const locations = [...value.locations];
+                          locations[index] = {
+                            ...location,
+                            region: e.target.value,
+                            isIllustrative: true,
+                          };
+                          onChange({ ...value, locations });
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 rounded-xl border border-navy/10 bg-white p-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-xs font-semibold text-navy">
+                        People categories impacted
+                      </p>
+                      <AddButton
+                        label="Add category"
+                        onClick={() => {
+                          const locations = [...value.locations];
+                          locations[index] = {
+                            ...location,
+                            categories: [
+                              ...categories,
+                              { category: "students", value: 0 },
+                            ],
+                            isIllustrative: true,
+                          };
+                          onChange({ ...value, locations });
+                        }}
+                      />
+                    </div>
+
+                    {categories.length === 0 ? (
+                      <p className="text-xs text-navy/50">
+                        No categories yet. Add students, teachers, or another
+                        group to plot on the graph.
+                      </p>
+                    ) : null}
+
+                    {categories.map((entry, entryIndex) => (
+                      <div
+                        key={`loc-${index}-cat-${entryIndex}`}
+                        className="grid gap-2 rounded-lg border border-navy/8 bg-light/40 p-2 sm:grid-cols-[1.2fr_0.8fr_auto]"
+                      >
+                        <div>
+                          <label className="mb-1 block text-[11px] font-medium text-navy/70">
+                            Category
+                          </label>
+                          <select
+                            className={fieldClass}
+                            value={entry.category}
+                            onChange={(e) => {
+                              const nextCategory = e.target
+                                .value as ImpactPeopleCategory;
+                              const nextCategories = [...categories];
+                              nextCategories[entryIndex] = {
+                                ...entry,
+                                category: nextCategory,
+                                label:
+                                  nextCategory === "other"
+                                    ? entry.label
+                                    : undefined,
+                              };
+                              const locations = [...value.locations];
+                              locations[index] = {
+                                ...location,
+                                categories: nextCategories,
+                                isIllustrative: true,
+                              };
+                              onChange({ ...value, locations });
+                            }}
+                          >
+                            {IMPACT_PEOPLE_CATEGORIES.map((option) => (
+                              <option key={option.id} value={option.id}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-[11px] font-medium text-navy/70">
+                            Number reached
+                          </label>
+                          <input
+                            type="number"
+                            min={0}
+                            className={fieldClass}
+                            value={entry.value}
+                            onChange={(e) => {
+                              const nextCategories = [...categories];
+                              nextCategories[entryIndex] = {
+                                ...entry,
+                                value: Math.max(0, Number(e.target.value) || 0),
+                              };
+                              const locations = [...value.locations];
+                              locations[index] = {
+                                ...location,
+                                categories: nextCategories,
+                                isIllustrative: true,
+                              };
+                              onChange({ ...value, locations });
+                            }}
+                          />
+                        </div>
+                        <div className="flex items-end justify-end">
+                          <RemoveButton
+                            onClick={() => {
+                              const locations = [...value.locations];
+                              locations[index] = {
+                                ...location,
+                                categories: categories.filter(
+                                  (_, i) => i !== entryIndex
+                                ),
+                                isIllustrative: true,
+                              };
+                              onChange({ ...value, locations });
+                            }}
+                          />
+                        </div>
+                        {entry.category === "other" ? (
+                          <div className="sm:col-span-3">
+                            <label className="mb-1 block text-[11px] font-medium text-navy/70">
+                              Custom label
+                            </label>
+                            <input
+                              className={fieldClass}
+                              value={entry.label || ""}
+                              placeholder="e.g. Mentors"
+                              onChange={(e) => {
+                                const nextCategories = [...categories];
+                                nextCategories[entryIndex] = {
+                                  ...entry,
+                                  label: e.target.value,
+                                };
+                                const locations = [...value.locations];
+                                locations[index] = {
+                                  ...location,
+                                  categories: nextCategories,
+                                  isIllustrative: true,
+                                };
+                                onChange({ ...value, locations });
+                              }}
+                            />
+                          </div>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-navy/70">
-                    Region
-                  </label>
-                  <input
-                    className={fieldClass}
-                    value={location.region}
-                    onChange={(e) => {
-                      const locations = [...value.locations];
-                      locations[index] = {
-                        ...location,
-                        region: e.target.value,
-                        isIllustrative: true,
-                      };
-                      onChange({ ...value, locations });
-                    }}
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-navy/70">
-                    Students reached
-                  </label>
-                  <input
-                    type="number"
-                    className={fieldClass}
-                    value={location.girlsReached}
-                    onChange={(e) => {
-                      const locations = [...value.locations];
-                      locations[index] = {
-                        ...location,
-                        girlsReached: Number(e.target.value) || 0,
-                        isIllustrative: true,
-                      };
-                      onChange({ ...value, locations });
-                    }}
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-navy/70">
-                    Schools partnered
-                  </label>
-                  <input
-                    type="number"
-                    className={fieldClass}
-                    value={location.schoolsPartnered}
-                    onChange={(e) => {
-                      const locations = [...value.locations];
-                      locations[index] = {
-                        ...location,
-                        schoolsPartnered: Number(e.target.value) || 0,
-                        isIllustrative: true,
-                      };
-                      onChange({ ...value, locations });
-                    }}
-                  />
-                </div>
-              </div>
-            </AdminAccordion>
-          ))}
+              </AdminAccordion>
+            );
+          })}
         </div>
       )}
 

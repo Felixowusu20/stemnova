@@ -1,10 +1,10 @@
-import { MapPin } from "lucide-react";
 import {
   Container,
   CtaSection,
   ImpactCounter,
   SectionHeading,
 } from "@/components";
+import { ImpactLocationReach } from "@/components/impact/ImpactLocationReach";
 import {
   ImpactBarChart,
   ImpactDonutChart,
@@ -26,10 +26,6 @@ export const metadata = buildPageMetadata({
 export default async function ImpactPage() {
   const impact = await resolveImpact();
   const highlightStats = impact.statistics.slice(0, 6);
-  const locationBars = impact.locations.map((location) => ({
-    label: location.name,
-    value: location.girlsReached,
-  }));
 
   return (
     <>
@@ -113,50 +109,7 @@ export default async function ImpactPage() {
 
       <section className="bg-light py-16 sm:py-20">
         <Container>
-          <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
-            <div>
-              <SectionHeading
-                title="Where We Work"
-                description="Growing reach across partner cities and regions in Africa."
-                className="mb-8"
-              />
-              <ul className="space-y-3">
-                {impact.locations.map((location) => (
-                  <li
-                    key={location.name}
-                    className="flex items-start gap-3 rounded-xl border border-navy/10 bg-white p-4"
-                  >
-                    <MapPin
-                      className="mt-0.5 h-5 w-5 shrink-0 text-teal"
-                      aria-hidden="true"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-navy">{location.name}</h3>
-                      <p className="text-sm text-navy/60">{location.region}</p>
-                      <p className="mt-2 text-sm text-navy">
-                        {location.girlsReached.toLocaleString()} students,{" "}
-                        {location.schoolsPartnered} schools
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <article className="rounded-2xl border border-navy/10 bg-white p-6 sm:p-8">
-              <h3 className="font-display text-xl font-semibold text-navy">
-                Reach by Location
-              </h3>
-              <p className="mt-2 text-sm text-navy/70">
-                Comparative student reach across active locations.
-              </p>
-              <ImpactBarChart
-                className="mt-6"
-                valueSuffix=""
-                items={locationBars}
-              />
-            </article>
-          </div>
+          <ImpactLocationReach locations={impact.locations} />
         </Container>
       </section>
 
